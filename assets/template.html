@@ -56,36 +56,31 @@
     <meta name="description" content="$description-meta$" />
     $endif$
     <title>$if(title-prefix)$$title-prefix$ – $endif$$pagetitle$</title>
-    <style>
+    <!-- <style>
       $styles.html()$
-    </style>
-    $for(css)$
+    </style> -->
     <!-- Pandoc custom CSS -->
+    <!-- $for(css)$
     <link rel="stylesheet" href="$css$" />
-    $endfor$ $for(header-includes)$ $header-includes$ $endfor$ $if(math)$
-    $if(mathjax)$
-    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
-    $endif$ $math$ $endif$
+    $endfor$  -->
   </head>
   <body>
     <div class="profile">
-      $for(include-before)$ $include-before$ $endfor$ $if(title)$
       <header id="name-block">
-        <h1 class="title">$title$</h1>
-        $if(subtitle)$
+        $for(include-before)$ $include-before$ $endfor$ $if(subtitle)$
         <p class="subtitle">$subtitle$</p>
-        $endif$ $for(author)$
+        $endif$
+        <div class="profile-picture">
+          <img src="pics/portrait.jpg" alt="Portrait" class="web" />
+          <img src="pics/portrait_print.jpg" alt="Portrait" class="print" />
+        </div>
+        $if(title)$
+        <h1 class="title">$title$</h1>
+        $for(author)$
         <p class="name">$author$</p>
         $endfor$ $if(date)$
         <p class="date">$date$</p>
-        <!-- 
-          $endif$ $if(abstract)$
-          <div class="abstract">
-            <div class="abstract-title">$abstract-title$</div>
-            $abstract$
-          </div>
-        -->
-        $endif$ 
+        $endif$
       </header>
       $endif$ $if(toc)$
       <nav id="toc" role="doc-toc">

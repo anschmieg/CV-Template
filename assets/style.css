@@ -1,22 +1,13 @@
 @import url('https://fonts.googleapis.com/css?family=Noto+Sans|Noto+Sans+Mono|Charm&display=swap');
 :root {
     --font-size: 1em;
+    --button-color: rgb(0, 123, 137);
+    --button-light: rgb(0, 163, 181);
+    --button-dark: rgb(0, 95, 107);
 }
 
-.online-notice, .languages, .title {
+.online-notice, .languages, .title, .print {
     display: none;
-}
-
-.blocker {
-    display: none;
-    transition: all 0.5s ease-in-out;
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: #000;
-    z-index: 3;
 }
 
 html {
@@ -36,19 +27,35 @@ body {
     height: 100%;
 }
 
+h1 {
+    font-size: calc(var(--font-size) * 2)
+}
+
+h3:has(a):hover {
+    transform: scale(1.1);
+    transition: 0.25s;
+}
+
 .profile {
     position: sticky;
     top: 0;
     left: 0;
-    padding-top: calc(var(--font-size) * 2);
     width: 30%;
+    height: 110%;
     overflow: hidden;
     white-space: normal;
+    background: #3d3e42;
 }
 
 .profile * {
     color: #fff;
     text-decoration: none;
+}
+
+header#name-block {
+    margin: 2rem 1rem;
+    justify-items: center;
+    display: grid;
 }
 
 .page {
@@ -58,19 +65,18 @@ body {
     color: #000;
     top: 0;
     right: 0;
+    padding-top: 1rem;
     width: 70%;
     /* min-height: fit-content; */
-    min-height: 100%;
+    height: 100%;
     overflow: hidden;
     white-space: normal;
+    box-shadow: 0.5mm 0 2mm #000 inset;
+    overflow: scroll;
 }
 
 .spacer {
     padding: 0 var(--font-size);
-}
-
-h1 {
-    font-size: calc(var(--font-size) * 2)
 }
 
 .name, .email, .phone {
@@ -79,6 +85,10 @@ h1 {
 
 .name {
     font-size: 2.5em;
+    font-weight: bold;
+    /* font-variant: petite-caps; */
+    text-align: center;
+    margin: 1rem 0;
 }
 
 hr:first-of-type {
@@ -88,6 +98,69 @@ hr:first-of-type {
 .subtitle {
     font: 1.5em "Charm", serif;
     text-align: center;
-    margin: 0 1.5em;
     color: #caddee;
 }
+
+.contact {
+    line-height: 1.5;
+    margin: 0 auto;
+}
+
+.lang-menu {
+    font-size: 1.5em;
+    padding: 0;
+	display: flex;
+	position: relative;
+	justify-content: center;
+}
+
+.lang-menu li, #toc li {
+    height: 2em;
+    margin: 0 0.5rem;
+    padding: 0;
+    list-style: none;
+    cursor: pointer;
+    background: var(--button-color);
+    color: #fff;
+    box-shadow: -0.5mm 0.5mm 2mm var(--button-dark);
+}
+
+.lang-menu a, #toc a {
+    position: relative;
+    margin: 0 0.5em;
+    text-decoration: none;
+    height: 100%;
+    width: 100%;
+    display: flex;
+    align-items: center;
+}
+
+#toc li {
+    font-size: 1.5em;
+    margin: 1rem 0;
+}
+
+#toc {
+    margin: 1rem;
+}
+
+#toc li:hover, .lang-menu li:hover {
+    transform: scale(1.1);
+    transition: 0.25s;
+}
+
+.profile-picture img {
+    height: 10rem;
+    width: 10rem;
+    object-fit: contain;
+    border-radius: 50%;
+    margin: 1rem;
+    transition: 0.25s;
+}
+
+.profile-picture img:hover {
+    transition: 0.25s;
+	transform: scale(1.2);
+	border-radius: 0.5cm;
+}
+

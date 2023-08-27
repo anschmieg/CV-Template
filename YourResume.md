@@ -1,8 +1,7 @@
 ---
-title:              My lovely resume
 author:             Demo Person
-subtitle:           "I use fancy words."
-backgroundcolor:    "#3d3e42"
+title:              My lovely resume
+subtitle:           "My preference in favor of the utilization of fancy expressions is uncanny."
 ---
 
 ##### <i class="fa fa-info-circle"></i> View online at [example.com/MyCV](https://example.com/MyCV) {.online-notice}
@@ -19,7 +18,7 @@ backgroundcolor:    "#3d3e42"
 
 ----------------------------------------------------------------
 
-# <i class="fa fa-briefcase"></i> Work Experience {.timeline}
+# Work Experience {.timeline .fa .fa-briefcase}
 
 ## Frontend Developer
 ### Pretend Ltd.
@@ -32,7 +31,7 @@ Just StackOverflow.
 
 ----------------------------------------------------------------
 
-# <i class="fa fa-graduation-cap"></i> Education {.timeline}
+# Education {.timeline .fa .fa-graduation-cap}
 
 ## Expertology (PhD program)
 ### Good University Berlin
@@ -49,4 +48,94 @@ and contine writing here.
 
 This program has taught me nothing.
 
+--------------
 
+a
+
+a
+
+a
+
+a
+
+a
+
+a
+
+a
+
+a
+
+a
+
+a
+
+a
+
+a
+
+a
+
+a
+
+a
+
+a
+
+a
+
+a
+
+a
+
+a
+
+a
+
+a
+
+a
+
+a
+
+a
+
+a
+
+a
+
+a
+
+a
+
+a
+
+a
+
+a
+
+a
+
+a
+
+a
+
+a
+
+a
+
+a
+
+a
+
+a
+
+a
+
+a
+
+a
+
+a
+
+a
