@@ -18,10 +18,6 @@
       name="viewport"
       content="initial-scale=1, width=device-width, maximum-scale=1"
     />
-    <!-- hide until loaded, if JS enabled -->
-    <script>
-      document.getElementsByTagName("html")[0].style.visibility = "hidden";
-    </script>
     <!-- Clear Viewport -->
     <link
       rel="stylesheet"
@@ -72,7 +68,6 @@
     $endif$ $math$ $endif$
   </head>
   <body>
-    <div class="blocker"></div>
     <div class="profile">
       $for(include-before)$ $include-before$ $endfor$ $if(title)$
       <header id="name-block">

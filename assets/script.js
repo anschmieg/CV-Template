@@ -1,5 +1,5 @@
 $(document).ready(function() {
-    $("html").css("visibility", "visible");
+    $(".blocker").css("visibility", "hidden");
 
     // Adjust document structure
     $(".email, .phone, .residence, .birthdate").insertAfter(".name");
