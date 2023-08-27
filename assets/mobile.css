@@ -1,0 +1,311 @@
+@import url(https://fonts.googleapis.com/css?family=Varela+Round:300,400,600,900);
+@import url(https://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700);
+
+/* hide */
+.online-notice, .collapse-notice, .profile-picture img.print, .qrcode.print {
+    display: none;
+}
+
+/* general */
+html, body {
+    position: absolute;
+	height: 100%;
+    transition-duration: 0.5s;
+}
+body {
+	font-family: "Open Sans", sans-serif;
+	font-size: 1rem;
+	line-height: 1.5rem;
+    /* overflow-y: hidden; */
+}
+.page {
+	/* display: flex; */
+	height: 100%;
+	width: 100%;
+	justify-content: center;
+	align-items: center;
+}
+
+/* menu */
+.menu {
+    display: none;
+	/* display: inline-block; */
+	position: relative;
+	width: 100%;
+	margin-bottom: 2.5rem;
+	margin-left: 0.5rem;
+}
+.menu-item {
+    margin-right: 0.5rem;
+	margin-left: 0.5rem;
+	font-size: 1rem;
+	font-family: "Varela Round", sans-serif;
+	text-transform: uppercase;
+	font-weight: 600;
+	height: 3rem;
+	line-height: 3rem;
+	margin-bottom: 0.5em;
+	background: rgb(87,176,132);
+	background: linear-gradient(30deg, rgba(74,147,110,1) 0%, rgba(87,176,132,1) 65%, rgba(102,204,153,1) 100%);
+	border-radius: 0.5em;
+}
+.lang-menu {
+	display: flex;
+	position: absolute;
+    bottom: 0;
+	width: 100vw;
+    margin-bottom: 2rem;
+    margin-top: 2rem;
+	justify-content: center;
+}
+.lang-item {
+	display: block;
+	float: left;
+	font-size: 1em;
+	font-family: "Varela Round", sans-serif;
+	text-transform: uppercase;
+	text-align: center;
+	height: 3rem;
+	line-height: 3rem;
+	width: 35%;
+	margin: 0 2.5%;
+	margin-bottom: 0.5rem;
+	border-radius: 0.5rem;
+}
+.lang-item-inactive {
+/*  box-shadow: 0 0 0 2px rgb(74,147,110);*/
+    background: rgb(87,176,132);
+    background: linear-gradient(30deg, rgba(74,147,110,1) 0%, rgba(87,176,132,1) 65%, rgba(102,204,153,1) 100%);
+}
+
+.lang-item-active {
+    background: #f5f9ff;
+    /* box-shadow: 0 0 0 2px #f5f9ff;*/
+}
+.lang-item a, {
+    text-shadow: 0.04em 0;
+}
+.lang-item-active a {
+    color: #3d3e42;
+}
+.lang-item-inactive a, .menu-item a {
+    color: white;
+}
+
+/* profile */
+.profile {
+    position: relative;
+	height: 75vh;
+	width: 100vw;
+	background: #3d3e42;
+	float: top;
+	color: white;
+    border-bottom: 0.5rem solid rgb(87,176,132);
+}
+.profile-picture img {
+    position: relative;
+	border-radius: 50%;
+	width: 25vh;
+	height: 25vh;
+	margin: 2.5vh;
+}
+.profile-sticky {
+	height: calc(30vh + 5vh + 3rem);
+}
+.profile-picture {
+	display: flex;
+	width: 100%;
+    justify-content: center;
+}
+.profile-name {
+    padding-top: 5vh;
+}
+/* contact */
+.contact {
+    display: inline-block;
+    justify-content: center;
+}
+.contact-icons {
+    display: inline-block;
+	float: left;
+	width: 1rem;
+	margin-right: 0.5rem;
+	margin-left: 1rem;
+}
+.contact-type {
+    display: inline-block;
+	float: left;
+	/* width: 2%; */
+	font-weight: 600;
+    margin-right: 0.5rem;
+    margin-left: 0.5rem;
+}
+.contact-content {
+    display: inline-block;
+	font-weight: 300;
+	color: #b2c7d9;
+    margin-right: 0.5rem;
+    margin-left: 0.5rem;
+}
+.contact-content a {
+	color: #b2c7d9;
+}
+
+/* Text: */
+#page-start::before {
+    display: block;
+    content: '';
+    height: 1rem;
+}
+
+.section > h2::before {
+    display: block;
+    content: ' .';
+    color: rgba(0,0,0,0); /* transparent */
+}
+
+.section {
+    display: block;
+    padding-bottom: 2rem;
+}
+h1 {
+	top: 50%;
+	font-size: 2.5em;
+	text-align: center;
+	font-family: "Varela Round", sans-serif;
+	/*text-transform: uppercase;*/
+}
+h2 {
+	font-size: 1.8em;
+	font-family: "Varela Round", sans-serif;
+	text-transform: uppercase;
+	font-weight: 600;
+	text-align: center;
+}
+h3 {
+	font-size: 1.1em;
+	font-family: "Varela Round", sans-serif;
+/*	text-transform: capitalize;*/
+	font-weight: 600;
+}
+h4 {
+	font-size: 1em;
+	font-family: "Varela Round", sans-serif;
+	text-transform: uppercase;
+/*	font-variant: small-caps;*/
+	font-weight: 300;
+}
+p, li {
+	font-size: 0.9rem;
+}
+a {
+	text-decoration: none;
+}
+ul, li {
+	list-style: none;
+	padding: 0;
+}
+
+/* timeline */
+.timeline {
+	display: inline-block;
+	position: relative;
+    float: left;
+	margin-top: 1rem; 
+    padding-left: 0.75rem;
+}
+.time {
+	display: inline;
+	font-size: 0.8rem;
+	text-transform: uppercase;
+	font-weight: bold;
+}
+.location {
+	display: inline-block;
+	font-size: 0.8rem;
+	text-transform: capitalize;
+	margin-left: 0.5rem;
+	padding-left: 0.5rem;
+	border-left: 1px solid #3d3e42;
+}
+li.entry {
+	padding-bottom: 1rem;
+	border-left: 3px solid #66cc99;
+	position: relative;
+	padding-left: 1rem;
+}
+li.entry:last-child {
+    border-left: 3px solid rgba(0,0,0,0); /* hidden border. If this is missing, the last entry will be misaligned*/
+    padding-bottom: 0;
+}
+li.entry:before {
+    content: '';
+    width: 1rem !important;
+    height: 1rem !important;
+    background: white;
+    border: 3px solid #66cc99;
+    border-radius: 50%;
+    position: absolute;
+    left: -12px;
+    top: 0px;
+}
+
+/* skills */
+.skills-list {
+	position: relative;
+	width: 100%;
+	/*left: calc((100vw - 100%) / 2);*/ /* center */
+	display: flex;
+	justify-content: center;
+}
+td {
+	padding: 0 0.5em;
+}
+.skill-name, .skill-details {
+	float: left;
+}
+.skill-level {
+	width: 33vw;
+}
+.bar-border {
+	border: 0px solid #66cc99;
+	background: #f5f9ff;
+	width: 100%;
+}
+.bar {
+	background: #66cc99;
+	height: 1em;
+}
+.tiles {
+	position: relative;
+	display: flex;
+	justify-content: center;
+	flex-wrap: wrap;
+	gap: 1rem;
+	left: calc((100vw - 100%) / 2); /* center */
+	/* width: 60%; */
+	margin-top: 1rem;
+}
+.tile {
+	display: inline-block;
+	width: 80vw;
+	background: #f5f9ff;
+	border: 1px solid #66cc99;
+	text-align: center;
+	padding: 0.5rem;
+}
+.tile p {
+	text-align: left;
+}
+.tile-ul, .entry li {
+	text-align: left;
+	list-style-type: circle;
+	margin-left: 1rem;
+}
+
+
+
+.page-end {
+	line-height: 50vh; /* leaves 25% of vh for last element */
+	color: rgba(1,1,1,0); /* transparent */
+}

@@ -1,0 +1,265 @@
+@import url(https://fonts.googleapis.com/css?family=Source+Serif+Pro);
+@import url(https://fonts.googleapis.com/css?family=Bitter:200,300,400,bold);
+
+/*@media print, @media screen {*/
+
+	html, body {
+		font-family: "Source Serif Pro", serif;
+		background: none;
+		color: black;
+		height: 100%;
+		width: 100%;
+	}
+	
+	.menu, .lang-menu, .contact-type, .page-end {
+		display: none;
+	}
+	
+	h1, h2, h3, h4, h5 {
+		font-family: "Bitter", serif;
+		break-after: avoid;
+		break-before: auto;
+	}
+	.profile-name h1 {
+		font-weight: 200;
+	}
+	b {
+		font-weight: bold;
+	}
+	.profile-name b {
+		font-weight: 400;
+	}
+	h2 {
+		margin-top: 1.25em;
+		font-size: 1.5em;
+		text-align: center;
+		text-transform: uppercase;
+		font-weight: 300;
+	}
+	h3 {
+		font-size: 1.1em;
+		font-weight: 400;
+	}
+	h4 {
+		font-size: 1em;
+		font-weight: bold;
+	}
+	a {
+		text-decoration: none;
+		text-decoration: underline #66cc99 solid 0.05em;
+		color: rgb(74,147,110);
+	}
+	.page {
+		width: 100%;
+		margin: 0; padding: 0;
+		background: none;
+	}
+	.entry, .skills-list, .tile {
+		break-inside: avoid; 
+		break-after: auto;
+	}
+
+	.profile {
+		display: block;
+		position: relative;
+		overflow: hidden;
+		top: 0;
+		height: 3cm;
+		width: 100%;
+		background: #f5f9ff;
+		border-bottom: 1mm solid #66cc99;
+		text-align: center;
+		align-items: center; /*vertical*/
+	}
+
+	.profile-picture img.web {
+		display: none;
+	}
+
+	.qrcode.print {
+		display: none;
+		right: 0;
+		top: 0;
+	}
+
+	.profile-sticky {
+		display: table;
+	}
+	.profile-header {
+		position: relative;
+		width: 100%;
+		height: 100%;
+		display: flex;
+		align-items: center; /*vertical*/	
+		justify-content: center; /*horizontal*/
+		float: left;
+	}
+	.online-notice {
+		display: static;
+		margin: 0.25em 0;
+		overflow-wrap: break-word;
+	}
+	
+	h1 {
+		font-size: 2em;
+		text-align: center;
+	}
+	
+	.profile-sticky {
+		height: 100%;
+	}
+	.profile-name {
+		display: table-cell;
+		text-align: left;
+		left: 0;
+		margin: 0 0.5em;
+		vertical-align: middle;
+	}
+	.profile-name h1, p {
+		text-align: left;
+		margin-right: 0.5em;
+	}
+	
+	.profile-picture {
+		position: static;
+		display: table-cell;
+		margin: 0 auto;
+		vertical-align: middle;
+	}
+	.profile-picture img {
+		border-radius: 50%;
+		height: 2.5cm;
+	}
+	.contact {
+		display: table-cell;
+		text-align: left;
+		left: 0;
+		margin: 0 0.5em;
+	}
+	.contact-icons {
+		display: inline;
+		float: left;
+		width: 1em;
+		margin-right: 0.5em;
+		margin-left: 0.5em;
+	}
+
+	.contact-content {
+		display: inline;
+		float: left;
+	}
+	
+	.content {
+		display: block;
+		height: 100%;
+		width: 85%;
+		margin: 0 7.5%;
+		color: #222222;
+		align-items: center;
+		justify-content: center;
+		line-height: 1.25em;
+	}
+	.time {
+		position: relative;
+		display: inline;
+		left: -6.5mm;
+		font-size: 0.85em;
+		text-transform: capitalize;
+		font-weight: bold;
+	}
+	.location {
+		position: relative;
+		display: inline;
+		left: -6mm;
+		font-size: 0.85em;
+		text-transform: capitalize;
+		margin-left: 0.75em;
+		padding-left: 0.75em;
+		border-left: 0.25mm solid #222222;
+	}
+	li.entry {
+		padding-bottom: 1.5em;
+		border-left: 0.75mm solid #66cc99;
+		padding-left: 5mm;
+		margin-left: 2.5mm;
+	}
+	li.entry:last-child {
+	    border-left: 0.75mm solid rgba(0,0,0,0); /* hidden border. If this is missing, the last entry will be misaligned*/
+	    padding-bottom: 0;
+	}
+	li.entry:before {
+		position: relative;
+		display: inline-block;
+	    content: '';
+	    width: 1em !important;
+	    height: 1em !important;
+		background: #FFF;
+	    border: 0.75mm solid #66cc99;
+	    border-radius: 50%;
+	    left: -8.25mm;
+	}
+	
+	.skills-list {
+		position: relative;
+		margin: 1em auto;
+	}
+	.skill-name {
+		float: left;
+	}
+	.skill-level {
+		width: 10cm;
+	}
+	.bar-border {
+/*		border: 0.25mm solid #66cc99;*/
+		background: #f5f9ff;
+		width: 100%;
+	}
+	.bar {
+		background: #66cc99;
+		height: 1em;
+	}
+	td {
+		padding: 0 0.5em;
+	}
+	
+	.tiles {
+		/*position: relative;
+		display: block;
+		width: 100%;
+		margin: 0 auto; */
+		position: relative;
+		display: flex;
+		justify-content: center;
+		flex-wrap: wrap;
+		gap: 1em;
+		margin: 1em auto;
+		overflow: hidden;
+	}
+	.tile {
+		display: inline-block;
+		width: 40%;
+		background: #f5f9ff;
+		border: 0.25mm solid #66cc99;
+		text-align: center;
+		padding: 0.5em;
+		overflow: hidden;
+	}
+	.tile p {
+		text-align: left;
+	}
+	.tile-ul, .entry li {
+		text-align: left;
+		list-style-type: circle;
+		margin-left: 1em;
+	}
+	.tile h3,h4 {
+		margin-bottom: 0.5em;
+	}
+	.tile h4 {
+/*		font-variant: small-caps;*/
+		text-transform: uppercase;
+		font-weight: 300;
+		font-size: 0.9em;
+	}
+	
+/*}*/
