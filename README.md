@@ -3,7 +3,7 @@
 1. Fill `YourResume.md` with the wanted info, following the demo'ed syntax
 2. Run the following command:
 ```
-pandoc -s -t html5 --template=assets/template.html -o pages/index.html YourResume.md
+pandoc -s --toc --toc-depth 1 -t html5 --template assets/template.html -o index.html YourResume.md
 ```
 
 ## Multi-lingual support
