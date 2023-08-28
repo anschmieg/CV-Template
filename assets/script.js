@@ -20,3 +20,8 @@ $(document).ready(function() {
         }
     });
 });
+
+// If no portrait picture:
+function noPortrait() {
+    $(".profile-picture").remove();
+}

@@ -71,10 +71,7 @@
         <p class="subtitle">$subtitle$</p>
         $endif$
         <div class="profile-picture">
-          <div class="vignette">
-            <img src="pics/portrait.jpg" alt="Portrait" class="web" />
-          </div>
-          <img src="pics/portrait_print.jpg" alt="Portrait" class="print" />
+          <img src="pics/portrait.jpg" alt="Portrait" class="web" onerror="noPortrait()" />
         </div>
         $if(title)$
         <h1 class="title">$title$</h1>
