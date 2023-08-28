@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css?family=Noto+Sans:wght@200..900|Noto+Sans+Mono@200..900|Noto+Serif|Charm&display=swap");
+@import url("https://fonts.googleapis.com/css?family=Noto+Sans:wght@200..900|Noto+Sans+Mono@200..900|Charm&display=swap");
 :root {
   --font-size: 1em;
   --theme-color: rgb(0, 123, 137);
@@ -106,7 +106,7 @@ header#name-block {
   height: calc(100% - 4.25mm);
   overflow: hidden;
   white-space: normal;
-  box-shadow: 0.5mm 0 2mm var(--font-color) inset;
+  /* box-shadow: -0.5mm -2mm 1mm 0 var(--profile-bg) inset; */
   overflow: scroll;
 }
 
