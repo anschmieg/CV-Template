@@ -20,9 +20,12 @@
     />
     <!-- hide page until loaded -->
     <script>
-      document.documentElement.style.display = "none";
+      document.documentElement.style.visibility = "hidden";
+      document.documentElement.style.opacity = 0;
       window.addEventListener("load", function () {
-        document.documentElement.style.display = "block";
+        document.documentElement.style.transition = "all 0.25s";
+        document.documentElement.style.visibility = "visible";
+        document.documentElement.style.opacity = 1;
       });
     </script>
     <!-- Clear Viewport -->
@@ -72,26 +75,33 @@
     $endfor$  -->
   </head>
   <body>
-    <div class="profile">
-      <header id="name-block">
-        $for(include-before)$ $include-before$ $endfor$ $if(subtitle)$
-        <p class="subtitle">$subtitle$</p>
-        $endif$
-        <div class="profile-picture">
-          <img src="pics/portrait.jpg" alt="Portrait" class="web" onerror="noPortrait()" />
-        </div>
-        $if(title)$
-        <h1 class="title">$title$</h1>
-        $for(author)$
-        <p class="name">$author$</p>
-        $endfor$ $if(date)$
-        <p class="date">$date$</p>
-        $endif$
-      </header>
-      $endif$ $if(toc)$
-      <nav id="toc" role="doc-toc">
-        $table-of-contents$
-      </nav>
+    <div class="profile-container">
+      <div class="profile">
+        <header id="name-block">
+          $for(include-before)$ $include-before$ $endfor$ $if(subtitle)$
+          <p class="subtitle">$subtitle$</p>
+          $endif$
+          <div class="profile-picture">
+            <img
+              src="pics/portrait.jpg"
+              alt="Portrait"
+              class="web"
+              onerror="noPortrait()"
+            />
+          </div>
+          $if(title)$
+          <h1 class="title">$title$</h1>
+          $for(author)$
+          <p class="name">$author$</p>
+          $endfor$ $if(date)$
+          <p class="date">$date$</p>
+          $endif$
+        </header>
+        $endif$ $if(toc)$
+        <nav id="toc" role="doc-toc">
+          $table-of-contents$
+        </nav>
+      </div>
     </div>
     <div class="page">
       <div class="spacer i-hate-css">

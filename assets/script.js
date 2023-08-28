@@ -2,7 +2,12 @@ $(document).ready(function() {
     // Adjust document structure
     $(".email, .phone, .residence, .birthdate").insertAfter(".name");
     $(".languages").next("ul").addClass("lang-menu").insertBefore("#toc");
+    $(".languages").remove();
     $("header").children("h3").wrapAll("<div class='contact'></div>");
+    // wrap timeline entries
+    $("h2").each(function() {
+        $(this).nextUntil("h2, h1, hr").addBack().wrapAll("<div class='entry'></div>");
+    });
 
     // Add icons
     $(".email").prepend('<i class="fa fa-envelope"></i>&emsp;');
@@ -14,8 +19,8 @@ $(document).ready(function() {
             // prepend i tag to nav with this id
             var id = $(this).attr("id");
             var classes = $(this).attr("class");
-            $("a#toc-" + id).prepend('<i class="' + classes + '"></i>&emsp;');
-            $(this).prepend('<i class="' + classes + '"></i>&emsp;');
+            $("a#toc-" + id).prepend('<i class="' + classes + '"></i>');
+            $(this).prepend('<i class="' + classes + '"></i>');
             // set up timeline
             if ($(this).hasClass("timeline")) {
                 $(this).nextUntil("h1").wrapAll("<div class='timeline'></div>");
@@ -25,8 +30,7 @@ $(document).ready(function() {
     });
 });
 
-
-// If no portrait picture:
+// If no portrait picture, remove.
 function noPortrait() {
     $(".profile-picture").remove();
 }

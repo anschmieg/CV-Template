@@ -13,8 +13,8 @@ subtitle:           "My preference in favor of the utilization of fancy expressi
 
 
 ## Languages {.languages}
-- [Deutsch](demo.html)
-- [English](https://hackertyper.net/)
+- [English](demo.html)
+- [Deutsch](https://hackertyper.net/)
 
 ----------------------------------------------------------------
 
@@ -22,8 +22,8 @@ subtitle:           "My preference in favor of the utilization of fancy expressi
 
 ## Frontend Developer
 ### Pretend Ltd.
-- Warsaw, Poland
 - Jan 2022 - Dec 2022
+- Warsaw, Poland
 
 My job is StackOverflow. Not developer, that's a common misconception. 
 
@@ -35,107 +35,15 @@ Just StackOverflow.
 
 ## Expertology (PhD program)
 ### Good University Berlin
-- Berlin, Germany
 - Oct 2020 - Sep 2021
+- Berlin, Germany
 
-Some details on why this program made me an expert in things. Add two spaces for line break  
-and contine writing here.
+Some details on why this program made me an expert in things. **Add two spaces for line break**  
+_and contine writing here._
 
-## Basic Science (BSc)
+## Basic Science (MSc)
 ### Université Primitive de Paris
-- Paris, France
 - Aug 2017 - Jul 2020
+- Paris, France
 
 This program has taught me nothing.
-
---------------
-
-a
-
-a
-
-a
-
-a
-
-a
-
-a
-
-a
-
-a
-
-a
-
-a
-
-a
-
-a
-
-a
-
-a
-
-a
-
-a
-
-a
-
-a
-
-a
-
-a
-
-a
-
-a
-
-a
-
-a
-
-a
-
-a
-
-a
-
-a
-
-a
-
-a
-
-a
-
-a
-
-a
-
-a
-
-a
-
-a
-
-a
-
-a
-
-a
-
-a
-
-a
-
-a
-
-a
-
-a
-
-a
