@@ -149,6 +149,10 @@ hr:first-of-type {
     transition: 0.25s;
 }
 
+.profile-picture {
+    width:min-content;
+}
+
 .profile-picture img {
     height: 10rem;
     width: 10rem;
