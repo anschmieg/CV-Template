@@ -16,10 +16,15 @@ $(document).ready(function() {
             var classes = $(this).attr("class");
             $("a#toc-" + id).prepend('<i class="' + classes + '"></i>&emsp;');
             $(this).prepend('<i class="' + classes + '"></i>&emsp;');
+            // set up timeline
+            if ($(this).hasClass("timeline")) {
+                $(this).nextUntil("h1").wrapAll("<div class='timeline'></div>");
             $(this).removeClass();
+            }
         }
     });
 });
+
 
 // If no portrait picture:
 function noPortrait() {
