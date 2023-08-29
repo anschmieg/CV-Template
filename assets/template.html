@@ -48,9 +48,12 @@
       href="assets/mobile.css"
       media="screen and (max-width: 1200px)"
     /> -->
+    <!-- Progress bar CSS -->
+    <link rel="stylesheet" href="assets/plugin-progressbar.css" />
     <!-- jQuery -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="assets/script.js"></script>
+    <script src="assets/plugin-progressbar.js"></script>
     <!-- Pandoc Metadata -->
     $for(author-meta)$
     <meta name="author" content="$author-meta$" />
@@ -103,6 +106,7 @@
       <div class="spacer i-hate-css">
         $endif$ $body$ $for(include-after)$ $include-after$ $endfor$
       </div>
+      <div class="footer"></div>
     </div>
   </body>
 </html>

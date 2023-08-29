@@ -1,7 +1,7 @@
 ---
 author:             Demo Person
 title:              My lovely resume
-subtitle:           "My preference in favor of the utilization of fancy expressions is uncanny."
+subtitle:           "My preference in favor of utilizing fancy expressions can only be described as uncanny."
 ---
 
 ##### <i class="fa fa-info-circle"></i> View online at [example.com/MyCV](https://example.com/MyCV) {.online-notice}
@@ -12,7 +12,7 @@ subtitle:           "My preference in favor of the utilization of fancy expressi
 ### Somewhere, Nirvana {.residence}
 
 
-## Languages {.languages}
+## Available Languages {.lang}
 - [English](demo.html)
 - [Deutsch](https://hackertyper.net/)
 
@@ -50,92 +50,31 @@ This program has taught me nothing.
 
 -------------------------------------------
 
-fads
+# Languages {.skills .fa .fa-duotone .fa-comments}
+## English
+- native
+- 100% 
 
-asdflj
+## Polish
+- C1
+- 90%
 
-asf
+## German
+- B1
+- 40%
 
-afd
+# Some random stuff
 
-afds
+## Certifications
+- bla
+- some
+- things that are way too extensive to list in further detail here which is why I will not be doing it. Oh my god, I do not know what else to put here and I am running out of space on my monitor!
 
-fads
+## Volunteer Positions
+1. Rat Hunter Extraordinaire
+My duty is to hunt rats.  
+And I take it very seriously!
 
-asdflj
+2. Quality Assurance Expert at the bar downstairs
 
-asf
-
-afd
-
-afds
-
-fads
-
-asdflj
-
-asf
-
-afd
-
-afds
-
-fads
-
-asdflj
-
-asf
-
-afd
-
-afds
-
-fads
-
-asdflj
-
-asf
-
-afd
-
-afds
-
-fads
-
-asdflj
-
-asf
-
-afd
-
-afds
-
-fads
-
-asdflj
-
-asf
-
-afd
-
-afds
-
-fads
-
-asdflj
-
-asf
-
-afd
-
-afds
-
-fads
-
-asdflj
-
-asf
-
-afd
-
-afds
+self-explanatory.

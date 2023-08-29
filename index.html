@@ -36,22 +36,21 @@
       href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css"
     />
     <!-- Screen CSS -->
-    <link
-      rel="stylesheet"
-      href="assets/style.css"
-      media="screen and (min-width: 1200px)"
-    />
+    <link rel="stylesheet" href="assets/style.css" /> <!-- media="screen and (min-width: 1200px)" -->
     <!-- Print CSS -->
-    <link rel="stylesheet" href="assets/print.css" media="print" />
+    <!-- <link rel="stylesheet" href="assets/print.css" media="print" /> -->
     <!-- Mobile CSS -->
-    <link
+    <!-- <link
       rel="stylesheet"
       href="assets/mobile.css"
       media="screen and (max-width: 1200px)"
-    />
+    /> -->
+    <!-- Progress bar CSS -->
+    <link rel="stylesheet" href="assets/plugin-progressbar.css" />
     <!-- jQuery -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="assets/script.js"></script>
+    <script src="assets/plugin-progressbar.js"></script>
     <!-- Pandoc Metadata -->
         <meta name="author" content="Demo Person" />
            <title>My lovely resume</title>
@@ -224,8 +223,8 @@
     <div class="profile-container">
       <div class="profile">
         <header id="name-block">
-                     <p class="subtitle">My preference in favor of the
-utilization of fancy expressions is uncanny.</p>
+                     <p class="subtitle">My preference in favor of
+utilizing fancy expressions can only be described as uncanny.</p>
                     <div class="profile-picture">
             <img
               src="pics/portrait.jpg"
@@ -242,6 +241,9 @@ utilization of fancy expressions is uncanny.</p>
           <li><a href="#work-experience" id="toc-work-experience">Work
           Experience</a></li>
           <li><a href="#education" id="toc-education">Education</a></li>
+          <li><a href="#languages" id="toc-languages">Languages</a></li>
+          <li><a href="#some-random-stuff"
+          id="toc-some-random-stuff">Some random stuff</a></li>
           </ul>
         </nav>
       </div>
@@ -258,7 +260,7 @@ href="mailto:me@example.com">me@example.com</a></h3>
 <h3 class="phone" id="section-1"><a href="tel:331234567890">+33 123
 4567890</a></h3>
 <h3 class="residence" id="somewhere-nirvana">Somewhere, Nirvana</h3>
-<h2 class="languages" id="languages">Languages</h2>
+<h2 class="lang" id="available-languages">Available Languages</h2>
 <ul>
 <li><a href="demo.html">English</a></li>
 <li><a href="https://hackertyper.net/">Deutsch</a></li>
@@ -295,52 +297,41 @@ Paris</h3>
 </ul>
 <p>This program has taught me nothing.</p>
 <hr />
-<p>fads</p>
-<p>asdflj</p>
-<p>asf</p>
-<p>afd</p>
-<p>afds</p>
-<p>fads</p>
-<p>asdflj</p>
-<p>asf</p>
-<p>afd</p>
-<p>afds</p>
-<p>fads</p>
-<p>asdflj</p>
-<p>asf</p>
-<p>afd</p>
-<p>afds</p>
-<p>fads</p>
-<p>asdflj</p>
-<p>asf</p>
-<p>afd</p>
-<p>afds</p>
-<p>fads</p>
-<p>asdflj</p>
-<p>asf</p>
-<p>afd</p>
-<p>afds</p>
-<p>fads</p>
-<p>asdflj</p>
-<p>asf</p>
-<p>afd</p>
-<p>afds</p>
-<p>fads</p>
-<p>asdflj</p>
-<p>asf</p>
-<p>afd</p>
-<p>afds</p>
-<p>fads</p>
-<p>asdflj</p>
-<p>asf</p>
-<p>afd</p>
-<p>afds</p>
-<p>fads</p>
-<p>asdflj</p>
-<p>asf</p>
-<p>afd</p>
-<p>afds</p> 
+<h1 class="skills fa fa-duotone fa-comments"
+id="languages">Languages</h1>
+<h2 id="english">English</h2>
+<ul>
+<li>native</li>
+<li>100%</li>
+</ul>
+<h2 id="polish">Polish</h2>
+<ul>
+<li>C1</li>
+<li>90%</li>
+</ul>
+<h2 id="german">German</h2>
+<ul>
+<li>B1</li>
+<li>40%</li>
+</ul>
+<h1 id="some-random-stuff">Some random stuff</h1>
+<h2 id="certifications">Certifications</h2>
+<ul>
+<li>bla</li>
+<li>some</li>
+<li>things that are way too extensive to list in further detail here
+which is why I will not be doing it. Oh my god, I do not know what else
+to put here and I am running out of space on my monitor!</li>
+</ul>
+<h2 id="volunteer-positions">Volunteer Positions</h2>
+<ol type="1">
+<li><p>Rat Hunter Extraordinaire My duty is to hunt rats.<br />
+And I take it very seriously!</p></li>
+<li><p>Quality Assurance Expert at the bar downstairs</p></li>
+</ol>
+<p>self-explanatory.</p> 
       </div>
+      <div class="footer"></div>
     </div>
   </body>
 </html>

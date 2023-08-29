@@ -1,16 +1,18 @@
 @import url("https://fonts.googleapis.com/css?family=Noto+Sans:wght@200..900|Noto+Sans+Mono@200..900|Charm&display=swap");
 :root {
   --font-size: 1em;
-  --theme-color: rgb(0, 123, 137);
-  --theme-light: rgb(0, 163, 181);
-  --theme-dark: rgb(0, 95, 107);
-  --profile-bg: #3d3e42;
-  --bg-color: #f0f0f0;
-  --font-color: #000;
+  --theme-color: 0, 123, 137;
+  --theme-light: 0, 163, 181;
+  --theme-dark: 0, 95, 107;
+  --profile-bg: 61, 62, 66;
+  --bg-color: 240, 240, 240;
+  --font-color: 0, 0, 0;
+  --corners: 2mm;
+  --shadow-subtle: -0.5mm 0.5mm 1mm rgba(170, 170, 170, 0.5);
 }
 
 .online-notice,
-.languages,
+.lang,
 .title,
 .print {
   display: none;
@@ -43,7 +45,7 @@ em {
 
 h1 {
   font-size: calc(var(--font-size) * 2);
-  margin-top: 1em;
+  margin: 1rem 0;
   text-align: center;
   font-weight: 600;
 }
@@ -65,18 +67,18 @@ h3:has(a):hover {
 
 .profile-container {
   position: sticky !important;
-  background: var(--profile-bg);
+  background: rgba(var(--profile-bg), 1);
   top: 0;
   left: 0;
   width: 30%;
-  height: 100%;
+  min-height: 100%;
+  height: fit-content;
 }
 
 .profile {
   display: grid;
   grid-auto-rows: min-content;
   align-items: start;
-  overflow: hidden;
   white-space: normal;
 }
 
@@ -96,8 +98,8 @@ header#name-block {
 .page {
   position: absolute;
   /* display: inline-block; */
-  background-color: var(--bg-color);
-  color: var(--font-color);
+  background-color: rgba(var(--bg-color), 1);
+  color: rgba(var(--font-color), 1);
   top: 0;
   right: 0;
   padding-top: 1rem;
@@ -106,13 +108,15 @@ header#name-block {
   height: calc(100% - 4.25mm);
   overflow: hidden;
   white-space: normal;
-  /* box-shadow: -0.5mm -2mm 1mm 0 var(--profile-bg) inset; */
+  /* box-shadow: -0.5mm -2mm 1mm 0 rgba(var(--profile-bg), 1.0) inset; */
   overflow: scroll;
 }
 
 .spacer {
   padding: 0 var(--font-size);
 }
+
+/* Profile section */
 
 .name,
 .email,
@@ -168,10 +172,14 @@ hr:first-of-type {
   padding: 0;
   list-style: none;
   cursor: pointer;
-  background: var(--theme-color);
+  background: linear-gradient(
+    45deg,
+    rgba(var(--theme-color), 1) 0%,
+    rgba(var(--theme-light), 1) 100%
+  );
   color: #fff;
-  border-radius: 2mm;
-  box-shadow: 0 0 1mm #aaa;
+  border-radius: var(--corners);
+  box-shadow: var(--shadow-subtle);
 }
 
 .lang-menu a,
@@ -218,8 +226,10 @@ hr:first-of-type {
 .profile-picture img:hover {
   transition: 0.25s;
   transform: scale(1.75);
-  border-radius: 2mm;
+  border-radius: var(--corners);
 }
+
+/* Timeline */
 
 .timeline {
   display: inline-block;
@@ -233,7 +243,7 @@ hr:first-of-type {
 }
 
 .timeline .entry:not(.entry:last-of-type) {
-  border-left: 1mm solid var(--theme-light);
+  border-left: 1mm solid rgba(var(--theme-light), 1);
   padding-bottom: 1em;
 }
 
@@ -241,8 +251,8 @@ hr:first-of-type {
   content: "";
   width: 1rem;
   height: 1rem;
-  background: var(--bg-color);
-  border: 1mm solid var(--theme-light);
+  background: rgba(var(--bg-color), 1);
+  border: 1mm solid rgba(var(--theme-light), 1);
   border-radius: 50%;
   position: absolute;
   left: calc(
@@ -282,7 +292,7 @@ hr:first-of-type {
 .timeline .entry li:not(li:first-of-type) {
   margin-left: 1em;
   padding-left: 1em;
-  border-left: 0.5mm solid var(--font-color);
+  border-left: 0.5mm solid rgba(var(--font-color), 1);
 }
 
 .timeline .entry p {
@@ -294,6 +304,45 @@ hr:first-of-type {
 .timeline .entry:hover {
   transition: 0.25s;
   transition-delay: 0.05s;
-  /* background-color: var(--theme-light); */
-  border-left: 1em solid var(--theme-color) !important;
+  /* background-color: rgba(var(--theme-light), 1.0); */
+  border-left: 1em solid rgba(var(--theme-color), 1) !important;
+}
+
+/* skills */
+
+.skills {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(10em, 1fr));
+  gap: 1em;
+  text-align: center;
+}
+
+.skill-item {
+  background: rgba(var(--theme-color), 0.15);
+  padding: 1em;
+  border-radius: var(--corners);
+  box-shadow: var(--shadow-subtle);
+}
+
+.skill-item:hover {
+  background: rgba(var(--theme-color), 0.2);
+  transform: scale(1.075);
+  transition: all 0.25s ease-in-out;
+}
+
+.skill-item h2 {
+  margin-bottom: 1rem;
+}
+
+.skill-item .entry ul {
+  display: none;
+}
+
+/* Other entries */
+h1:not(.timeline h1, .profile h1, .skills h1),
+h2:not(.timeline h2, .profile h2, .skills h2),
+h3:not(.timeline h3, .profile h3, .skills h3),
+h4:not(.timeline h4, .profile h4, .skills h4) {
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
 }
