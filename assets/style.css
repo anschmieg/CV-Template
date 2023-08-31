@@ -5,7 +5,7 @@
   --theme-light: 0, 163, 181;
   --theme-dark: 0, 95, 107;
   --profile-bg: 61, 62, 66;
-  --bg-color: 240, 240, 240;
+  --bg-color: 248, 248, 248;
   --font-color: 0, 0, 0;
   --corners: 2mm;
   --shadow-subtle: -0.5mm 0.5mm 1mm rgba(170, 170, 170, 0.5);
@@ -28,11 +28,11 @@ html {
 
 body {
   display: unset;
-  min-width: 100%;
+  width: 100vw;
+  height: 100vh;
   padding: 0 !important;
-  overflow: unset;
+  overflow: hidden;
   white-space: nowrap;
-  height: 100%;
 }
 
 strong {
@@ -66,13 +66,13 @@ h3:has(a):hover {
 }
 
 .profile-container {
-  position: sticky !important;
+  /* position: sticky !important; */
+  /* overflow: scroll; */
   background: rgba(var(--profile-bg), 1);
   top: 0;
   left: 0;
-  width: 30%;
-  min-height: 100%;
-  height: fit-content;
+  width: 33.3%;
+  float: left;
 }
 
 .profile {
@@ -97,19 +97,25 @@ header#name-block {
 
 .page {
   position: absolute;
+  float: right;
   /* display: inline-block; */
   background-color: rgba(var(--bg-color), 1);
   color: rgba(var(--font-color), 1);
   top: 0;
   right: 0;
   padding-top: 1rem;
-  width: 70%;
+  width: 66.7%;
   /* WHYYYY ? */
-  height: calc(100% - 4.25mm);
-  overflow: hidden;
+  /* height: calc(100% - 4.25mm); */
   white-space: normal;
   /* box-shadow: -0.5mm -2mm 1mm 0 rgba(var(--profile-bg), 1.0) inset; */
-  overflow: scroll;
+  /* overflow: scroll; */
+}
+
+.profile-container, .page {
+  height: 100vh !important;
+  overflow: scroll !important;
+  scroll-behavior: smooth;
 }
 
 .spacer {
@@ -117,7 +123,6 @@ header#name-block {
 }
 
 /* Profile section */
-
 .name,
 .email,
 .phone {
@@ -148,13 +153,14 @@ hr:first-of-type {
 }
 
 .lang-menu {
-  height: 2em;
+  height: 3em;
   font-size: 1.5em;
-  padding: 1em 0;
-  display: flex;
+  padding: 0;
   position: relative;
   justify-content: center;
   order: 1;
+  display: flex;
+  flex-direction: row;
 }
 
 .lang-menu a {
@@ -162,10 +168,22 @@ hr:first-of-type {
 }
 
 .lang-menu ul {
-  /* max-height: fit-content !important; */
+  display: grid;
+  grid-auto-flow: column;
+  grid-template-columns: repeat(auto-fit, minmax(5em, 1fr));
+  gap: 0;
 }
 
-.lang-menu li,
+.lang-menu li {
+  display: inline-block;
+  background: linear-gradient(
+    45deg,
+    rgba(var(--theme-color), 1) 0%,
+    rgba(var(--theme-light), 1) 100%
+  );
+  width: 100%;
+}
+
 #toc li {
   height: 2em;
   margin: 0 0.5rem;
@@ -184,12 +202,12 @@ hr:first-of-type {
 
 .lang-menu a,
 #toc a {
+  display: flex;
   position: relative;
   margin: 0 0.5em;
   text-decoration: none;
   height: 100%;
   width: 100%;
-  display: flex;
   align-items: center;
 }
 
@@ -310,27 +328,31 @@ hr:first-of-type {
 
 /* skills */
 
-.skills {
+.skills, .cards {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(10em, 1fr));
   gap: 1em;
   text-align: center;
 }
 
-.skill-item {
+.cards ul, .cards ol {
+  text-align: left;
+}
+
+.skill-item, .cards .entry {
   background: rgba(var(--theme-color), 0.15);
   padding: 1em;
   border-radius: var(--corners);
   box-shadow: var(--shadow-subtle);
 }
 
-.skill-item:hover {
+.skill-item:hover, .card-item:hover {
   background: rgba(var(--theme-color), 0.2);
   transform: scale(1.075);
   transition: all 0.25s ease-in-out;
 }
 
-.skill-item h2 {
+.skill-item h2, .card-item h2 {
   margin-bottom: 1rem;
 }
 
@@ -342,7 +364,54 @@ hr:first-of-type {
 h1:not(.timeline h1, .profile h1, .skills h1),
 h2:not(.timeline h2, .profile h2, .skills h2),
 h3:not(.timeline h3, .profile h3, .skills h3),
-h4:not(.timeline h4, .profile h4, .skills h4) {
-  margin-top: 1rem;
-  margin-bottom: 0.5rem;
+h4:not(.timeline h4, .profile h4, .skills h4),
+h5:not(.timeline h5, .profile h5, .skills h5),
+h6:not(.timeline h6, .profile h6, .skills h6) {
+  margin: 1rem 1rem 0.5rem 1rem;
+}
+
+ul:not(.timeline ul, .profile ul, .skills ul) {
+  margin: 1rem 2em;
+  line-height: 1.25;
+  list-style: circle;
+}
+
+ol:not(.timeline ol, .profile ol, .skills ol) {
+  margin: 1rem 2em;
+  line-height: 1.25;
+  list-style: decimal;
+}
+
+p:not(.timeline p, .profile p, .skills p),
+span:not(.timeline span, .profile span, .skills span) {
+  margin: 0 1rem;
+  line-height: 1.25;
+}
+
+blockquote {
+  background: rgba(var(--theme-color), 0.15);
+  margin: 1rem;
+  padding: 0.5rem;
+  border-radius: var(--corners);
+  font-family: "Noto Sans Mono", monospace;
+  font-size: 0.9em;
+}
+
+pre:has(code) {
+  background: rgba(var(--profile-bg), 0.75);
+  color: rgb(213, 243, 221);
+  margin: 1rem;
+  padding: 0.5rem 1rem;
+  border-radius: var(--corners);
+  font-family: "Noto Sans Mono", monospace;
+  font-size: 0.8em;
+}
+
+/* end of page */
+.footer {
+  height: 2rem;
+}
+
+.unlisted {
+  display: none;
 }

@@ -26,9 +26,11 @@
   text-align: center;
   border-radius: 50%;
   background-color: rgb(var(--bg-color));
+  box-shadow: var(--shadow-subtle) inset;
 }
 .progress-bar .background {
   background-color: #b3cef6;
+  box-shadow: var(--shadow-subtle);
 }
 .progress-bar .rotate {
   clip: rect(0 50px 100px 0);

@@ -20,12 +20,30 @@ $(document).ready(function () {
       .wrapAll("<div class='entry'></div>");
   });
 
-  // Add icons
+  // Add icons to contact info
   $(".email").prepend('<i class="fa fa-envelope"></i>&emsp;');
   $(".phone").prepend('<i class="fa fa-phone"></i>&emsp;');
   $(".residence").prepend('<i class="fa fa-home"></i>&emsp;');
   $(".birthdate").prepend('<i class="fa fa-birthday-cake"></i>&emsp;');
+
+  // Set up section types
   $("h1").each(function () {
+    // Wrap cards
+    if ($(this).hasClass("cards")) {
+      console.log("Wrapped cards.");
+      $(this).nextUntil("h1").wrapAll("<div class='cards'></div>");
+    }
+    // Wrap timeline
+    if ($(this).hasClass("timeline")) {
+      console.log("Wrapped timeline.");
+      $(this).nextUntil("h1").wrapAll("<div class='timeline'></div>");
+    }
+    // Wrap skills
+    if ($(this).hasClass("skills")) {
+      console.log("Wrapped skills.");
+      $(this).nextUntil("h1").wrapAll("<div class='skills'></div>");
+    }
+    // Add icons
     if ($(this).hasClass("fa")) {
       // prepend i tag to nav with this id
       var thisId = $(this).attr("id");
@@ -39,58 +57,50 @@ $(document).ready(function () {
       }
       $("a#toc-" + thisId).prepend('<i class="' + faClass + '"></i> ');
       $(this).prepend('<i class="' + faClass + '"></i> ');
-      // set up timeline
-      if ($(this).hasClass("timeline")) {
-        $(this).nextUntil("h1").wrapAll("<div class='timeline'></div>");
-      }
-      // set up skills
-      if ($(this).hasClass("skills")) {
-        $(this).nextUntil("h1").wrapAll("<div class='skills'></div>");
-      }
+      // remove class from heading to undo fa styling
       $(this).removeClass();
     }
   });
 
-  // Circle diagrams
+  // Cards
+  $(".card .entry").each(function () {
+    console.log("card");
+    $(this).addBack().wrapAll("<div class='card-item'></div>");
+  });
+
+  // Skills
   var i = 1;
   $(".skills .entry").each(function () {
     // Each language
-    var lang = $(this).children("h2");
+    // var lang = $(this).children("h2");
     var langLevel = $(this).children("h2").next("ul").children("li")[0]
       .innerHTML;
-    console.log(lang);
-    console.log(langLevel);
     var langPercent = parseInt(
       $(this).children("h2").next("ul").children("li")[1].innerHTML
     );
     $(this).addBack().wrapAll("<div class='skill-item'></div>");
-    $(this).append('<div class="progress-bar" data-percent="'+ 
-        langPercent +'" data-name="'+ 
-        langLevel +'" data-color="#aaa" data-duration="750"></div>'
+    $(this).append(
+      '<div class="progress-bar" data-percent="' +
+        langPercent +
+        '" data-name="' +
+        langLevel +
+        '" data-color="#aaa" data-duration="750"></div>'
     );
     $(".progress-bar").loading();
     i++;
   });
-  // On hover skill-item, animate circle
-    $(".skill-item").hover(
-        function () {
-            $(".progress-bar", this).attr("data-duration", "1000").loading();
-        }
-    );
-    // dont animate after mouse out
-    $(".skill-item").mouseleave(
-        function () {
-            $(".progress-bar", this).loading("stop");
-        }
-    );
+  // On hover skill-item, animate skill circle diagram
+  $(".skill-item").hover(function () {
+    $(".progress-bar", this).attr("data-duration", "1000").loading();
+  });
 });
 
-// If no portrait picture, remove.
+// If no portrait picture, remove
 function noPortrait() {
   $(".profile-picture").remove();
 }
 
-// Helper for circles
+// Helper for skills
 function convertToRadians(degree) {
   return degree * (Math.PI / 180);
 }
