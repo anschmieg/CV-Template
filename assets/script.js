@@ -1,11 +1,16 @@
 $(document).ready(function () {
+  // mark current page
+  var page = window.location.pathname.split("/").pop();
+  $("a[href='" + page + "']").addClass("current");
+
+
   // Adjust document structure
   $(".email, .phone, .residence, .birthdate").insertAfter(".name");
   $(".lang").next("ul").addClass("lang-menu").insertBefore("#toc");
   $(".lang").remove();
-  $("header").children("h3").wrapAll("<div class='contact'></div>");
+  $("header").children("h3").wrapAll("<span class='contact'></span>");
   // wrap sections
-  $("h1").each(function () {
+  $(".page h1").each(function () {
     $(this)
       .nextUntil("h1, hr, .footer")
       .addBack()
@@ -17,7 +22,10 @@ $(document).ready(function () {
     $(this)
       .nextUntil("h2, h1, hr")
       .addBack()
-      .wrapAll("<div class='entry'></div>");
+      .wrapAll("<div class='entry'></div>")
+      .children("ul")
+      .first()
+      .addClass("info");
   });
 
   // Add icons to contact info
@@ -36,7 +44,7 @@ $(document).ready(function () {
     // Wrap timeline
     if ($(this).hasClass("timeline")) {
       console.log("Wrapped timeline.");
-      $(this).nextUntil("h1").wrapAll("<div class='timeline'></div>");
+      $(this).nextUntil("h1").wrapAll("<div class='timeline-wrapper'><div class='timeline'></div></div>");
     }
     // Wrap skills
     if ($(this).hasClass("skills")) {
@@ -93,6 +101,9 @@ $(document).ready(function () {
   $(".skill-item").hover(function () {
     $(".progress-bar", this).attr("data-duration", "1000").loading();
   });
+
+  // fill footer for print
+  $(".footer").attr("data-text", $("title").text());
 });
 
 // If no portrait picture, remove

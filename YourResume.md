@@ -92,7 +92,7 @@ This program has taught me nothing.
 > that has some important content  
 > like a Shakespeare quote.
 
-# {.cards}
+# {.cards .unlisted}
 
 ## First card
 
@@ -107,7 +107,7 @@ I want it that way.
 
 > Am I your fire?
 
-# { .end-cards }
+# {.unlisted}
 
 ## Volunteer Positions
 
