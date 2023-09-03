@@ -41,7 +41,7 @@ Repeat the above steps for each language, while linking the remaining languages 
 
 # That should be it! ✅
 
-# Screenshots {#screenshots}
+# Screenshots
 Desktop: 
 ![Screenshot - Desktop 1](pics/screenshots/desktop-1.png)
 ![Screenshot - Desktop 2](pics/screenshots/desktop-2.png)
