@@ -16,7 +16,7 @@ subtitle: "My preference in favor of utilizing fancy expressions can only be des
 
 ## Available Languages {.lang}
 
-- [English](demo.html)
+- [English](index.html)
 - [German](https://hackertyper.net/)
 - [Polish]()
 
@@ -28,8 +28,8 @@ subtitle: "My preference in favor of utilizing fancy expressions can only be des
 
 ### Pretend Ltd.
 
-- Jan 2022 - Dec 2022
-- Warsaw, Poland
+| Aug 2022 - Oct 2022 | Somewhere, Nomansland |
+| ------------------- | --------------------- |
 
 My job is StackOverflow. Not developer, that's a common misconception.
 
@@ -43,8 +43,8 @@ Just StackOverflow.
 
 ### Good University Berlin
 
-- Oct 2020 - Sep 2021
-- Berlin, Germany
+| Jan 2022 - Aug 2023 | Berlin, Germany |
+| ------------------- | --------------- |
 
 Some details on why this program made me an expert in things. **Add two spaces for line break**  
 _and continue writing here._
@@ -53,8 +53,8 @@ _and continue writing here._
 
 ### Université Primitive de Paris
 
-- Aug 2017 - Jul 2020
-- Paris, France
+| Jan 2019 - Jan 2022 | Paris, France |
+| ------------------- | ----------------- |
 
 This program has taught me nothing.
 
@@ -79,9 +79,9 @@ This program has taught me nothing.
 
 ---
 
-# Some random stuff
+# Some random stuff {.fa .fa-car}
 
-## Certifications
+## Certifications {.cards}
 
 - bla
 - some

@@ -122,6 +122,13 @@ td:not(.timeline td) {
     padding: 0em 0.5em;
 }
 
+th:not(.timeline th):not(:first-of-type) {
+    border-left: 0.33mm solid rgba(var(--bg-color), 1);
+}
+
+td:not(.timeline td):not(:first-of-type) {
+    border-left: 0.33mm solid rgba(var(--theme-color), 0.75);
+}
 
 .profile,
 .page-container {
@@ -287,6 +294,7 @@ td:not(.timeline td) {
     grid-template-columns: repeat(auto-fit, minmax(8em, 1fr));
     gap: 1em;
 }
+
 .cards {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(20em, 1fr));

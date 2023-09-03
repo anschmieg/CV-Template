@@ -1,7 +1,7 @@
 @import url("https://fonts.googleapis.com/css?family=Varela+Round|Open+Sans|Noto+Sans+Mono|Charm&display=swap");
 
 :root {
-  --font-size: 1em;
+  --font-size: 0.9em;
   --theme-color: 0, 123, 137;
   --theme-light: 0, 163, 181;
   --theme-dark: 0, 95, 107;
@@ -11,18 +11,6 @@
   --corners: 2mm;
   /* --shadow-subtle: -0.5mm 0.5mm 1mm rgba(170, 170, 170, 0.5); */
   --shadow-subtle: 0;
-}
-
-@media screen and (max-width: 960px) {
-
-  .profile-container,
-  .page {
-    width: 100% !important;
-    height: fit-content !important;
-    display: block !important;
-    position: relative !important;
-    overflow: scroll !important;
-  }
 }
 
 .online-notice,
@@ -113,7 +101,16 @@ table:not(.timeline table) {
 
 th:not(.timeline th),
 td:not(.timeline td) {
-  padding: 0em 0.5em;
+  padding: 0.25em;
+  line-height: 1.15;
+}
+
+th:not(.timeline th):not(:first-of-type) {
+  border-left: 0.33mm solid rgba(var(--bg-color), 1);
+}
+
+td:not(.timeline td):not(:first-of-type) {
+  border-left: 0.33mm solid rgba(var(--theme-color), 0.75);
 }
 
 .profile-container {
@@ -165,6 +162,7 @@ header#name-block {
 
 .profile-container,
 .page {
+  display: grid;
   height: 100vh !important;
   overflow: scroll !important;
   scroll-behavior: smooth;
@@ -172,6 +170,17 @@ header#name-block {
 
 .spacer {
   padding: 0 var(--font-size);
+  order: 1;
+}
+
+.copyright {
+  width: 100%;
+  height: 2rem;
+  font-size: 0.7em;
+  text-align: center;
+  padding: 0.25rem 0;
+  background: rgba(170, 170, 170, 0.5);
+  order: 2;
 }
 
 /* Profile section */
@@ -256,8 +265,8 @@ hr:first-of-type {
 .lang-menu li {
   display: block;
   background: linear-gradient(45deg,
-    rgba(var(--theme-dark), 1) 0%,
-    rgba(var(--theme-color), 1) 100%);
+      rgba(var(--theme-dark), 1) 0%,
+      rgba(var(--theme-color), 1) 100%);
   width: 100%;
   transition: 0.25s ease-in-out;
 }
@@ -291,8 +300,8 @@ hr:first-of-type {
   list-style: none;
   cursor: pointer;
   background: linear-gradient(45deg,
-    rgba(var(--theme-color), 1) 0%,
-    rgba(var(--theme-light), 1) 100%);
+      rgba(var(--theme-color), 1) 0%,
+      rgba(var(--theme-light), 1) 100%);
   color: #fff;
   border-radius: var(--corners);
   box-shadow: var(--shadow-subtle);
@@ -321,7 +330,7 @@ hr:first-of-type {
 
 .profile-picture img:hover {
   transition: 0.25s ease-in-out;
-  transform: scale(1.8) translateY(2.5rem);
+  transform: scale(1.75) translateY(2.5rem);
   transition-delay: 0.125s;
   border-radius: var(--corners);
   cursor: none;
@@ -439,13 +448,14 @@ hr:first-of-type {
   border-radius: 1em 0 0 1em;
 }
 
-/* skills */
+/* Skills */
 
 .skills {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(8em, 1fr));
   gap: 1em;
 }
+
 .cards {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(20em, 1fr));

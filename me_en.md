@@ -1,13 +1,20 @@
 ---
 author: Adrian Schmieg
 title: Adrian Schmieg – CV
+header-includes: |
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-S7NRRDL0H5"></script>
+    <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-S7NRRDL0H5');
+    </script>
 ---
 
-##### <i class="fa fa-info-circle"></i> View online at [example.com/MyCV](https://schmiega.github.io/CV) {.online-notice}
+##### <i class="fa fa-info-circle"></i> View online at [schmiega.github.io/CV](https://schmiega.github.io/CV) {.online-notice}
 
 ### [adrian.schmieg@gmail.com](mailto:adrian.schmieg@gmail.com) {.email}
-
-### [+49 170 359147](tel:49170359147) {.phone}
 
 ### Berlin, Germany {.residence}
 
@@ -180,12 +187,11 @@ Emergency Medical Service at events
 
 ## Office Software
 
-|                       |                   |
-| --------------------- | ----------------- |
-| **Microsoft Office**  | very good command |
-| **LaTeX**             | good command      |
-| **Adobe Photoshop**   |                   |
-| / **Affinity Photo**  | good command      |
+|                                      |                   |
+| ------------------------------------ | ----------------- |
+| **Microsoft Office**                 | very good command |
+| **LaTeX**                            | good command      |
+| **Adobe Photoshop <br>/ Affinity Photo** | good command      |
 
 ## From Volunteer Work
 - Advertising & Public Relations
