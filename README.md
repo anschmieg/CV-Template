@@ -42,8 +42,13 @@ Repeat the above steps for each language, while linking the remaining languages 
 # That should be it! ✅
 
 # Screenshots
-Desktop: 
+
+## Desktop: 
+
 ![Screenshot - Desktop 1](pics/screenshots/desktop-1.png)
 ![Screenshot - Desktop 2](pics/screenshots/desktop-2.png)
+
+## Mobile:
+
 ![Screenshot - Mobile 1](pics/screenshots/mobile-1.png)
 ![Screenshot - Mobile 2](pics/screenshots/mobile-2.png)
