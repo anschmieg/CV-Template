@@ -1,5 +1,5 @@
 # CV-Template
-Build a printable resume webpage from a structured markdown file.
+Build a responsive and printable resume webpage from a structured markdown file. Screenshots [here](#screenshots).
 
 ## How to
 
@@ -40,3 +40,10 @@ pandoc -s --toc --toc-depth 1 -t html5 --template assets/template.html -o index.
 Repeat the above steps for each language, while linking the remaining languages at the top of each file in the `{.lang}` section.
 
 # That should be it! ✅
+
+# Screenshots {#screenshots}
+Desktop: 
+![Screenshot - Desktop 1](pics/screenshots/desktop-1.png)
+![Screenshot - Desktop 2](pics/screenshots/desktop-2.png)
+![Screenshot - Mobile 1](pics/screenshots/mobile-1.png)
+![Screenshot - Mobile 2](pics/screenshots/mobile-2.png)
