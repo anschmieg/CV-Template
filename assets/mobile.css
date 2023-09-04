@@ -1,7 +1,7 @@
 @import url("https://fonts.googleapis.com/css?family=Varela+Round:200,300,400,500,600,900|Open+Sans|Noto+Sans+Mono:300,400,500,600|Charm&display=swap");
 
 :root {
-	--font-size: 1.1em;
+	--font-size: 1.25em;
 	--theme-color: 0, 123, 137;
 	--theme-light: 0, 163, 181;
 	--theme-dark: 0, 95, 107;
@@ -12,20 +12,6 @@
 	/* --shadow-subtle: -0.5mm 0.5mm 1mm rgba(170, 170, 170, 0.5); */
 	--shadow-subtle: 0;
 }
-
-/* .profile-container,
-.page {
-  width: 100% !important;
-  height: fit-content !important;
-  display: block !important;
-  position: relative !important;
-  overflow: scroll !important;
-}
-
-.page, .timeline, .spacer {
-  padding: 0;
-  margin: 0;
-} */
 
 /* hide */
 .online-notice,
@@ -40,7 +26,7 @@ hr:first-of-type {
 /* general */
 html,
 body {
-	font-size: 0.9rem;
+	font-size: 1em;
 	position: absolute;
 	height: 100%;
 	width: 100vw;
@@ -74,7 +60,7 @@ h2 {
 }
 
 .page h3 {
-	font-size: calc(var(--font-size) * 1);
+	font-size: calc(var(--font-size) * 1.1);
 	font-weight: 300;
 	text-transform: uppercase;
 }
@@ -150,8 +136,25 @@ header#name-block {
 	width: 100%;
 }
 
+
 .spacer {
-	padding: 0 calc(var(--font-size) * 0.5);
+	padding: 0 var(--font-size);
+	order: 1;
+}
+
+.footer {
+	height: 2rem;
+	order: 2;
+}
+
+.copyright {
+	width: 100%;
+	height: 2rem;
+	font-size: 0.7em;
+	text-align: center;
+	padding: 0.25rem 0;
+	background: rgba(170, 170, 170, 0.5);
+	order: 3;
 }
 
 /* Profile section */
@@ -175,7 +178,7 @@ header#name-block {
 	text-align: center;
 	color: #caddee;
 	order: 2;
-	margin: 0.5rem auto;
+	margin: 0.5rem;
 }
 
 .contact {
@@ -188,6 +191,7 @@ header#name-block {
 .contact p,
 .contact h2,
 .contact h3 {
+	font-size: 1.1em;
 	font-family: "Open Sans", sans-serif;
 	font-weight: normal;
 }
@@ -361,9 +365,14 @@ header#name-block {
 	gap: 1em;
 }
 
+.skills .entry,
+.cards .entry {
+	padding: 0.5rem;
+}
+
 .skills .entry:first-child,
 .cards .entry:first-child {
-	padding-top: 0.5em;
+	margin-top: 0.5em;
 }
 
 .skills .entry:last-child,

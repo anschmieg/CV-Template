@@ -1,7 +1,7 @@
 @import url("https://fonts.googleapis.com/css?family=Varela+Round|Open+Sans|Noto+Sans+Mono|Charm&display=swap");
 
 :root {
-  --font-size: 0.9em;
+  --font-size: 1em;
   --theme-color: 0, 123, 137;
   --theme-light: 0, 163, 181;
   --theme-dark: 0, 95, 107;
