@@ -51,5 +51,8 @@ Repeat the above steps for each language, while linking the remaining languages 
 
 ## Mobile:
 
-<img src="pics/screenshots/mobile-1.png" alt="Screenshot - Mobile 1" max-width="50%">
-<img src="pics/screenshots/mobile-2.png" alt="Screenshot - Mobile 2" max-width="50%">
+
+|![Screenshot - Mobile 1](pics/screenshots/mobile-1.png)|![Screenshot - Mobile 2](pics/screenshots/mobile-2.png)|
+|-|-|
+
+
