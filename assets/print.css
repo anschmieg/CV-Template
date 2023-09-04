@@ -19,7 +19,8 @@
 nav,
 .title,
 hr:first-of-type,
-hr {
+hr,
+.copyright {
     display: none;
 }
 
@@ -29,7 +30,10 @@ body {
     font-family: "Open Sans", sans-serif;
 }
 
-.entry {
+.entry,
+.blockquote,
+.pre,
+.code {
     break-inside: avoid !important;
 }
 
@@ -137,7 +141,7 @@ td:not(.timeline td):not(:first-of-type) {
     align-items: start;
     justify-items: start;
     width: 100%;
-    margin-left: 1em;
+    padding: 0 1rem;
 }
 
 .profile {
@@ -163,6 +167,17 @@ td:not(.timeline td):not(:first-of-type) {
     transform: translateY(-50%);
     font-size: calc(var(--font-size)*2);
     text-shadow: 0.025em 0 0 rgba(var(--font-color), 1);
+}
+
+.subtitle {
+    display: block;
+    font: 1em "Noto Sans Mono", serif;
+    letter-spacing: -0.033em;
+    font-weight: 200;
+    margin: 0 auto;
+    padding-top: 0.5rem;
+    text-align: center;
+    color: #333;
 }
 
 .contact {

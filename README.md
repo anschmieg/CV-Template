@@ -13,6 +13,7 @@ Some elements are needed to convert the information to the proper structure.
 - Dashes `-` and numbers `1.` start a list
 - Hash tags `#` indicate a heading (one # for first level, two ## for second level etc.)
 - Curly braces `{}` assign attributes to headings, e.g. `{.cards}`
+  - Some headings `#` contain `.fa .fa-something` in `{}`. This assigns an icon to the heading. Icons can be found [here](https://fontawesome.com/search).
   - Skills `{.skills}` sections contain a list `-` with the text in the skill circle and a percentage to fill it by.
   - Cards `{.cards}` sections can contain virtually any content.
   - Timelines `{.timeline}` accept a table with info to display above an entry – the header will be displayed, the body will be hidden.

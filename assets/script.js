@@ -115,3 +115,12 @@ function noPortrait() {
 function convertToRadians(degree) {
   return degree * (Math.PI / 180);
 }
+
+// on media print, prepend online notice
+function moveSubtitle() {
+  $(".subtitle").prependTo(".page");
+}
+window.onbeforeprint = moveSubtitle;
+window.onafterprint = function () {
+  $(".subtitle").prependTo("header");
+};
