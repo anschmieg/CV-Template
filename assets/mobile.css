@@ -46,7 +46,7 @@ em {
 }
 
 h1 {
-	font-size: calc(var(--font-size) * 1.75);
+	font-size: calc(var(--font-size) * 1.4);
 	margin: 1rem 0;
 	text-align: center;
 	font-weight: 600;
@@ -56,11 +56,11 @@ h1 {
 }
 
 h2 {
-	font-size: calc(var(--font-size) * 1.25);
+	font-size: calc(var(--font-size) * 1.1);
 }
 
 .page h3 {
-	font-size: calc(var(--font-size) * 1.1);
+	font-size: calc(var(--font-size) * 0.85);
 	font-weight: 300;
 	text-transform: uppercase;
 }
@@ -333,7 +333,7 @@ header#name-block {
 }
 
 .timeline .entry th {
-	font: 0.9em "Noto Sans Mono", sans-serif;
+	font: 0.8em "Noto Sans Mono", sans-serif;
 	text-transform: uppercase;
 	font-weight: 500;
 	width: calc(50vw - 2*var(--timeline-margin));
@@ -401,7 +401,7 @@ header#name-block {
 .cards .entry h2 {
 	margin-bottom: 1rem;
 	text-shadow: 0.025em 0 0 rgba(var(--font-color), 1);
-	font-size: calc(var(--font-size) * 1.4);
+	font-size: calc(var(--font-size) * 1.25);
 }
 
 .skill-item .entry ul {
