@@ -293,7 +293,7 @@ header#name-block {
 	border: 1mm solid rgba(var(--theme-light), 1);
 	border-radius: 50%;
 	position: absolute;
-	left: calc(var(--timeline-margin) - 0.2em);
+	left: calc(var(--timeline-margin) / 2 + 1em - 0.5mm);
 }
 
 .timeline .entry h2 {
