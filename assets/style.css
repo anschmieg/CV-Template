@@ -398,8 +398,7 @@ hr:first-of-type {
   border: 1mm solid rgba(var(--theme-2), 1);
   border-radius: 50%;
   position: absolute;
-  left: calc(var(--timeline-margin) + 0.25mm);
-  margin-top: -0.25mm;
+  left: calc(var(--timeline-margin) + 0.5mm);
   transition: 0.25s ease-in-out;
 }
 
