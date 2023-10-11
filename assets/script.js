@@ -1,8 +1,9 @@
 $(document).ready(function () {
+  var themeColor = 'rgb(' + $(":root").css("--theme-highlight") + ')';
+
   // mark current page
   var page = window.location.pathname.split("/").pop();
   $("a[href='" + page + "']").addClass("current");
-
 
   // Adjust document structure
   $(".email, .phone, .residence, .birthdate").insertAfter(".name");
@@ -88,6 +89,7 @@ $(document).ready(function () {
     ) / 100;
     $(this).addBack().wrapAll("<div class='skill-item'></div>");
     $(this).append(
+<<<<<<< HEAD
       '<div class="progress-bar circle"'
       // + ' data-percent="' +
       // langPercent +
@@ -122,6 +124,32 @@ $(document).ready(function () {
   $(".skill-item").on("mouseenter", function () {
     // $(".progress-bar", this).loading();
     // $(this).find(".progress-bar").loading();
+=======
+      '<div class="progress-bar" id="circle-' + i + '"></div>'
+    );
+    // Set up circle diagram
+    $(this).find("#circle-" + i).circleProgress({
+      value: Number(langPercent / 100),
+      size: 100,
+      thickness: 10,
+      reverse: true,
+      startAngle: convertToRadians(-90),
+      fill: {
+        color: themeColor,
+      },
+      animation: {
+        duration: 1200,
+        easing: "circleProgressEasing"
+      },
+      lineCap: "round",
+    });
+    // .css("filter", "hue-rotate(0deg)");
+    i++;
+  });
+  // On mouse over skill-item, animate skill circle diagram
+  $(".skill-item").mouseenter(function () {
+    $(this).find(".progress-bar").circleProgress();
+>>>>>>> progress-bar
   });
 
   // fill footer for print
@@ -146,3 +174,29 @@ window.onbeforeprint = moveSubtitle;
 window.onafterprint = function () {
   $(".subtitle").prependTo("header");
 };
+
+$.fn.isInViewport = function () {
+  var elementTop = $(this).offset().top;
+  var elementBottom = elementTop + $(this).outerHeight();
+
+  var viewportTop = $(window).scrollTop();
+  var viewportBottom = viewportTop + $(window).height();
+
+  return elementBottom > viewportTop && elementTop < viewportBottom;
+};
+
+// run on every scroll
+document.addEventListener('wheel', (event) => {
+  // Trigger progress bars when section is in viewport
+  $(".progress-bar").each(function () {
+    var scrolled = $(this).data('scrolled') || 0;
+    if (($(this).scrollTop() > $(this).offset().top - (window.screen.height) * 0.75)
+      && $(this).isInViewport()
+      && scrolled < 1) {
+      scrolled += event.deltaY;
+      $(this).data('scrolled', scrolled);
+      $(this).circleProgress();
+    }
+  });
+
+});
