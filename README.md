@@ -40,6 +40,12 @@ pandoc -s --toc --toc-depth 1 -t html5 --template assets/template.html -o index.
 ```
 while replacing `YourResume.md` with your own file.
 
+#### Optional: print a PDF document
+
+To output a PDF file, open the `print` dialog in your browser. Some browsers will support cards and skills sections better than others. Good results can be achieved with Google Chrome / Chromium / Microsoft Edge. 
+
+> activate the checkbox 'Background graphics' for a better result!
+
 ## Multi-lingual support
 Repeat the above steps for each language, while linking the remaining languages at the top of each file in the `{.lang}` section.
 
