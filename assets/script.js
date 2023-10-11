@@ -86,45 +86,9 @@ $(document).ready(function () {
       .innerHTML;
     var langPercent = parseInt(
       $(this).children("h2").next("ul").children("li")[1].innerHTML
-    ) / 100;
+    );
     $(this).addBack().wrapAll("<div class='skill-item'></div>");
     $(this).append(
-<<<<<<< HEAD
-      '<div class="progress-bar circle"'
-      // + ' data-percent="' +
-      // langPercent +
-      // '" data-name="' +
-      // langLevel +
-      // '" data-color="#aaa" data-duration="750"'
-      + '></div>'
-    );
-    $(this).find(".progress-bar circle").circleProgress({
-      value: langPercent,
-      size: 100,
-      thickness: 10,
-      fill: {
-        color: "#814141",
-      },
-      animation: {
-        duration: 750,
-      },
-    });
-    // Assign homogenized duration to progress bar
-    // var duration = Math.round(
-    //   Number($(this).find(".progress-bar").attr("data-duration"))
-    //   / 100
-    //   * Number($(this).find(".progress-bar").attr("data-percent"))
-    // );
-    // $(this).find(".progress-bar").attr("data-duration", duration);
-    // Load progress bar
-    // $(".progress-bar").loading();
-    i++;
-  });
-  // On hover skill-item, animate skill circle diagram
-  $(".skill-item").on("mouseenter", function () {
-    // $(".progress-bar", this).loading();
-    // $(this).find(".progress-bar").loading();
-=======
       '<div class="progress-bar" id="circle-' + i + '"></div>'
     );
     // Set up circle diagram
@@ -149,7 +113,6 @@ $(document).ready(function () {
   // On mouse over skill-item, animate skill circle diagram
   $(".skill-item").mouseenter(function () {
     $(this).find(".progress-bar").circleProgress();
->>>>>>> progress-bar
   });
 
   // fill footer for print
