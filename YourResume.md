@@ -67,6 +67,8 @@ This program has taught me nothing.
 - native
 - 100%
 
+My English so fluid. 
+
 ## Polish
 
 - C1
@@ -111,14 +113,14 @@ I want it that way.
 
 ## Volunteer Positions
 
-1. Rat Hunter Extraordinaire
+1. **Rat Hunter Extraordinaire**
 
-My duty is to hunt rats.  
-And I take it very seriously!
+    My duty is to hunt rats.  
+    And I take it very seriously!
 
-2. Quality Assurance Expert at the bar downstairs
+2. **Quality Assurance Expert at the bar downstairs**
 
-self-explanatory.
+    self-explanatory.
 
 ```
 // gimme some code boii

@@ -1,4 +1,5 @@
-@import url("https://fonts.googleapis.com/css?family=Varela+Round|Open+Sans|Noto+Sans+Mono|Charm&display=swap");
+/* @import url("https://fonts.googleapis.com/css?family=Varela+Round|Open+Sans@200:500|Noto+Sans+Mono@200:500|Charm&display=swap"); */
+@import url("https://fonts.googleapis.com/css2?family=Varela+Round&family=Open+Sans:wght@200..700&family=Noto+Sans+Mono:wght@200..700&family=Charm&display=swap");
 
 :root {
   color-scheme: light dark;
@@ -60,7 +61,7 @@ body {
 }
 
 strong {
-  font-weight: 600 !important;
+  font-weight: 500 !important;
 }
 
 em {
@@ -378,6 +379,7 @@ hr:first-of-type {
   line-height: 1.25;
   display: grid;
   transition: 0.25s ease-in-out;
+  padding-bottom: 0.25em;
 }
 
 .timeline .entry:not(.entry:last-of-type) {
@@ -398,15 +400,15 @@ hr:first-of-type {
   border: 1mm solid rgba(var(--theme-2), 1);
   border-radius: 50%;
   position: absolute;
-  left: calc(var(--timeline-margin) + 0.25mm);
   margin-top: -0.25mm;
+  left: calc(var(--timeline-margin));
   transition: 0.25s ease-in-out;
 }
 
 .timeline .entry:hover:before {
   transition: 0.25s ease-in-out;
   transition-delay: 0.05s;
-  left: calc(var(--timeline-margin) + 0.5mm - 1.5rem);
+  left: calc(var(--timeline-margin) - 1.75em);
   border: 0.5mm solid rgba(var(--theme), 1);
 }
 
@@ -446,8 +448,12 @@ hr:first-of-type {
   display: inline-flex;
   font: 0.8em "Noto Sans Mono", sans-serif;
   text-transform: uppercase;
-  font-weight: 500;
+  font-weight: 350;
   transition: 0.25s ease-in-out;
+}
+
+.timeline .entry th:first-of-type {
+  font-weight: 500;
 }
 
 .timeline .entry th:not(th:first-of-type) {
@@ -527,6 +533,24 @@ hr:first-of-type {
 
 .skill-item .entry ul {
   display: none;
+}
+
+.skill-item table,
+.cards .entry table {
+  margin: 0.25em auto;
+  font-size: 0.9em;
+}
+
+.progress-label {
+  position: relative;
+  font-family: "Open Sans", sans-serif;
+  font-weight: 250;
+  font-size: 1.15em;
+  letter-spacing: -0.05em;
+  top: calc(-0.6em - 62.5px);
+  /* should be -0.5em I guess */
+  height: 0;
+  /* to remove space in original position */
 }
 
 /* Other entries */

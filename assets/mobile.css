@@ -2,9 +2,10 @@
 
 :root {
 	--font-size: 1.25em;
-	--theme-color: 0, 123, 137;
-	--theme-light: 0, 163, 181;
-	--theme-dark: 0, 95, 107;
+	--theme: 0, 123, 137;
+	--theme-2: 0, 163, 181;
+	--theme-3: 0, 95, 107;
+	--theme-highlight: 168, 0, 93;
 	--profile-bg: 61, 62, 66;
 	--bg-color: 248, 248, 248;
 	--font-color: 0, 0, 0;
@@ -79,7 +80,7 @@ h3 {
 }
 
 thead:not(.timeline thead) {
-	background: rgba(var(--theme-color), 1);
+	background: rgba(var(--theme), 1);
 	color: #fff;
 }
 
@@ -105,7 +106,7 @@ th:not(.timeline th):not(:first-of-type) {
 }
 
 td:not(.timeline td):not(:first-of-type) {
-	border-left: 0.33mm solid rgba(var(--theme-color), 0.75);
+	border-left: 0.33mm solid rgba(var(--theme), 0.75);
 }
 
 .profile-container {
@@ -229,8 +230,8 @@ header#name-block {
 .lang-menu li {
 	display: block;
 	background: linear-gradient(45deg,
-			rgba(var(--theme-dark), 1) 0%,
-			rgba(var(--theme-color), 1) 100%);
+			rgba(var(--theme-3), 1) 0%,
+			rgba(var(--theme), 1) 100%);
 	width: 100%;
 	transition: 0.25s ease-in-out;
 }
@@ -276,7 +277,7 @@ header#name-block {
 }
 
 .timeline .entry:not(.entry:last-of-type) {
-	border-left: 1mm solid rgba(var(--theme-light), 1);
+	border-left: 1mm solid rgba(var(--theme-2), 1);
 	padding-bottom: 1em;
 }
 
@@ -290,10 +291,12 @@ header#name-block {
 	width: 1.5rem;
 	height: 1.5rem;
 	background: rgba(var(--bg-color), 1);
-	border: 1mm solid rgba(var(--theme-light), 1);
+	border: 1mm solid rgba(var(--theme-2), 1);
 	border-radius: 50%;
 	position: absolute;
-	left: calc(var(--timeline-margin) / 2 + 1em - 0.5mm);
+	margin-top: -0.25mm;
+	left: calc(var(--timeline-margin) + 0.6rem);
+	/* WHYYY ?? */
 }
 
 .timeline .entry h2 {
@@ -327,7 +330,7 @@ header#name-block {
 
 .timeline .entry th:not(th:first-of-type) {
 	/* padding-left: 2em; */
-	border-left: 0.25mm solid rgba(var(--theme-color), 1);
+	border-left: 0.25mm solid rgba(var(--theme), 1);
 	margin-left: 0.5rem;
 	padding-left: 0.5rem;
 }
@@ -340,7 +343,7 @@ header#name-block {
 }
 
 .timeline .entry thead {
-	border-bottom: 0.25mm solid rgba(var(--theme-color), 0.5);
+	border-bottom: 0.25mm solid rgba(var(--theme), 0.5);
 	width: fit-content;
 	overflow: hidden;
 	overflow-wrap: break-word;
@@ -387,7 +390,7 @@ header#name-block {
 
 .skill-item,
 .cards .entry {
-	background: rgba(var(--theme-color), 0.15);
+	background: rgba(var(--theme), 0.15);
 	/* padding: 1em; */
 	border-radius: var(--corners);
 	box-shadow: var(--shadow-subtle);
@@ -410,6 +413,16 @@ header#name-block {
 
 .progress-bar {
 	padding: 0.5rem;
+}
+
+.progress-label {
+	position: relative;
+	font-family: "Open Sans", sans-serif;
+	font-weight: 250;
+	font-size: 1.15em;
+	letter-spacing: -0.05em;
+	top: calc(-1em - 62.5px);
+	/* should be -0.5em I guess */
 }
 
 /* Other entries */
@@ -441,7 +454,7 @@ span:not(.timeline span, .profile span, .skills span) {
 }
 
 blockquote {
-	background: rgba(var(--theme-color), 0.15);
+	background: rgba(var(--theme), 0.15);
 	margin: 1rem;
 	padding: 0.5rem;
 	border-radius: var(--corners);

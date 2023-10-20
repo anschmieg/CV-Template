@@ -58,8 +58,12 @@ For example, change `index.html` in the command to `fr.html` for the French page
 
 ## Mobile:
 
-
 |![Screenshot - Mobile 1](pics/screenshots/mobile-1.png)|![Screenshot - Mobile 2](pics/screenshots/mobile-2.png)|
 |-|-|
 
 
+# Documentation
+
+## Progress Bar Plugin
+
+The plugin used is [kottenator/jquery-circle-progress](https://github.com/kottenator/jquery-circle-progress).

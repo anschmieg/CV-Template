@@ -80,21 +80,25 @@ $(document).ready(function () {
   // Skills
   var i = 1;
   $(".skills .entry").each(function () {
-    // Each language
-    // var lang = $(this).children("h2");
-    var langLevel = $(this).children("h2").next("ul").children("li")[0]
+    // Each skill
+    // var skill = $(this).children("h2");
+    var skillLevel = $(this).children("h2").next("ul").children("li")[0]
       .innerHTML;
-    var langPercent = parseInt(
+    var skillPercent = parseInt(
       $(this).children("h2").next("ul").children("li")[1].innerHTML
     );
     $(this).addBack().wrapAll("<div class='skill-item'></div>");
-    $(this).append(
-      '<div class="progress-bar" id="circle-' + i + '"></div>'
+    $(this).prepend(
+      '<div class="progress-bar" id="circle-' + i + '">' +
+      '<div class="progress-label" id="label-' + i + '">' +
+      skillLevel + '</div></div>'
     );
+    // move progress bar to after skill name
+    $(this).find(".progress-bar").insertAfter($(this).children("h2"));
     // Set up circle diagram
     $(this).find("#circle-" + i).circleProgress({
-      value: Number(langPercent / 100),
-      size: 100,
+      value: Number(skillPercent / 100),
+      size: 125,
       thickness: 10,
       reverse: true,
       startAngle: convertToRadians(-90),
@@ -102,8 +106,7 @@ $(document).ready(function () {
         color: themeColor,
       },
       animation: {
-        duration: 1200,
-        easing: "circleProgressEasing"
+        duration: 0 // load page without animation
       },
       lineCap: "round",
     });
@@ -112,7 +115,12 @@ $(document).ready(function () {
   });
   // On mouse over skill-item, animate skill circle diagram
   $(".skill-item").mouseenter(function () {
-    $(this).find(".progress-bar").circleProgress();
+    $(this).find(".progress-bar").circleProgress({
+      animation: {
+        duration: 625,
+        easing: "circleProgressEasing"
+      }
+    });
   });
 
   // fill footer for print
@@ -141,10 +149,8 @@ window.onafterprint = function () {
 $.fn.isInViewport = function () {
   var elementTop = $(this).offset().top;
   var elementBottom = elementTop + $(this).outerHeight();
-
   var viewportTop = $(window).scrollTop();
   var viewportBottom = viewportTop + $(window).height();
-
   return elementBottom > viewportTop && elementTop < viewportBottom;
 };
 
@@ -158,8 +164,11 @@ document.addEventListener('wheel', (event) => {
       && scrolled < 1) {
       scrolled += event.deltaY;
       $(this).data('scrolled', scrolled);
-      $(this).circleProgress();
+      $(this).circleProgress({
+        animation: {
+          duration: 1250
+        },
+      });
     }
   });
-
 });
