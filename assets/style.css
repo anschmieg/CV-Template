@@ -401,7 +401,7 @@ hr:first-of-type {
   border-radius: 50%;
   position: absolute;
   margin-top: -0.25mm;
-  left: calc(var(--timeline-margin));
+  left: calc(var(--timeline-margin) + 0.05rem); /* WTF? */
   transition: 0.25s ease-in-out;
 }
 

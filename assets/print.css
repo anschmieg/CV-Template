@@ -256,7 +256,7 @@ td:not(.timeline td):not(:first-of-type) {
     border-radius: 50%;
     position: absolute;
     margin-top: -0.25mm;
-    left: calc(var(--timeline-margin) - 0.33rem);
+    left: calc(var(--timeline-margin) - 0.67rem);
     background: rgb(255, 255, 255);
 }
 
