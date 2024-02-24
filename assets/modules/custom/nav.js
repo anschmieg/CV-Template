@@ -21,10 +21,16 @@ function createLangButtons(parent) {
             var files = Array.from(doc.querySelectorAll("a")).map(
                 (a) => a.textContent
             );
-            var languages = files.map((file) => file.split(".")[0]);
+
+            // Filter out non-md files
+            var mdFiles = files.filter((file) => file.endsWith('.md'));
+            var languages = mdFiles.map((file) => file.split(".")[0]);
 
             // Create buttons for each language
             languages.forEach((lang) => {
+                // Skip if lang is empty
+                if (!lang) return;
+
                 var button = document.createElement("button");
                 button.className = "btn btn-primary lang-button";
                 button.dataset.lang = lang;
