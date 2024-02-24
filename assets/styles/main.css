@@ -1,0 +1,21 @@
+body, html {
+    height: 100%;
+    margin: 0;
+    overflow: hidden; /* Disable scrolling */
+    scrollbar-width: none; /* Hide scrollbar for Firefox */
+    -ms-overflow-style: none; /* Hide scrollbar for IE and Edge */
+}
+
+.column {
+    float: left;
+    width: 33.33%; /* 1/3 width */
+    height: 100%;
+    overflow: auto; /* Enable scrolling */
+}
+
+.main-content {
+    float: left;
+    width: 66.67%; /* 2/3 width */
+    height: 100%;
+    overflow: auto; /* Enable scrolling */
+}
