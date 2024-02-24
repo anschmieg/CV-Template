@@ -1,7 +1,7 @@
 // Imports
 import { readMarkdown, renderMarkdown } from "./custom/reader.js";
-import { createNav } from './custom/nav.js';
-import { rearrangePage } from './custom/rearrange.js';
+import { createNav } from "./custom/nav.js";
+import { displayProfile } from "./custom/profile.js";
 
 // Get language from URL
 var url = new URL(window.location.href);
@@ -11,26 +11,22 @@ if (!lang) {
 }
 
 // Expose language to the global scope
+console.log("Selected language (from URL):", lang);
 window.lang = lang;
 
-// Log language
-console.log("Selected language (from URL):", lang);
-
-// Read and render CV
-readMarkdown(lang, function (err, markdownContent) {
-  if (err) {
+// Assuming readMarkdown returns a Promise
+readMarkdown(lang)
+  .then(function (markdownContent) {
+    var cvContent = renderMarkdown(markdownContent);
+    document.getElementById("cv-content").innerHTML = cvContent;
+    return displayProfile();  // Assuming displayProfile returns a Promise
+  })
+  .then(function (profile) {
+    document.getElementById("profile").innerHTML = profile;
+  })
+  .catch(function (err) {
     console.error("Error:", err);
-    return;
-  }
-
-  var htmlContent = renderMarkdown(markdownContent);
-  document.getElementById("cv-content").innerHTML = htmlContent;
-});
+  });
 
 // Create navigation menu in left panel
 createNav(document.getElementById("left-panel"));
-
-// Rearrange resume content
-// ---------- Watch out! ----------
-// This function moves elements around in the DOM statically.
-rearrangePage();

@@ -6,11 +6,15 @@ import markdownItAttrs from "markdown-it-attrs";
  * @param {string} lang - The language of the CV file.
  * @param {function} callback - The callback function to handle the result.
  */
-function readMarkdown(lang, callback) {
-  fetch("cv-files/" + lang + ".md")
-    .then((response) => response.text())
-    .then((markdownContent) => callback(null, markdownContent))
-    .catch((error) => callback(error));
+async function readMarkdown(lang) {
+  try {
+    const response = await fetch("cv-files/" + lang + ".md");
+    const markdownContent = await response.text();
+    return markdownContent;
+  } catch (error) {
+    console.error("Error:", error);
+    throw error;
+  }
 }
 
 /**
