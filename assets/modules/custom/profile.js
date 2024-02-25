@@ -54,16 +54,26 @@ function addIcons(key) {
   return "<i class='" + iconClass + "'></i> ";
 }
 
-async function displayProfile() {
+
+async function displayName() {
   const rawProfile = await readProfile();
   var name = "";
-  var profile = "";
   for (var key in rawProfile) {
     if (key == "name") {
       name = "<h1 id='" + key + "'>" + rawProfile[key] + "</h1>";
     } else if (key == "title") {
       name += "<h2 id='" + key + "'>" + rawProfile[key] + "</h2>";
-    } else {
+    }
+  }
+  return name;
+}
+
+async function displayProfile() {
+  const rawProfile = await readProfile();
+  var name = "";
+  var profile = "";
+  for (var key in rawProfile) {
+    if (key != "name" && key != "title") {
       // Add to profile: li containing i with icon and span with content
       profile +=
         "<li id='" +
@@ -80,4 +90,4 @@ async function displayProfile() {
   return profile;
 }
 
-export { displayProfile };
+export { displayName, displayProfile };

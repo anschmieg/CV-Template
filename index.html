@@ -5,7 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <!-- Favicon: CV by Rikas Dzihab from The Noun Project (CC BY 3.0) -->
-  <link rel="icon" href="images/favicon.ico" type="image/x-icon">
+  <link rel="icon" href="assets/img/favicon.ico" type="image/x-icon">
   <!-- Font Awesome -->
   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.11.2/css/all.css">
   <!-- Google Fonts -->
@@ -25,29 +25,38 @@
 
   <div id="main" class="container-fluid h-100">
     <div class="row h-100 overflow-hidden">
+
+      <!-- Left column placeholder -->
+      <div id="left-panel-backdrop" class="col-4 border-right p-3 bg-light vh-100 overflow-auto">
+      </div>
+
       <!-- Left column -->
-      <div id="left-panel" class="col-4 border-right p-3 bg-light text-center vh-100">
+      <div id="left-panel" class="col-4 border-right p-3 bg-light text-center vh-100 overflow-auto">
         <div id="lang-menu" class="btn-group w-100 mb-4" role="group" aria-label="Language selection">
           <!-- buttons will be inserted by nav.js -->
         </div>
+        <img id="profile-picture" class="mb-3 shadow-lg" src="cv-files/portrait.jpg" alt="Portrait picture"
+          onerror="this.style.display='none'" />
         <div id="profile" class="w-100">
-          <!-- Content will be inserted by profile.js -->
+          <div id="profile-name" />
         </div>
-        <div id="nav-menu" class="w-100">
-          <!-- Content will be inserted by nav.js -->
-        </div>
+        <!-- Content will be inserted by profile.js -->
       </div>
-
-      <!-- Middle column -->
-      <div id="middle-panel" class="col-1"></div>
-
-      <!-- Right column -->
-      <div class="col-7">
-        <div id="cv-content">
-          <!-- The generated HTML will be inserted here -->
-        </div>
+      <div id="nav-menu" class="w-100 mt-3">
+        <!-- Content will be inserted by nav.js -->
       </div>
     </div>
+
+    <!-- Middle column -->
+    <div id="middle-panel" class="col-1"></div>
+
+    <!-- Right column -->
+    <div class="col-7">
+      <div id="cv-content">
+        <!-- The generated HTML will be inserted here -->
+      </div>
+    </div>
+  </div>
   </div>
 
 </body>

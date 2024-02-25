@@ -1,24 +1,10 @@
-#profile ul {
-  width: min-content;
-  margin: 0 auto;
-  border-spacing: 1.5em 0;
-  text-align: left;
-}
+@import url('left-panel.css');
 
-#profile li {
-  display: table-row;
-}
-
-#profile li i {
-  display: table-cell;
-  width: 20%;
-}
-
-#profile li .profile-entry {
-  display: table-cell;
-  width: 80%;
-}
-
-h1::before, h2::before, h3::before, h4::before, h5::before, h6::before {
+h1::before,
+h2::before,
+h3::before,
+h4::before,
+h5::before,
+h6::before {
   margin-right: 0.5em;
 }
