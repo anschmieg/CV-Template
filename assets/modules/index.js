@@ -1,6 +1,6 @@
 // Imports
 import { readMarkdown, renderMarkdown } from "./custom/reader.js";
-import { createNav } from "./custom/nav.js";
+import { createLangMenu, createNav } from "./custom/nav.js";
 import { displayProfile } from "./custom/profile.js";
 
 // Get language from URL
@@ -19,14 +19,19 @@ readMarkdown(lang)
   .then(function (markdownContent) {
     var cvContent = renderMarkdown(markdownContent);
     document.getElementById("cv-content").innerHTML = cvContent;
+    // Create navigation menu in left panel
+    var leftPanel = document.getElementById("left-panel");
+    createNav(leftPanel);
+
     return displayProfile();  // Assuming displayProfile returns a Promise
   })
   .then(function (profile) {
+    // Create profile section
     document.getElementById("profile").innerHTML = profile;
   })
   .catch(function (err) {
     console.error("Error:", err);
   });
 
-// Create navigation menu in left panel
-createNav(document.getElementById("left-panel"));
+// Create language menu in left panel
+createLangMenu(document.getElementById("left-panel"));

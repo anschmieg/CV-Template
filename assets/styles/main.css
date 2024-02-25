@@ -1,21 +1,24 @@
-body, html {
-    height: 100%;
-    margin: 0;
-    overflow: hidden; /* Disable scrolling */
-    scrollbar-width: none; /* Hide scrollbar for Firefox */
-    -ms-overflow-style: none; /* Hide scrollbar for IE and Edge */
+#profile ul {
+  width: min-content;
+  margin: 0 auto;
+  border-spacing: 1.5em 0;
+  text-align: left;
 }
 
-.column {
-    float: left;
-    width: 33.33%; /* 1/3 width */
-    height: 100%;
-    overflow: auto; /* Enable scrolling */
+#profile li {
+  display: table-row;
 }
 
-.main-content {
-    float: left;
-    width: 66.67%; /* 2/3 width */
-    height: 100%;
-    overflow: auto; /* Enable scrolling */
+#profile li i {
+  display: table-cell;
+  width: 20%;
+}
+
+#profile li .profile-entry {
+  display: table-cell;
+  width: 80%;
+}
+
+h1::before, h2::before, h3::before, h4::before, h5::before, h6::before {
+  margin-right: 0.5em;
 }

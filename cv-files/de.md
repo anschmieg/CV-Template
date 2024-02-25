@@ -1,6 +1,6 @@
 # John Blubb's Resumé
 
-## Zusammenfassung
+## Zusammenfassung { .fas .fa-list }
 
 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae nunc vitae nisl tincidunt aliquet.
 

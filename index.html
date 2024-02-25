@@ -4,13 +4,15 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Favicon: CV by Rikas Dzihab from The Noun Project (CC BY 3.0) -->
+  <link rel="icon" href="images/favicon.ico" type="image/x-icon">
   <!-- Font Awesome -->
   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.11.2/css/all.css">
   <!-- Google Fonts -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap">
   <!-- Material Design Bootstrap -->
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/3.6.0/mdb.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/mdb-ui-kit@3.6.0/css/mdb.min.css">
   <!-- Custom CSS -->
   <link rel="stylesheet" href="assets/styles/main.css">
   <!-- jQuery -->
@@ -24,17 +26,23 @@
   <div id="main" class="container-fluid h-100">
     <div class="row h-100 overflow-hidden">
       <!-- Left column -->
-      <div id="left-panel" class="col-4">
-        <div id="lang-menu" class="btn-group w-100" role="group" aria-label="Language selection">
+      <div id="left-panel" class="col-4 border-right p-3 bg-light text-center vh-100">
+        <div id="lang-menu" class="btn-group w-100 mb-4" role="group" aria-label="Language selection">
           <!-- buttons will be inserted by nav.js -->
         </div>
-        <div id="profile" class="list-group w-100">
+        <div id="profile" class="w-100">
           <!-- Content will be inserted by profile.js -->
+        </div>
+        <div id="nav-menu" class="w-100">
+          <!-- Content will be inserted by nav.js -->
         </div>
       </div>
 
+      <!-- Middle column -->
+      <div id="middle-panel" class="col-1"></div>
+
       <!-- Right column -->
-      <div class="col-8">
+      <div class="col-7">
         <div id="cv-content">
           <!-- The generated HTML will be inserted here -->
         </div>
