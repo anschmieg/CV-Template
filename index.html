@@ -26,35 +26,37 @@
   <div id="main" class="container-fluid h-100">
     <div class="row h-100 overflow-hidden">
 
-      <!-- Left column placeholder -->
-      <div id="left-panel-backdrop" class="col-4 border-right p-3 bg-light vh-100 overflow-auto">
-      </div>
-
       <!-- Left column -->
-      <div id="left-panel" class="col-4 border-right p-3 bg-light text-center vh-100 overflow-auto">
-        <div id="lang-menu" class="btn-group w-100 mb-4" role="group" aria-label="Language selection">
-          <!-- buttons will be inserted by nav.js -->
+      <div id="left-panel" class="col-12 border-bottom p-3 bg-light text-center overflow-auto">
+        <div id="profile-container">
+        
+          <div id="profile-before">
+            <div id="profile-name" />
+          </div>
+          <div id="lang-menu" class="btn-group w-100 mb-4 d-flex flex-row" role="group"
+          aria-label="Language selection" />
         </div>
+        </div>
+
         <img id="profile-picture" class="mb-3 shadow-lg" src="cv-files/portrait.jpg" alt="Portrait picture"
           onerror="this.style.display='none'" />
+
         <div id="profile" class="w-100">
-          <div id="profile-name" />
         </div>
-        <!-- Content will be inserted by profile.js -->
-      </div>
-      <div id="nav-menu" class="w-100 mt-3">
-        <!-- Content will be inserted by nav.js -->
       </div>
     </div>
+    <div id="nav-menu" class="w-100 mt-3 d-flex flex-row">
+      <!-- Content will be inserted by nav.js -->
+    </div>
+  </div>
 
-    <!-- Middle column -->
-    <div id="middle-panel" class="col-1"></div>
+  <!-- Middle column -->
+  <!-- <div id="middle-panel" class="col-1"></div> -->
 
-    <!-- Right column -->
-    <div class="col-7">
-      <div id="cv-content">
-        <!-- The generated HTML will be inserted here -->
-      </div>
+  <!-- Right column -->
+  <div class="col-12">
+    <div id="cv-content">
+      <!-- The generated HTML will be inserted here -->
     </div>
   </div>
   </div>

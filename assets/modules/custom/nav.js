@@ -34,7 +34,7 @@ function createLangButtons(parent) {
         if (!lang) return;
 
         var button = document.createElement("button");
-        button.className = "btn btn-primary lang-button";
+        button.className = "btn btn-secondary lang-button";
         button.dataset.lang = lang;
         button.textContent = lang;
         button.onclick = function () {
@@ -47,27 +47,37 @@ function createLangButtons(parent) {
 }
 
 function createNav(container) {
-  // create a container for the navigation menu
-  var nav = document.createElement("nav");
-  nav.className = "nav";
-  // Select all h2 elements on the page
-  $("#cv-content")
-    .find("h2")
-    .each(function () {
-      var div = document.createElement("div");
-      div.style.width = "100%"; // Set the div width to 100%
-      var anchor = document.createElement("a");
-      anchor.textContent = this.textContent;
-      anchor.href = "#" + this.id;
+    // create a container for the navigation menu
+    var nav = document.createElement("nav");
+    nav.className = "nav";
 
-      // Add Bootstrap classes to the anchor
-      anchor.className = "btn btn-block btn-secondary my-1";
+    // Create a div to contain all the buttons
+    var btnGroup = document.createElement("div");
+    btnGroup.className = "btn-group w-100"; // Add Bootstrap classes to the div
 
-      // Add the anchor to the div
-      div.appendChild(anchor);
-      nav.appendChild(div);
-    });
-  container.appendChild(nav);
+    // Select all h2 elements on the page
+    $("#cv-content")
+        .find("h2")
+        .each(function () {
+            var button = document.createElement("button");
+            button.textContent = this.textContent;
+            button.className = "btn btn-primary"; // Add Bootstrap classes to the button
+
+            // Store the h2 id in a variable
+            var h2Id = this.id;
+
+            // Add onclick event to the button
+            button.onclick = function() {
+                window.location.hash = "#" + h2Id;
+            }
+
+            // Add the button to the btnGroup
+            btnGroup.appendChild(button);
+        });
+
+    // Add the btnGroup to the nav
+    nav.appendChild(btnGroup);
+    container.appendChild(nav);
 }
 
 // Export the functions

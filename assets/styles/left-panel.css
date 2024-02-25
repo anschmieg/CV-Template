@@ -2,33 +2,22 @@
   font-size: 0.9em;
 }
 
-#left-panel-backdrop {
-  z-index: -1;
+#profile-container {
+  display: grid;
+  grid-template-columns: 33.3% 33.3% 33.4%;
 }
 
-#left-panel {
-  position: fixed;
+#profile-before {
+  grid-column: 1;
+  margin: auto 0;
+  text-align: right;
 }
-
-/* Left panel scrollbar */
-#left-panel::-webkit-scrollbar {
-  width: 0.15em;
-}
-#left-panel::-webkit-scrollbar-track {
-  background: var(--light); /* Adjust scrollbar track color */
-}
-#left-panel::-webkit-scrollbar-thumb {
-  background: #888; /* Adjust scrollbar thumb color */
-}
-#left-panel::-webkit-scrollbar-thumb:hover {
-  background: #555; /* Adjust scrollbar thumb color when hovered */
-}
-/* end scrollbar */
 
 #profile-picture {
+  grid-column: 2;
   width: 100%;
   max-width: 15em;
-  margin: 0 auto;
+  margin: auto;
   display: block;
   border-radius: 50%;
   border: 0.1em solid transparent;
@@ -42,46 +31,16 @@
   cursor: none;
 }
 
+#profile {
+    grid-column: 3;
+    margin: auto 0;
+    text-align: left;
+}
+
 #profile h1,
 #profile h2 {
   margin-block-start: 0;
   margin-block-end: 0;
-}
-
-#profile h1 {
-  font-size: 1.5em;
-}
-
-#profile h2 {
-  font-size: 1.25em;
-}
-
-#profile {
-  display: flex;
-  flex-direction: row; /* Stack elements vertically */
-  width: 100%;
-  overflow: hidden;
-}
-
-#profile-name {
-  order: 1; /* Place after ul */
-  display: flex;
-  width: min-content;
-  flex-direction: column;
-  min-width: fit-content;
-  max-width: 50%;
-  text-align: right !important;
-  margin: auto 0;
-}
-
-#profile ul {
-  order: 2; /* Place before name */
-  width: min-content;
-  max-width: 50%;
-  border-spacing: 1.5em 0;
-  text-align: left;
-  margin: auto 0;
-  height: 100%;
 }
 
 #profile li {

@@ -1,5 +1,11 @@
 @import url('left-panel.css');
 
+@media print {
+  button {
+    display: none !important;
+  }
+}
+
 h1::before,
 h2::before,
 h3::before,
