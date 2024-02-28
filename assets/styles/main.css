@@ -1,4 +1,5 @@
-@import url('left-panel.css');
+@import url("left-panel.css");
+@import url("timeline.css");
 
 @media print {
   button {

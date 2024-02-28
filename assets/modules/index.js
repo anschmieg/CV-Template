@@ -1,7 +1,14 @@
-// Imports
+// Import modules
 import { readMarkdown, renderMarkdown } from "./custom/reader.js";
 import { createLangMenu, createNav } from "./custom/nav.js";
 import { displayName, displayProfile } from "./custom/profile.js";
+
+// Import bootstrap
+import("bootstrap/dist/css/bootstrap.css");
+import("mdb-ui-kit/css/mdb.min.css");
+import("bootstrap/dist/js/bootstrap.bundle.min.js");
+import("mdb-ui-kit/js/mdb.es.min.js");
+import("../styles/bootstrap_custom.scss");
 
 // Get language from URL
 var url = new URL(window.location.href);
@@ -35,7 +42,9 @@ readMarkdown(lang)
   })
   .then(function (name) {
     // Append name to #profile-name
-    document.getElementById("profile-name").insertAdjacentHTML("beforeend", name);
+    document
+      .getElementById("profile-name")
+      .insertAdjacentHTML("beforeend", name);
   })
   .catch(function (err) {
     console.error("Error:", err);

@@ -1,4 +1,4 @@
-## Berufserfahrung {.timeline .fa .fa-building}
+## :fa-building: Berufserfahrung { .timeline }
 
 ### Datenanalyst, Business-Abteilung
 

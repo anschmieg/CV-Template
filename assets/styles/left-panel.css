@@ -28,7 +28,7 @@
 #profile-picture:hover {
   border-radius: 2.5%;
   transition: all 0.15s;
-  cursor: none;
+  cursor: crosshair;
 }
 
 #profile {
