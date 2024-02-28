@@ -62,16 +62,12 @@ function createNav(container) {
             var button = document.createElement("button");
             button.textContent = this.textContent;
             button.className = "btn btn-primary"; // Add Bootstrap classes to the button
-
-            // Store the h2 id in a variable
             var h2Id = this.id;
 
             // Add onclick event to the button
             button.onclick = function() {
                 window.location.hash = "#" + h2Id;
             }
-
-            // Add the button to the btnGroup
             btnGroup.appendChild(button);
         });
 

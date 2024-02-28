@@ -21,6 +21,7 @@ readMarkdown(lang)
     document
       .getElementById("cv-content")
       .insertAdjacentHTML("beforeend", cvContent);
+
     // Create navigation menu in left panel
     var leftPanel = document.getElementById("left-panel");
     createNav(leftPanel);

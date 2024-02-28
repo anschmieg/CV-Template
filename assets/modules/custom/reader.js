@@ -41,6 +41,38 @@ function setIcons(md) {
   };
 }
 
+/**
+ * Splits the CV into sections based on h2 headings.
+ * @param {string} markdownContent - The markdown content of the CV.
+ * @returns {Array} - An array of sections, each containing the content and title.
+ */
+function wrapSections(markdownContent) {
+  const sections = [];
+  const tokens = markdownIt().parse(markdownContent, {});
+
+  let currentSection = null;
+  for (const token of tokens) {
+    if (token.type === 'heading_open' && token.tag === 'h2') {
+      currentSection = {
+        title: '',
+        content: '',
+      };
+    } else if (token.type === 'heading_close' && token.tag === 'h2') {
+      sections.push(currentSection);
+      currentSection = null;
+    } else if (currentSection) {
+      if (token.type === 'inline' && currentSection.title === '') {
+        currentSection.title = token.content;
+      }
+      currentSection.content += markdownIt().renderer.render([token], {}, {}).trim();
+    }
+  }
+
+  // Wrap sections in divs
+  const wrappedSections = sections.map(section => `<div><h2>${section.title}</h2>${section.content}</div>`);
+
+  return wrappedSections.join('');
+}
 
 /**
  * Renders the given markdown content using markdown-it library.
