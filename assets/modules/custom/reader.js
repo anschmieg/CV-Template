@@ -1,6 +1,8 @@
 import markdownIt from "markdown-it";
 import markdownItAttrs from "markdown-it-attrs";
 import markdownItAnchor from "markdown-it-anchor";
+import markdownItFontAwesome from "./markdownItFontawesome"
+import fontAwesomePlugin from "./markdownItFontawesome";
 
 /**
  * Reads the CV file based on the specified language.
@@ -18,23 +20,26 @@ async function readMarkdown(lang) {
   }
 }
 
-
 function setIcons(md) {
-  const defaultRender = md.renderer.rules.heading_open || function(tokens, idx, options, env, self) {
-    return self.renderToken(tokens, idx, options);
-  };
+  const defaultRender =
+    md.renderer.rules.heading_open ||
+    function (tokens, idx, options, env, self) {
+      return self.renderToken(tokens, idx, options);
+    };
 
   md.renderer.rules.heading_open = function (tokens, idx, options, env, self) {
     const token = tokens[idx];
-    const classAttr = token.attrGet('class');
+    const classAttr = token.attrGet("class");
 
-    if (classAttr && classAttr.includes('fa-')) {
-      const iconClass = classAttr.split(' ').find(cls => cls.startsWith('fa-'));
+    if (classAttr && classAttr.includes("fa-")) {
+      const iconClass = classAttr
+        .split(" ")
+        .find((cls) => cls.startsWith("fa-"));
       tokens[idx + 1].children.unshift({
-        type: 'html_inline',
+        type: "html_inline",
         content: `<i class="${iconClass}" style='font-style: unset;'></i> `,
       });
-      token.attrSet('class', classAttr.replace(iconClass, '').trim());
+      token.attrSet("class", classAttr.replace(iconClass, "").trim());
     }
 
     return defaultRender(tokens, idx, options, env, self);
@@ -46,32 +51,42 @@ function setIcons(md) {
  * @param {string} markdownContent - The markdown content of the CV.
  * @returns {Array} - An array of sections, each containing the content and title.
  */
-function wrapSections(markdownContent) {
-  const sections = [];
-  const tokens = markdownIt().parse(markdownContent, {});
+function wrapSections(md) {
+  const defaultRender =
+    md.renderer.rules.paragraph_open ||
+    function (tokens, idx, options, env, self) {
+      return self.renderToken(tokens, idx, options);
+    };
 
-  let currentSection = null;
-  for (const token of tokens) {
-    if (token.type === 'heading_open' && token.tag === 'h2') {
-      currentSection = {
-        title: '',
-        content: '',
-      };
-    } else if (token.type === 'heading_close' && token.tag === 'h2') {
-      sections.push(currentSection);
-      currentSection = null;
-    } else if (currentSection) {
-      if (token.type === 'inline' && currentSection.title === '') {
-        currentSection.title = token.content;
-      }
-      currentSection.content += markdownIt().renderer.render([token], {}, {}).trim();
-    }
-  }
+  md.renderer.rules.paragraph_open = function (
+    tokens,
+    idx,
+    options,
+    env,
+    self
+  ) {
+    // Add div opening tag before each paragraph
+    return (
+      '<div class="section">' + defaultRender(tokens, idx, options, env, self)
+    );
+  };
 
-  // Wrap sections in divs
-  const wrappedSections = sections.map(section => `<div><h2>${section.title}</h2>${section.content}</div>`);
+  const defaultRenderClose =
+    md.renderer.rules.paragraph_close ||
+    function (tokens, idx, options, env, self) {
+      return self.renderToken(tokens, idx, options);
+    };
 
-  return wrappedSections.join('');
+  md.renderer.rules.paragraph_close = function (
+    tokens,
+    idx,
+    options,
+    env,
+    self
+  ) {
+    // Add div closing tag after each paragraph
+    return defaultRenderClose(tokens, idx, options, env, self) + "</div>";
+  };
 }
 
 /**
@@ -83,8 +98,11 @@ function renderMarkdown(markdownContent) {
   var md = markdownIt()
     .use(markdownItAttrs)
     .use(markdownItAnchor, {
-      slugify: s => encodeURIComponent(String(s).trim().toLowerCase().replace(/\s+/g, '-'))
-    });
+      slugify: (s) =>
+        encodeURIComponent(String(s).trim().toLowerCase().replace(/\s+/g, "-")),
+    })
+    .use(fontAwesomePlugin)
+    .use(wrapSections);
 
   setIcons(md);
 

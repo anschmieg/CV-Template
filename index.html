@@ -17,7 +17,19 @@
   <link rel="stylesheet" href="assets/styles/main.css">
   <!-- jQuery -->
   <script type="text/javascript" src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-
+  <!-- Defer display -->
+  <style>
+    body {
+      display: none;
+    }
+  </style>
+  <script>
+    $(window).on('load', function() {
+      setTimeout(function() {
+        $('body').fadeIn(10);
+      }, 300);
+    });
+  </script>
   <title>CV</title>
 </head>
 
