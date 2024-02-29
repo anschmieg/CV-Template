@@ -34,57 +34,60 @@ export function fontAwesomePlugin(md) {
     });
   });
 }
-
-function createSectionPlugin(tag, sectionClass) {
-  return function(md) {
+export function sectionPlugin(tag, sectionClass, subTag, subSectionClass) {
+  return function (md) {
     let inSection = false;
+    let inSubSection = false;
 
     const defaultRender =
       md.renderer.rules.heading_open ||
-      function (tokens, idx, options, env, self) {
-        return self.renderToken(tokens, idx, options);
+      function (tokens, idx, options, env) {
+        return md.renderer.renderToken(tokens, idx, options);
       };
 
-    md.renderer.rules.heading_open = function (tokens, idx, options, env, self) {
+    md.renderer.rules.heading_open = function (tokens, idx, options, env) {
+      let result = '';
       if (tokens[idx].tag === tag) {
-        let result = "";
-        // If this is the start of a new section, close the previous section
+        if (inSubSection) {
+          result += "</div>";
+          inSubSection = false;
+        }
         if (inSection) {
           result += "</div>";
         }
-        // Start a new section
-        let classes = "";
-        if (tokens[idx].attrs) {
-          for (let i = 0; i < tokens[idx].attrs.length; i++) {
-            if (tokens[idx].attrs[i][0] === "class") {
-              classes = tokens[idx].attrs[i][1];
-              break;
-            }
-          }
-        }
-        result +=
-          '<div class="' +
-          sectionClass +
-          ' ' +
-          classes +
-          '">' +
-          defaultRender(tokens, idx, options, env, self);
         inSection = true;
-        return result;
+      } else if (tokens[idx].tag === subTag) {
+        if (inSubSection) {
+          result += "</div>";
+        }
+        inSubSection = true;
       }
-      return defaultRender(tokens, idx, options, env, self);
+      result += defaultRender(tokens, idx, options, env);
+      return result;
     };
 
-    // Close the section at the end of the document, if one is open
-    md.renderer.rules.eof = function (tokens, idx, options, env, self) {
-      if (inSection) {
-        inSection = false;
-        return "</div>";
+    md.renderer.rules.heading_close = function (tokens, idx, options, env) {
+      let result = md.renderer.renderToken(tokens, idx, options);
+      if (tokens[idx].tag === tag && inSection) {
+        result += '<div class="' + sectionClass + '">';
+      } else if (tokens[idx].tag === subTag && inSubSection) {
+        result += '<div class="' + subSectionClass + '">';
       }
-      return "";
+      return result;
+    };
+
+    // Close the section and subsection at the end of the document, if one is open
+    md.renderer.rules.eof = function () {
+      let result = "";
+      if (inSubSection) {
+        result += "</div>";
+        inSubSection = false;
+      }
+      if (inSection) {
+        result += "</div>";
+        inSection = false;
+      }
+      return result;
     };
   };
 }
-
-export const sectionPlugin = createSectionPlugin("h2", "section");
-export const subSectionPlugin = createSectionPlugin("h3", "subsection");

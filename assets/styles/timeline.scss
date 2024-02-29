@@ -1,0 +1,51 @@
+@import "../modules/node_modules/bootstrap/scss/bootstrap";
+
+.timeline {
+  border-left: 1px solid hsl(0, 0%, 90%);
+  position: relative;
+}
+
+.timeline .subsection {
+  @extend .mb-5;
+  position: relative;
+}
+
+.timeline .subsection:after {
+  position: absolute;
+  display: block;
+  top: 0;
+}
+
+.timeline .subsection:after {
+  background-color: hsl(0, 0%, 90%);
+  left: -38px;
+  border-radius: 50%;
+  height: 11px;
+  width: 11px;
+  content: "";
+}
+
+.timeline h3 {
+  @extend .fw-bold;
+  font-size: 1.2em;
+}
+
+.timeline h4 {
+  @extend .fw-bold;
+  @extend .text-muted;
+  font-size: 1.2em;
+}
+
+.timeline p,
+.timeline li {
+  @extend .text-muted;
+}
+
+.timeline .place,
+.timeline .time {
+  @extend .text-muted;
+  @extend .mb-2;
+  @extend .fw-bold;
+  font-size: 0.9em;
+  list-style: none;
+}

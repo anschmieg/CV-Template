@@ -48,7 +48,7 @@ Studentischer Mitarbeiter. Zu den Aufgaben gehören:
 
 ---
 
-## Ausbildung {.timeline .fa .fa-graduation-cap}
+## :fa-graduation-cap: Ausbildung {.timeline }
 
 ### B.Sc. Volkswirtschaftslehre
 
@@ -98,7 +98,7 @@ Abschluss im Jahr 2017 mit der Note **ø 1,7**
 
 ---
 
-## Ehrenamt {.cards .fa .fa-hand-holding-heart}
+## :fa-hand-holding-heart: Ehrenamt {.cards }
 
 ### Vorstand
 
@@ -123,7 +123,7 @@ Sanitätsdienst bei Veranstaltungen
 
 ----
 
-## Sprachen {.skills .fa .fa-comments}
+## :fa-comments: Sprachen {.skills }
 
 ### Deutsch
 
@@ -152,7 +152,7 @@ Erstsprache
 
 ---
 
-## Skillsets {.cards .fa .fa-toolbox}
+## :fa-toolbox: Skillsets {.cards }
 
 ### Programmierung
 
@@ -180,7 +180,7 @@ Erstsprache
 
 ----
 
-## Zertifizierungen {.cards .fa .fa-certificate}
+## :fa-certificate: Zertifizierungen {.cards }
 
 ### Risikomanagement
 

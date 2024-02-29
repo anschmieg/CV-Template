@@ -3,12 +3,14 @@ import { readMarkdown, renderMarkdown } from "./custom/reader.js";
 import { createLangMenu, createNav } from "./custom/nav.js";
 import { displayName, displayProfile } from "./custom/profile.js";
 
+// Import custom styles
+import("../styles/main.scss");
+
 // Import bootstrap
 import("bootstrap/dist/css/bootstrap.css");
 import("mdb-ui-kit/css/mdb.min.css");
 import("bootstrap/dist/js/bootstrap.bundle.min.js");
 import("mdb-ui-kit/js/mdb.es.min.js");
-import("../styles/bootstrap_custom.scss");
 
 // Get language from URL
 var url = new URL(window.location.href);

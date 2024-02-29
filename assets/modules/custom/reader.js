@@ -1,7 +1,7 @@
 import markdownIt from "markdown-it";
 import markdownItAttrs from "markdown-it-attrs";
 import markdownItAnchor from "markdown-it-anchor";
-import { fontAwesomePlugin, sectionPlugin, subSectionPlugin } from "./markdownItPlugins";
+import { fontAwesomePlugin, sectionPlugin } from "./markdownItPlugins";
 
 /**
  * Reads the CV file based on the specified language.
@@ -31,8 +31,7 @@ function renderMarkdown(markdownContent) {
       slugify: (s) =>
         encodeURIComponent(String(s).trim().toLowerCase().replace(/\s+/g, "-")),
     })
-    .use(subSectionPlugin)
-    .use(sectionPlugin)
+    .use(sectionPlugin('h2', 'section', 'h3', 'subsection'))
     .use(fontAwesomePlugin);
 
   return md.render(markdownContent);
