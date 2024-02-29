@@ -46,7 +46,7 @@ export function sectionPlugin(tag, sectionClass, subTag, subSectionClass) {
       };
 
     md.renderer.rules.heading_open = function (tokens, idx, options, env) {
-      let result = '';
+      let result = "";
       if (tokens[idx].tag === tag) {
         if (inSubSection) {
           result += "</div>";
@@ -55,24 +55,16 @@ export function sectionPlugin(tag, sectionClass, subTag, subSectionClass) {
         if (inSection) {
           result += "</div>";
         }
+        result += '<div class="' + sectionClass + '">';
         inSection = true;
       } else if (tokens[idx].tag === subTag) {
         if (inSubSection) {
           result += "</div>";
         }
+        result += '<div class="' + subSectionClass + '">';
         inSubSection = true;
       }
       result += defaultRender(tokens, idx, options, env);
-      return result;
-    };
-
-    md.renderer.rules.heading_close = function (tokens, idx, options, env) {
-      let result = md.renderer.renderToken(tokens, idx, options);
-      if (tokens[idx].tag === tag && inSection) {
-        result += '<div class="' + sectionClass + '">';
-      } else if (tokens[idx].tag === subTag && inSubSection) {
-        result += '<div class="' + subSectionClass + '">';
-      }
       return result;
     };
 
