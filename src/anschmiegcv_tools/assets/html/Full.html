@@ -1,0 +1,755 @@
+<!doctype html>
+<html lang="{{ locale.language_iso_639_1 }}" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>{{ cv.name }} - CV</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Raleway:wght@500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.2/css/bulma.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+      crossorigin="anonymous"
+    />
+    <script
+      defer
+      src="https://cdn.jsdelivr.net/npm/markdown-it@14.1.0/dist/markdown-it.min.js"
+    ></script>
+    <script
+      defer
+      src="https://cdn.jsdelivr.net/npm/dompurify@3.1.6/dist/purify.min.js"
+    ></script>
+
+    <style>
+      :root {
+        --cv-body: {{ design.colors.body.as_rgb() }};
+        --cv-name: {{ design.colors.name.as_rgb() }};
+        --cv-headline: {{ design.colors.headline.as_rgb() }};
+        --cv-connections: {{ design.colors.connections.as_rgb() }};
+        --cv-section: {{ design.colors.section_titles.as_rgb() }};
+        --cv-links: {{ design.colors.links.as_rgb() }};
+        --cv-muted: {{ design.colors.footer.as_rgb() }};
+        --cv-timeline-dot: {% if design.colors.timeline_dot %}{{ design.colors.timeline_dot.as_rgb() }}{% else %}{{ design.colors.section_titles.as_rgb() }}{% endif %};
+        --cv-timeline-line: {% if design.colors.timeline_line %}{{ design.colors.timeline_line.as_rgb() }}{% else %}{{ design.colors.connections.as_rgb() }}{% endif %};
+        --cv-font-body: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        --cv-font-title: "Raleway", "Segoe UI", sans-serif;
+      }
+
+      html,
+      body {
+        background: #f7f8fa;
+        color: var(--cv-body);
+        font-family: var(--cv-font-body);
+        font-size: 16px;
+        line-height: 1.5;
+      }
+
+      .cv-layout.columns {
+        min-height: 100vh;
+        max-width: 1480px;
+        margin: 0 auto;
+        display: grid !important;
+        grid-template-columns: minmax(240px, 300px) minmax(0, 1fr);
+        gap: 0;
+      }
+
+      .cv-layout.columns:not(:last-child) {
+        margin-bottom: 0;
+      }
+
+      .cv-layout > .column {
+        width: auto !important;
+        min-width: 0;
+      }
+
+      .cv-sidebar {
+        position: sticky;
+        top: 0;
+        height: 100vh;
+        overflow-y: auto;
+        border-right: 1px solid color-mix(in srgb, var(--cv-connections) 20%, white 80%);
+        background: color-mix(in srgb, var(--cv-connections) 5%, white 95%);
+        padding: 2.25rem 1.75rem !important;
+      }
+
+      .cv-sidebar a {
+        color: var(--cv-links);
+      }
+
+      .cv-main {
+        padding: 2.5rem 2.25rem !important;
+      }
+
+      .cv-photo {
+        box-shadow: var(--bulma-shadow-sm);
+      }
+
+      .cv-name {
+        color: var(--cv-name);
+        font-family: var(--cv-font-title);
+      }
+
+      .cv-headline {
+        color: var(--cv-headline);
+      }
+
+      .cv-contact i {
+        color: var(--cv-section);
+      }
+
+      .cv-contact {
+        font-size: 0.98rem;
+        line-height: 1.45;
+        word-break: break-word;
+      }
+
+      .cv-contact p {
+        display: flex;
+        align-items: center;
+        gap: 0.3rem;
+        margin-bottom: 0.2rem;
+      }
+
+      .cv-section-title {
+        color: var(--cv-section);
+        font-family: var(--cv-font-title);
+        border-bottom: 1px solid color-mix(in srgb, var(--cv-section) 32%, white 68%);
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+      }
+
+      .cv-item-meta {
+        color: var(--cv-muted);
+        font-size: 0.78rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        line-height: 1.35;
+      }
+
+      .cv-card {
+        border: 1px solid color-mix(in srgb, var(--cv-connections) 20%, white 80%);
+        border-radius: 10px;
+      }
+
+      .cv-cards-grid {
+        align-items: stretch;
+      }
+
+      .cv-cards-grid > .column {
+        display: flex;
+      }
+
+      .cv-cards-grid .cv-card {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        height: 100%;
+      }
+
+      .cv-card:hover {
+        box-shadow: var(--bulma-shadow-l);
+      }
+
+      .cv-timeline-entry {
+        display: grid;
+        grid-template-columns: 146px 28px 1fr;
+        gap: 0.8rem;
+        margin-bottom: 1.25rem;
+      }
+
+      .cv-timeline-date {
+        text-align: right;
+      }
+
+      .cv-timeline-track {
+        position: relative;
+        display: flex;
+        justify-content: center;
+      }
+
+      .cv-timeline-track::before {
+        content: "";
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        top: 0;
+        bottom: -1.25rem;
+        width: 3px;
+        background: var(--cv-timeline-line);
+      }
+
+      .cv-timeline-dot {
+        position: relative;
+        width: 16px;
+        height: 16px;
+        margin-top: 0.2rem;
+        border-radius: 50%;
+        background: var(--cv-timeline-dot);
+        border: 3px solid white;
+        box-shadow: 0 0 0 1px color-mix(in srgb, var(--cv-timeline-line) 65%, white 35%);
+        z-index: 1;
+      }
+
+      .cv-markdown p {
+        margin: 0 0 0.45rem;
+      }
+
+      .cv-markdown > :first-child {
+        margin-top: 0;
+      }
+
+      .cv-markdown > :last-child {
+        margin-bottom: 0;
+      }
+
+      .cv-markdown ul,
+      .cv-markdown ol {
+        margin: 0.35rem 0 0.5rem 1.2rem;
+      }
+
+      .cv-markdown li {
+        margin-bottom: 0.22rem;
+      }
+
+      .cv-markdown a,
+      .cv-markdown-inline a {
+        color: var(--cv-links);
+        text-decoration: underline;
+      }
+
+      .cv-markdown-inline {
+        display: inline;
+      }
+
+      .cv-publication-links {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.65rem;
+      }
+
+      .cv-publication-links a {
+        color: var(--cv-links);
+        font-weight: 600;
+      }
+
+      .cv-list li {
+        margin-bottom: 0.35rem;
+        line-height: 1.45;
+      }
+
+      @media (max-width: 1215px) {
+        .cv-main {
+          padding: 2rem 1.5rem !important;
+        }
+      }
+
+      @media (max-width: 900px) {
+        .cv-layout.columns {
+          grid-template-columns: 1fr;
+        }
+
+        .cv-sidebar {
+          position: relative;
+          height: auto;
+          border-right: 0;
+          border-bottom: 1px solid color-mix(in srgb, var(--cv-connections) 20%, white 80%);
+          padding: 1.35rem 1rem !important;
+          text-align: center;
+        }
+
+        .cv-main {
+          padding: 1.2rem 1rem 1.4rem !important;
+        }
+
+        .cv-contact {
+          max-width: 26rem;
+          margin: 0.85rem auto 0;
+          font-size: 0.92rem;
+        }
+
+        .cv-contact p {
+          justify-content: center;
+        }
+
+        .cv-section-title {
+          margin-bottom: 0.85rem !important;
+        }
+
+        .cv-timeline-entry {
+          grid-template-columns: 1fr;
+          gap: 0.35rem;
+          margin-bottom: 1rem;
+        }
+
+        .cv-timeline-date {
+          text-align: left;
+          font-size: 0.72rem;
+        }
+
+        .cv-timeline-track {
+          display: none;
+        }
+
+        .cv-card {
+          padding: 1rem !important;
+          border-radius: 8px;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .cv-main {
+          padding: 1rem 0.85rem 1.25rem !important;
+        }
+
+        .cv-name {
+          font-size: 1.95rem !important;
+        }
+
+        .cv-headline {
+          font-size: 0.95rem !important;
+          margin-bottom: 0.65rem !important;
+        }
+
+        .cv-section-title {
+          font-size: 1rem !important;
+          letter-spacing: 0.04em;
+        }
+
+        .cv-contact {
+          font-size: 0.88rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    {% macro render_markdown_block(value, class_name='') -%}
+      {% if value is defined and value %}
+        <div class="cv-markdown {{ class_name }}" data-markdown="{{ value|e }}"></div>
+      {% endif %}
+    {%- endmacro %}
+
+    {% macro render_markdown_inline(value, class_name='') -%}
+      {% if value is defined and value %}
+        <span class="cv-markdown-inline {{ class_name }}" data-markdown-inline="{{ value|e }}"></span>
+      {% endif %}
+    {%- endmacro %}
+
+    <div class="columns is-variable is-6 cv-layout">
+      <aside class="column is-one-quarter-desktop is-full-touch cv-sidebar p-5">
+        {% if cv.photo %}
+          {% set photo_src = cv.photo %}
+          {% if photo_src.name is defined %}
+            {% set photo_src = photo_src.name %}
+          {% else %}
+            {% set photo_src = (photo_src|string).split('/')|last %}
+          {% endif %}
+          <figure class="image is-128x128 mx-auto mb-5">
+            <img class="is-rounded cv-photo" src="{{ photo_src }}" alt="{{ cv.name }}" />
+          </figure>
+        {% endif %}
+
+        <h1 class="title is-3 has-text-centered cv-name">{{ cv.name }}</h1>
+        {% if cv.headline %}
+          <p class="subtitle is-6 has-text-centered cv-headline">{{ cv.headline }}</p>
+        {% endif %}
+
+        <div class="cv-contact">
+          {% if cv.location %}
+            <p><span class="icon is-small mr-1"><i class="fas fa-location-dot"></i></span>{{ cv.location }}</p>
+          {% endif %}
+          {% if cv.email %}
+            <p><span class="icon is-small mr-1"><i class="fas fa-envelope"></i></span><a href="mailto:{{ cv.email }}">{{ cv.email }}</a></p>
+          {% endif %}
+          {% if cv.phone %}
+            <p><span class="icon is-small mr-1"><i class="fas fa-phone"></i></span><a href="tel:{{ cv.phone|replace('tel:', '') }}">{{ cv.phone|replace('tel:', '') }}</a></p>
+          {% endif %}
+          {% for network in cv.social_networks or [] %}
+            {% set network_name = network.network|default('', true)|lower %}
+            <p>
+              <span class="icon is-small mr-1">
+                <i class="{% if 'linkedin' in network_name %}fab fa-linkedin{% elif 'github' in network_name %}fab fa-github{% elif 'gitlab' in network_name %}fab fa-gitlab{% elif network_name == 'x' or 'twitter' in network_name %}fab fa-x-twitter{% elif 'mastodon' in network_name %}fab fa-mastodon{% elif 'website' in network_name or network_name == 'web' %}fas fa-globe{% else %}fas fa-link{% endif %}"></i>
+              </span>
+              {% if network.network == 'LinkedIn' %}
+                <a href="https://linkedin.com/in/{{ network.username }}" target="_blank" rel="noreferrer">{{ network.username }}</a>
+              {% elif network.network == 'GitHub' %}
+                <a href="https://github.com/{{ network.username }}" target="_blank" rel="noreferrer">{{ network.username }}</a>
+              {% else %}
+                <a href="https://{{ network.network|lower }}.com/{{ network.username }}" target="_blank" rel="noreferrer">{{ network.username }}</a>
+              {% endif %}
+            </p>
+          {% endfor %}
+        </div>
+      </aside>
+
+      <main class="column is-three-quarters-desktop p-6 cv-main">
+        {% for section_title_raw, section_content in cv.sections.items() %}
+          {% set section_title = section_title_raw.split('{')[0]|strip %}
+          {% set section_id = section_title|lower|replace(' ', '-')|replace('_', '-') %}
+          {% if '{#' in section_title_raw %}
+            {% set section_id = section_title_raw.split('{#', 1)[1].split(' ', 1)[0].split('}', 1)[0] %}
+          {% endif %}
+
+          {% set view_mode = 'auto' %}
+          {% if '.cards' in section_title_raw %}
+            {% set view_mode = 'cards' %}
+          {% elif '.list' in section_title_raw %}
+            {% set view_mode = 'list' %}
+          {% elif '.timeline' in section_title_raw %}
+            {% set view_mode = 'timeline' %}
+          {% endif %}
+
+          {% set has_items = section_content is sequence and section_content and section_content[0] is defined %}
+          {% if has_items %}
+            {% set first_entry = section_content[0] %}
+            {% set has_text_items = first_entry is string %}
+            {% set has_entries = not has_text_items %}
+            {% set looks_timeline = (first_entry.start_date is defined or first_entry.end_date is defined) and (first_entry.company is defined or first_entry.institution is defined or first_entry.position is defined or first_entry.degree is defined) %}
+            {% set is_publication_section = has_entries and (first_entry.doi is defined or first_entry.authors is defined or first_entry.journal is defined or first_entry.url is defined and first_entry.title is defined) %}
+          {% else %}
+            {% set has_text_items = false %}
+            {% set has_entries = false %}
+            {% set looks_timeline = false %}
+            {% set is_publication_section = false %}
+          {% endif %}
+
+          {% if view_mode == 'auto' %}
+            {% if looks_timeline %}
+              {% set view_mode = 'timeline' %}
+            {% elif has_entries %}
+              {% set view_mode = 'cards' %}
+            {% else %}
+              {% set view_mode = 'list' %}
+            {% endif %}
+          {% endif %}
+
+          <section id="{{ section_id }}" class="mb-6">
+            <h2 class="title is-5 pb-2 mb-4 cv-section-title">{{ section_title }}</h2>
+
+            {% if section_content is string %}
+              {{ render_markdown_block(section_content) }}
+            {% elif has_text_items %}
+              <ul class="cv-list">
+                {% for item in section_content %}
+                  <li>{{ render_markdown_inline(item) }}</li>
+                {% endfor %}
+              </ul>
+            {% elif view_mode == 'timeline' and has_entries %}
+              {% for entry in section_content %}
+                <article class="cv-timeline-entry">
+                  <div class="cv-timeline-date cv-item-meta">
+                    {% if entry.date %}
+                      {{ entry.date }}
+                    {% else %}
+                      {{ entry.start_date }}{% if entry.end_date %} - {{ entry.end_date }}{% endif %}
+                    {% endif %}
+                    {% if entry.location %}
+                      <br />{{ entry.location }}
+                    {% endif %}
+                  </div>
+                  <div class="cv-timeline-track"><div class="cv-timeline-dot"></div></div>
+                  <div>
+                    {% set has_org = (entry.company is defined and entry.company) or (entry.institution is defined and entry.institution) %}
+                    {% set degree_line = '' %}
+                    {% if entry.degree %}
+                      {% set degree_line = entry.degree ~ ((' · ' ~ entry.area) if entry.area else '') %}
+                    {% endif %}
+                    {% set entry_title = '' %}
+                    {% set entry_subtitle = '' %}
+                    {% if has_org %}
+                      {% if entry.position %}
+                        {% set entry_title = entry.position %}
+                      {% elif degree_line %}
+                        {% set entry_title = degree_line %}
+                      {% elif entry.name %}
+                        {% set entry_title = entry.name %}
+                      {% elif entry.title %}
+                        {% set entry_title = entry.title %}
+                      {% elif entry.label %}
+                        {% set entry_title = entry.label %}
+                      {% endif %}
+                      {% if entry.company %}
+                        {% set entry_subtitle = entry.company %}
+                      {% elif entry.institution %}
+                        {% set entry_subtitle = entry.institution %}
+                      {% endif %}
+                    {% else %}
+                      {% if entry.name %}
+                        {% set entry_title = entry.name %}
+                      {% elif entry.title %}
+                        {% set entry_title = entry.title %}
+                      {% elif entry.label %}
+                        {% set entry_title = entry.label %}
+                      {% elif entry.position %}
+                        {% set entry_title = entry.position %}
+                      {% elif degree_line %}
+                        {% set entry_title = degree_line %}
+                      {% endif %}
+                      {% if entry.position and entry_title != entry.position %}
+                        {% set entry_subtitle = entry.position %}
+                      {% elif degree_line and entry_title != degree_line %}
+                        {% set entry_subtitle = degree_line %}
+                      {% elif entry.label and entry_title != entry.label %}
+                        {% set entry_subtitle = entry.label %}
+                      {% endif %}
+                    {% endif %}
+                    <h3 class="title is-6 mb-1" style="color: var(--cv-name)">
+                      {{ render_markdown_inline(entry_title) }}
+                    </h3>
+                    {% if entry_subtitle %}
+                      <p class="mb-2" style="color: var(--cv-connections)">{{ render_markdown_inline(entry_subtitle) }}</p>
+                    {% endif %}
+                    {% if entry.details %}
+                      {{ render_markdown_block(entry.details, 'mb-2') }}
+                    {% endif %}
+                    {% if entry.summary %}
+                      {{ render_markdown_block(entry.summary, 'mb-2') }}
+                    {% endif %}
+                    {% if entry.highlights %}
+                      <ul class="cv-list">
+                        {% for highlight in entry.highlights %}
+                          <li>{{ render_markdown_inline(highlight) }}</li>
+                        {% endfor %}
+                      </ul>
+                    {% endif %}
+                    {% if entry.doi is defined and entry.doi or entry.url is defined and entry.url %}
+                      <div class="cv-publication-links mt-2 is-size-7">
+                        {% if entry.doi is defined and entry.doi %}
+                          {% set doi_value = entry.doi|replace('https://doi.org/', '')|replace('http://doi.org/', '')|replace('doi:', '')|replace('DOI:', '')|strip %}
+                          <a href="https://doi.org/{{ doi_value }}" target="_blank" rel="noreferrer">DOI: {{ doi_value }}</a>
+                        {% endif %}
+                        {% if entry.url is defined and entry.url %}
+                          <a href="{{ entry.url }}" target="_blank" rel="noreferrer">{{ entry.url|clean_url }}</a>
+                        {% endif %}
+                      </div>
+                    {% endif %}
+                  </div>
+                </article>
+              {% endfor %}
+            {% elif view_mode == 'cards' and has_entries %}
+              <div class="columns is-multiline cv-cards-grid">
+                {% for entry in section_content %}
+                  <div class="column is-half-tablet">
+                    <article class="box cv-card p-5">
+                      {% if is_publication_section %}
+                        {% set publication_title = entry.title if entry.title is defined and entry.title else (entry.name if entry.name is defined and entry.name else '') %}
+                        {% if entry.authors is defined and entry.authors %}
+                          {% if entry.authors is sequence and entry.authors is not string %}
+                            {% set publication_authors = entry.authors|join(', ') %}
+                          {% else %}
+                            {% set publication_authors = entry.authors %}
+                          {% endif %}
+                        {% else %}
+                          {% set publication_authors = '' %}
+                        {% endif %}
+                        {% set publication_venue = '' %}
+                        {% if entry.journal is defined and entry.journal %}
+                          {% set publication_venue = entry.journal %}
+                        {% elif entry.publisher is defined and entry.publisher %}
+                          {% set publication_venue = entry.publisher %}
+                        {% elif entry.venue is defined and entry.venue %}
+                          {% set publication_venue = entry.venue %}
+                        {% elif entry.booktitle is defined and entry.booktitle %}
+                          {% set publication_venue = entry.booktitle %}
+                        {% elif entry.conference is defined and entry.conference %}
+                          {% set publication_venue = entry.conference %}
+                        {% endif %}
+                        <h3 class="title is-6 mb-1" style="color: var(--cv-name)">
+                          {{ render_markdown_inline(publication_title) }}
+                        </h3>
+                        {% if publication_authors %}
+                          <p class="mb-2" style="color: var(--cv-connections)">{{ render_markdown_inline(publication_authors) }}</p>
+                        {% endif %}
+                        {% if publication_venue %}
+                          <p class="mb-2">{{ render_markdown_inline(publication_venue) }}</p>
+                        {% endif %}
+                        {% if entry.date or entry.location %}
+                          <p class="cv-item-meta mb-2">
+                            {% if entry.date %}
+                              {{ entry.date }}
+                            {% endif %}
+                            {% if entry.location %}
+                              {% if entry.date %} · {% endif %}{{ entry.location }}
+                            {% endif %}
+                          </p>
+                        {% endif %}
+                        {% if entry.citation is defined and entry.citation %}
+                          {{ render_markdown_block(entry.citation, 'mb-2') }}
+                        {% endif %}
+                        {% if entry.details %}
+                          {{ render_markdown_block(entry.details, 'mb-2') }}
+                        {% endif %}
+                        {% if entry.summary %}
+                          {{ render_markdown_block(entry.summary, 'mb-2') }}
+                        {% endif %}
+                        {% if entry.highlights %}
+                          <ul class="cv-list mt-2">
+                            {% for highlight in entry.highlights %}
+                              <li>{{ render_markdown_inline(highlight) }}</li>
+                            {% endfor %}
+                          </ul>
+                        {% endif %}
+                        {% if entry.doi is defined and entry.doi or entry.url is defined and entry.url %}
+                          <div class="cv-publication-links mt-3 is-size-7">
+                            {% if entry.doi is defined and entry.doi %}
+                              {% set doi_value = entry.doi|replace('https://doi.org/', '')|replace('http://doi.org/', '')|replace('doi:', '')|replace('DOI:', '')|strip %}
+                              <a href="https://doi.org/{{ doi_value }}" target="_blank" rel="noreferrer">DOI: {{ doi_value }}</a>
+                            {% endif %}
+                            {% if entry.url is defined and entry.url %}
+                              <a href="{{ entry.url }}" target="_blank" rel="noreferrer">{{ entry.url|clean_url }}</a>
+                            {% endif %}
+                          </div>
+                        {% endif %}
+                      {% else %}
+                        {% set has_org = (entry.company is defined and entry.company) or (entry.institution is defined and entry.institution) %}
+                        {% set degree_line = '' %}
+                        {% if entry.degree %}
+                          {% set degree_line = entry.degree ~ ((' · ' ~ entry.area) if entry.area else '') %}
+                        {% endif %}
+                        {% set entry_title = '' %}
+                        {% set entry_subtitle = '' %}
+                        {% if has_org %}
+                          {% if entry.position %}
+                            {% set entry_title = entry.position %}
+                          {% elif degree_line %}
+                            {% set entry_title = degree_line %}
+                          {% elif entry.name %}
+                            {% set entry_title = entry.name %}
+                          {% elif entry.title %}
+                            {% set entry_title = entry.title %}
+                          {% elif entry.label %}
+                            {% set entry_title = entry.label %}
+                          {% endif %}
+                          {% if entry.company %}
+                            {% set entry_subtitle = entry.company %}
+                          {% elif entry.institution %}
+                            {% set entry_subtitle = entry.institution %}
+                          {% endif %}
+                        {% else %}
+                          {% if entry.name %}
+                            {% set entry_title = entry.name %}
+                          {% elif entry.title %}
+                            {% set entry_title = entry.title %}
+                          {% elif entry.label %}
+                            {% set entry_title = entry.label %}
+                          {% elif entry.position %}
+                            {% set entry_title = entry.position %}
+                          {% elif degree_line %}
+                            {% set entry_title = degree_line %}
+                          {% endif %}
+                          {% if entry.position and entry_title != entry.position %}
+                            {% set entry_subtitle = entry.position %}
+                          {% elif degree_line and entry_title != degree_line %}
+                            {% set entry_subtitle = degree_line %}
+                          {% elif entry.label and entry_title != entry.label %}
+                            {% set entry_subtitle = entry.label %}
+                          {% endif %}
+                        {% endif %}
+                        <h3 class="title is-6 mb-1" style="color: var(--cv-name)">
+                          {{ render_markdown_inline(entry_title) }}
+                        </h3>
+                        {% if entry_subtitle %}
+                          <p class="mb-2" style="color: var(--cv-connections)">{{ render_markdown_inline(entry_subtitle) }}</p>
+                        {% endif %}
+                        {% if entry.date or entry.start_date or entry.location %}
+                          <p class="cv-item-meta mb-2">
+                            {% if entry.date %}
+                              {{ entry.date }}
+                            {% elif entry.start_date %}
+                              {{ entry.start_date }}{% if entry.end_date %} - {{ entry.end_date }}{% endif %}
+                            {% endif %}
+                            {% if entry.location %}
+                              {% if entry.date or entry.start_date %} · {% endif %}{{ entry.location }}
+                            {% endif %}
+                          </p>
+                        {% endif %}
+                        {% if entry.details %}
+                          {{ render_markdown_block(entry.details, 'mb-2') }}
+                        {% endif %}
+                        {% if entry.summary %}
+                          {{ render_markdown_block(entry.summary, 'mb-2') }}
+                        {% endif %}
+                        {% if entry.highlights %}
+                          <ul class="cv-list mt-2">
+                            {% for highlight in entry.highlights %}
+                              <li>{{ render_markdown_inline(highlight) }}</li>
+                            {% endfor %}
+                          </ul>
+                        {% endif %}
+                        {% if entry.doi is defined and entry.doi or entry.url is defined and entry.url %}
+                          <div class="cv-publication-links mt-2 is-size-7">
+                            {% if entry.doi is defined and entry.doi %}
+                              {% set doi_value = entry.doi|replace('https://doi.org/', '')|replace('http://doi.org/', '')|replace('doi:', '')|replace('DOI:', '')|strip %}
+                              <a href="https://doi.org/{{ doi_value }}" target="_blank" rel="noreferrer">DOI: {{ doi_value }}</a>
+                            {% endif %}
+                            {% if entry.url is defined and entry.url %}
+                              <a href="{{ entry.url }}" target="_blank" rel="noreferrer">{{ entry.url|clean_url }}</a>
+                            {% endif %}
+                          </div>
+                        {% endif %}
+                      {% endif %}
+                    </article>
+                  </div>
+                {% endfor %}
+              </div>
+            {% else %}
+              <ul class="cv-list">
+                {% for item in section_content %}
+                  {% if item is string %}
+                    <li>{{ render_markdown_inline(item) }}</li>
+                  {% else %}
+                    {% set item_label = item.label if item.label is defined and item.label else (item.name if item.name is defined and item.name else (item.title if item.title is defined and item.title else (item.position if item.position is defined and item.position else (item.degree if item.degree is defined and item.degree else '')))) %}
+                    <li>
+                      {% if item_label %}<strong>{{ render_markdown_inline(item_label) }}</strong>{% endif %}
+                      {% if item.details is defined and item.details %} - {{ render_markdown_inline(item.details) }}{% endif %}
+                      {% if item.summary is defined and item.summary %} - {{ render_markdown_inline(item.summary) }}{% endif %}
+                      {% if item.url is defined and item.url %}
+                        - <a href="{{ item.url }}" target="_blank" rel="noreferrer">{{ item.url|clean_url }}</a>
+                      {% endif %}
+                      {% if item.doi is defined and item.doi %}
+                        {% set doi_value = item.doi|replace('https://doi.org/', '')|replace('http://doi.org/', '')|replace('doi:', '')|replace('DOI:', '')|strip %}
+                        - <a href="https://doi.org/{{ doi_value }}" target="_blank" rel="noreferrer">DOI: {{ doi_value }}</a>
+                      {% endif %}
+                    </li>
+                  {% endif %}
+                {% endfor %}
+              </ul>
+            {% endif %}
+          </section>
+        {% endfor %}
+      </main>
+    </div>
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        if (!window.markdownit) {
+          return;
+        }
+
+        const markdown = window.markdownit({
+          html: false,
+          linkify: true,
+          breaks: true,
+          typographer: true,
+        });
+        const sanitize = (html) =>
+          window.DOMPurify ? window.DOMPurify.sanitize(html) : html;
+
+        for (const node of document.querySelectorAll("[data-markdown]")) {
+          const source = node.getAttribute("data-markdown") || "";
+          node.innerHTML = sanitize(markdown.render(source));
+        }
+
+        for (const node of document.querySelectorAll("[data-markdown-inline]")) {
+          const source = node.getAttribute("data-markdown-inline") || "";
+          node.innerHTML = sanitize(markdown.renderInline(source));
+        }
+      });
+    </script>
+  </body>
+</html>
