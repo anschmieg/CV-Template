@@ -227,6 +227,16 @@
         display: inline;
       }
 
+      .cv-highlight-content p {
+        margin: 0;
+      }
+
+      .cv-highlight-content ul,
+      .cv-highlight-content ol {
+        margin-top: 0.15rem;
+        margin-bottom: 0.2rem;
+      }
+
       .cv-publication-links {
         display: flex;
         flex-wrap: wrap;
@@ -441,7 +451,7 @@
             {% elif has_text_items %}
               <ul class="cv-list">
                 {% for item in section_content %}
-                  <li>{{ render_markdown_inline(item) }}</li>
+                  <li>{{ render_markdown_block(item, 'cv-highlight-content') }}</li>
                 {% endfor %}
               </ul>
             {% elif view_mode == 'timeline' and has_entries %}
@@ -518,7 +528,7 @@
                     {% if entry.highlights %}
                       <ul class="cv-list">
                         {% for highlight in entry.highlights %}
-                          <li>{{ render_markdown_inline(highlight) }}</li>
+                          <li>{{ render_markdown_block(highlight, 'cv-highlight-content') }}</li>
                         {% endfor %}
                       </ul>
                     {% endif %}
@@ -595,7 +605,7 @@
                         {% if entry.highlights %}
                           <ul class="cv-list mt-2">
                             {% for highlight in entry.highlights %}
-                              <li>{{ render_markdown_inline(highlight) }}</li>
+                              <li>{{ render_markdown_block(highlight, 'cv-highlight-content') }}</li>
                             {% endfor %}
                           </ul>
                         {% endif %}
@@ -682,7 +692,7 @@
                         {% if entry.highlights %}
                           <ul class="cv-list mt-2">
                             {% for highlight in entry.highlights %}
-                              <li>{{ render_markdown_inline(highlight) }}</li>
+                              <li>{{ render_markdown_block(highlight, 'cv-highlight-content') }}</li>
                             {% endfor %}
                           </ul>
                         {% endif %}
@@ -706,19 +716,19 @@
               <ul class="cv-list">
                 {% for item in section_content %}
                   {% if item is string %}
-                    <li>{{ render_markdown_inline(item) }}</li>
+                    <li>{{ render_markdown_block(item, 'cv-highlight-content') }}</li>
                   {% else %}
                     {% set item_label = item.label if item.label is defined and item.label else (item.name if item.name is defined and item.name else (item.title if item.title is defined and item.title else (item.position if item.position is defined and item.position else (item.degree if item.degree is defined and item.degree else '')))) %}
                     <li>
                       {% if item_label %}<strong>{{ render_markdown_inline(item_label) }}</strong>{% endif %}
-                      {% if item.details is defined and item.details %} - {{ render_markdown_inline(item.details) }}{% endif %}
-                      {% if item.summary is defined and item.summary %} - {{ render_markdown_inline(item.summary) }}{% endif %}
+                      {% if item.details is defined and item.details %}{{ render_markdown_block(item.details, 'cv-highlight-content') }}{% endif %}
+                      {% if item.summary is defined and item.summary %}{{ render_markdown_block(item.summary, 'cv-highlight-content') }}{% endif %}
                       {% if item.url is defined and item.url %}
-                        - <a href="{{ item.url }}" target="_blank" rel="noreferrer">{{ item.url|clean_url }}</a>
+                        <div class="cv-highlight-content"><a href="{{ item.url }}" target="_blank" rel="noreferrer">{{ item.url|clean_url }}</a></div>
                       {% endif %}
                       {% if item.doi is defined and item.doi %}
                         {% set doi_value = item.doi|replace('https://doi.org/', '')|replace('http://doi.org/', '')|replace('doi:', '')|replace('DOI:', '')|strip %}
-                        - <a href="https://doi.org/{{ doi_value }}" target="_blank" rel="noreferrer">DOI: {{ doi_value }}</a>
+                        <div class="cv-highlight-content"><a href="https://doi.org/{{ doi_value }}" target="_blank" rel="noreferrer">DOI: {{ doi_value }}</a></div>
                       {% endif %}
                     </li>
                   {% endif %}
