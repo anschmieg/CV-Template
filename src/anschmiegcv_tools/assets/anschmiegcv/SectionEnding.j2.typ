@@ -2,3 +2,4 @@
   ],
 )
 {% endif %}
+#let anschmiegcv_section_view_mode = "auto"

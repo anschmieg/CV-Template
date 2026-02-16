@@ -4,25 +4,71 @@
 {% else %}
 {% set first_row_lines = entry.main_column.splitlines()|length %}
 {% endif %}
-#regular-entry(
-  [
-{% for line in entry.main_column.splitlines()[:first_row_lines] %}
-    {{ line|indent(4) }}
-
-{% endfor %}
-  ],
-  [
-{% for line in entry.date_and_location_column.splitlines() %}
-    {{ line|indent(4) }}
-
-{% endfor %}
-  ],
-{% if not design.entries.short_second_row %}
-  main-column-second-row: [
-{% for line in entry.main_column.splitlines()[first_row_lines:] %}
-    {{ line|indent(4) }}
-
-{% endfor %}
-  ],
+{% set card_ns = namespace(title="", body=[]) %}
+{% for raw_line in entry.main_column.splitlines() %}
+{% set trimmed = raw_line.strip() %}
+{% if not card_ns.title and trimmed %}
+{% set card_ns.title = trimmed %}
+{% elif card_ns.title %}
+{% set card_ns.body = card_ns.body + [raw_line] %}
 {% endif %}
-)
+{% endfor %}
+{% set organization_line = "" %}
+{% if entry.company is defined and entry.company %}
+{% set organization_line = entry.company %}
+{% elif entry.institution is defined and entry.institution %}
+{% set organization_line = entry.institution %}
+{% elif entry.position is defined and entry.position %}
+{% set organization_line = entry.position %}
+{% endif %}
+#if anschmiegcv_section_view_mode == "cards" [
+  #box(
+    width: 100%,
+    inset: 8pt,
+    radius: 6pt,
+    stroke: 0.7pt + {{ design.colors.connections.as_rgb() }},
+    [
+{% if card_ns.title %}
+      {{ card_ns.title|indent(6) }}
+
+{% endif %}
+{% if organization_line %}
+      #text(fill: {{ design.colors.footer.as_rgb() }}, weight: 600)[#connection-with-icon("building")[{{ organization_line|indent(6) }}]]
+
+{% endif %}
+{% for line in card_ns.body %}
+      {{ line|indent(6) }}
+
+{% endfor %}
+{% for line in entry.date_and_location_column.splitlines() %}
+{% if line.strip() %}
+      #text(fill: {{ design.colors.footer.as_rgb() }}, size: 0.85em)[{{ line|indent(6) }}]
+
+{% endif %}
+{% endfor %}
+    ],
+  )
+] else [
+  #regular-entry(
+    [
+{% for line in entry.main_column.splitlines()[:first_row_lines] %}
+      {{ line|indent(6) }}
+
+{% endfor %}
+    ],
+    [
+{% for line in entry.date_and_location_column.splitlines() %}
+      {{ line|indent(6) }}
+
+{% endfor %}
+    ],
+{% if not design.entries.short_second_row %}
+    main-column-second-row: [
+{% for line in entry.main_column.splitlines()[first_row_lines:] %}
+      {{ line|indent(6) }}
+
+{% endfor %}
+    ],
+{% endif %}
+  )
+]

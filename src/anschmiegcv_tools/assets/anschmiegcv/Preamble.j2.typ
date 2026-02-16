@@ -82,6 +82,8 @@
   ),
 )
 
+#let anschmiegcv_section_view_mode = "auto"
+
 // Custom timeline entry function for Experience and Education sections
 #let timeline-entry(
   date-and-location-column,
