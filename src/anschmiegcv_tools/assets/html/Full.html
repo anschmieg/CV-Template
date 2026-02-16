@@ -51,6 +51,7 @@
         line-height: 1.5;
       }
 
+      .cv-layout,
       .cv-layout.columns {
         min-height: 100vh;
         max-width: 1480px;
@@ -250,7 +251,8 @@
         }
       }
 
-      @media (max-width: 900px) {
+      @media (max-width: 768px) {
+        .cv-layout,
         .cv-layout.columns {
           grid-template-columns: 1fr;
         }
