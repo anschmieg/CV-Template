@@ -92,17 +92,19 @@
   dot-color: {% if design.colors.timeline_dot %}{{ design.colors.timeline_dot.as_rgb() }}{% else %}{{ design.colors.connections.as_rgb() }}{% endif %},
   line-color: {% if design.colors.timeline_line %}{{ design.colors.timeline_line.as_rgb() }}{% else %}{{ design.colors.connections.as_rgb() }}{% endif %},
 ) = {
-  let dot-size = 10pt
-  let line-width = 2.5pt
+  let dot-size = 9.5pt
+  let line-width = 1.0pt
   let date-column-width = {{ design.entries.date_and_location_width }}
   let side-space = {{ design.entries.side_space }}
   let space-between-columns = {{ design.entries.space_between_columns }}
-  let timeline-indent = 0.18cm
+  let timeline-indent = 0.24cm
+  let entry-gap = {{ design.sections.space_between_regular_entries }} + {{ design.typography.line_spacing }}
 
-  // Draw timeline as a left border on the main content column. This guarantees
-  // a stable vertical line that follows entry height and page breaking.
+  // Render one continuous vertical track per entry, including its continuation gap.
   block(
     breakable: true,
+    above: 0pt,
+    below: 0pt,
     grid(
       columns: (side-space, date-column-width - side-space, space-between-columns, 1fr, side-space),
       column-gutter: 0pt,
@@ -114,15 +116,20 @@
       [],
       [
         #box(
-          inset: (left: timeline-indent, bottom: {{ design.sections.space_between_regular_entries }}),
+          inset: (left: timeline-indent),
           stroke: (left: line-width + line-color),
           [
-            #place(dx: -timeline-indent - dot-size / 2 + line-width / 2, dy: 0.45em, circle(radius: dot-size / 2, fill: dot-color, stroke: 1.8pt + white))
+            #place(
+              dx: -timeline-indent - dot-size / 2 + line-width / 2,
+              dy: -0.06em,
+              circle(radius: dot-size / 2, fill: dot-color, stroke: 1.6pt + white),
+            )
             #main-column
-            #if main-column-second-row != none [
-              #linebreak()
-              #main-column-second-row
-            ]
+            #if main-column-second-row != none {
+              linebreak()
+              main-column-second-row
+            }
+            #v(entry-gap)
           ],
         )
       ],
