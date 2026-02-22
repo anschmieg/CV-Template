@@ -180,7 +180,7 @@
             #place(
               top + left,
               dx: -timeline-indent - dot-outer-size / 2 + line-width / 2,
-              dy: cap-height * 0.58,
+              dy: (cap-height - dot-size) / 2,
               circle(radius: dot-size / 2, fill: dot-color, stroke: dot-outline-width + white),
             )
             #main-column
