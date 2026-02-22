@@ -33,9 +33,25 @@
 {% if has_custom_main_column_template and design.templates.experience_entry.main_column is defined and design.templates.experience_entry.main_column %}
 {% set main_column_template = design.templates.experience_entry.main_column %}
 {% endif %}
-{% set organization_has_custom_style = false %}
-{% if has_custom_main_column_template and main_column_template and ("**COMPANY**" in main_column_template or "*COMPANY*" in main_column_template) %}
-{% set organization_has_custom_style = true %}
+{% set position_style = "default" %}
+{% if has_custom_main_column_template and main_column_template %}
+{% if "**POSITION**" in main_column_template %}
+{% set position_style = "bold" %}
+{% elif "*POSITION*" in main_column_template %}
+{% set position_style = "italic" %}
+{% else %}
+{% set position_style = "plain" %}
+{% endif %}
+{% endif %}
+{% set organization_style = "default" %}
+{% if has_custom_main_column_template and main_column_template %}
+{% if "**COMPANY**" in main_column_template %}
+{% set organization_style = "bold" %}
+{% elif "*COMPANY*" in main_column_template %}
+{% set organization_style = "italic" %}
+{% else %}
+{% set organization_style = "plain" %}
+{% endif %}
 {% endif %}
 #timeline-entry(
   [
@@ -46,21 +62,50 @@
   ],
   [
 {% if position_line %}
-    #text(fill: {{ design.colors.name.as_rgb() }}, weight: {% if design.typography.bold.section_titles %}700{% else %}600{% endif %})[{{ position_line|indent(4) }}]
-
-{% endif %}
-{% if organization_line %}
-{% if organization_has_custom_style %}
-    #text(fill: {{ design.colors.footer.as_rgb() }})[{{ organization_line|indent(4) }}]
-
+    #text(fill: {{ design.colors.name.as_rgb() }}, weight: {% if design.typography.bold.section_titles %}700{% else %}600{% endif %})[
+{% if position_style == "bold" %}
+      #strong[{{ position_line|indent(6) }}]
+{% elif position_style == "italic" %}
+      #emph[{{ position_line|indent(6) }}]
 {% else %}
-    #text(fill: {{ design.colors.footer.as_rgb() }}, weight: 600)[{{ organization_plain|indent(4) }}]
-
+      {{ position_line|indent(6) }}
 {% endif %}
+    ]
+{% elif organization_line %}
+    #text(
+      fill: {{ design.colors.footer.as_rgb() }},
+      weight: {% if organization_style == "default" %}600{% else %}400{% endif %},
+    )[
+{% if organization_style == "bold" %}
+      #strong[{{ organization_plain|indent(6) }}]
+{% elif organization_style == "italic" %}
+      #emph[{{ organization_plain|indent(6) }}]
+{% else %}
+      {{ organization_plain|indent(6) }}
+{% endif %}
+    ]
+{% endif %}
+  ],
+{% if (position_line and organization_line) or ns.body|length > 0 %}
+  main-column-second-row: [
+{% if position_line and organization_line %}
+    #text(
+      fill: {{ design.colors.footer.as_rgb() }},
+      weight: {% if organization_style == "default" %}600{% else %}400{% endif %},
+    )[
+{% if organization_style == "bold" %}
+      #strong[{{ organization_plain|indent(6) }}]
+{% elif organization_style == "italic" %}
+      #emph[{{ organization_plain|indent(6) }}]
+{% else %}
+      {{ organization_plain|indent(6) }}
+{% endif %}
+    ]
 {% endif %}
 {% for line in ns.body %}
     {{ line|indent(4) }}
 
 {% endfor %}
   ],
+{% endif %}
 )

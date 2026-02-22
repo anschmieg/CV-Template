@@ -28,10 +28,12 @@
         --cv-section: {{ design.colors.section_titles.as_rgb() }};
         --cv-links: {{ design.colors.links.as_rgb() }};
         --cv-muted: {{ design.colors.footer.as_rgb() }};
+        --cv-organization: color-mix(in srgb, var(--cv-body) 76%, white 24%);
         --cv-timeline-dot: {% if design.colors.timeline_dot %}{{ design.colors.timeline_dot.as_rgb() }}{% else %}{{ design.colors.section_titles.as_rgb() }}{% endif %};
         --cv-timeline-line: {% if design.colors.timeline_line %}{{ design.colors.timeline_line.as_rgb() }}{% else %}{{ design.colors.connections.as_rgb() }}{% endif %};
         --cv-font-body: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
         --cv-font-title: "Raleway", "Segoe UI", sans-serif;
+        --cv-entry-emphasis-weight: {% if design.typography.bold.section_titles %}700{% else %}600{% endif %};
       }
 
       html,
@@ -132,17 +134,67 @@
         line-height: 1.35;
       }
 
+      .cv-entry-primary {
+        color: var(--cv-name);
+        font-weight: var(--cv-entry-emphasis-weight);
+      }
+
+      .cv-entry-secondary {
+        color: var(--cv-organization);
+        font-weight: 600;
+      }
+
+      .cv-entry-secondary.cv-entry-secondary-custom {
+        font-weight: 400;
+      }
+
+      .cv-org-inline {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.35rem;
+      }
+
+      .cv-org-inline .icon {
+        color: color-mix(in srgb, var(--cv-muted) 86%, var(--cv-body) 14%);
+        font-size: 0.75rem;
+        transform: translateY(-0.5px);
+      }
+
       .cv-card {
         border: 1px solid color-mix(in srgb, var(--cv-connections) 20%, white 80%);
         border-radius: 10px;
       }
 
       .cv-cards-grid {
+        --cv-card-grid-template: repeat(2, minmax(0, 1fr));
+        display: grid;
+        grid-template-columns: var(--cv-card-grid-template);
+        gap: 0.9rem;
         align-items: stretch;
       }
 
-      .cv-cards-grid > .column {
-        display: flex;
+      .cv-cards-layout-one {
+        --cv-card-grid-template: minmax(0, 1fr);
+      }
+
+      .cv-cards-layout-two {
+        --cv-card-grid-template: repeat(2, minmax(0, 1fr));
+      }
+
+      .cv-cards-layout-three {
+        --cv-card-grid-template: repeat(3, minmax(0, 1fr));
+      }
+
+      .cv-cards-layout-four {
+        --cv-card-grid-template: repeat(4, minmax(0, 1fr));
+      }
+
+      .cv-cards-layout-three-weighted {
+        --cv-card-grid-template: repeat(4, minmax(0, 1fr));
+      }
+
+      .cv-cards-layout-three-weighted .cv-card {
+        grid-column: span var(--card-span, 1);
       }
 
       .cv-cards-grid .cv-card {
@@ -150,6 +202,7 @@
         flex-direction: column;
         width: 100%;
         height: 100%;
+        margin: 0;
       }
 
       .cv-card:hover {
@@ -237,6 +290,20 @@
         margin-bottom: 0.2rem;
       }
 
+      .cv-highlights {
+        list-style: disc outside !important;
+        margin: 0.2rem 0 0.2rem 1.2rem;
+        padding-left: 0.2rem;
+      }
+
+      .cv-highlights li {
+        list-style: disc outside !important;
+      }
+
+      .cv-highlights li::marker {
+        color: color-mix(in srgb, var(--cv-section) 72%, var(--cv-body) 28%);
+      }
+
       .cv-publication-links {
         display: flex;
         flex-wrap: wrap;
@@ -256,6 +323,26 @@
       @media (max-width: 1215px) {
         .cv-main {
           padding: 2rem 1.5rem !important;
+        }
+
+        .cv-cards-layout-four {
+          --cv-card-grid-template: repeat(3, minmax(0, 1fr));
+        }
+
+        .cv-cards-layout-three-weighted {
+          --cv-card-grid-template: repeat(3, minmax(0, 1fr));
+        }
+      }
+
+      @media (max-width: 1024px) {
+        .cv-cards-layout-four,
+        .cv-cards-layout-three,
+        .cv-cards-layout-three-weighted {
+          --cv-card-grid-template: repeat(2, minmax(0, 1fr));
+        }
+
+        .cv-cards-layout-three-weighted .cv-card {
+          grid-column: span 1;
         }
       }
 
@@ -310,6 +397,14 @@
         .cv-card {
           padding: 1rem !important;
           border-radius: 8px;
+        }
+
+        .cv-cards-grid {
+          --cv-card-grid-template: minmax(0, 1fr);
+        }
+
+        .cv-cards-grid .cv-card {
+          grid-column: span 1 !important;
         }
       }
 
@@ -411,8 +506,20 @@
           {% endif %}
 
           {% set view_mode = 'auto' %}
+          {% set card_layout = 'two' %}
           {% if '.cards' in section_title_raw %}
             {% set view_mode = 'cards' %}
+            {% if '.cards-4' in section_title_raw %}
+              {% set card_layout = 'four' %}
+            {% elif '.cards-3w' in section_title_raw %}
+              {% set card_layout = 'three-weighted' %}
+            {% elif '.cards-3' in section_title_raw %}
+              {% set card_layout = 'three' %}
+            {% elif '.cards-2' in section_title_raw %}
+              {% set card_layout = 'two' %}
+            {% elif '.cards-1' in section_title_raw %}
+              {% set card_layout = 'one' %}
+            {% endif %}
           {% elif '.list' in section_title_raw %}
             {% set view_mode = 'list' %}
           {% elif '.timeline' in section_title_raw %}
@@ -476,22 +583,64 @@
                     {% endif %}
                     {% set entry_title = '' %}
                     {% set entry_subtitle = '' %}
+                    {% set entry_secondary = '' %}
+                    {% set entry_title_style = 'default' %}
+                    {% set entry_subtitle_style = 'default' %}
                     {% if has_org %}
+                      {% set organization_name = '' %}
+                      {% if entry.company %}
+                        {% set organization_name = entry.company %}
+                      {% elif entry.institution %}
+                        {% set organization_name = entry.institution %}
+                      {% endif %}
                       {% if entry.position %}
                         {% set entry_title = entry.position %}
+                      {% elif entry.area %}
+                        {% set entry_title = entry.area %}
                       {% elif degree_line %}
                         {% set entry_title = degree_line %}
-                      {% elif entry.name %}
-                        {% set entry_title = entry.name %}
-                      {% elif entry.title %}
-                        {% set entry_title = entry.title %}
-                      {% elif entry.label %}
-                        {% set entry_title = entry.label %}
+                      {% else %}
+                        {% set entry_title = organization_name %}
                       {% endif %}
-                      {% if entry.company %}
-                        {% set entry_subtitle = entry.company %}
-                      {% elif entry.institution %}
-                        {% set entry_subtitle = entry.institution %}
+                      {% if organization_name and entry_title != organization_name %}
+                        {% set entry_subtitle = organization_name %}
+                      {% endif %}
+                      {% if entry.degree and (entry_subtitle != entry.degree) %}
+                        {% set entry_secondary = entry.degree %}
+                      {% endif %}
+
+                      {% set main_column_template = '' %}
+                      {% if design.templates is defined %}
+                        {% if entry.company is defined and design.templates.experience_entry is defined and design.templates.experience_entry.main_column is defined %}
+                          {% set main_column_template = design.templates.experience_entry.main_column %}
+                        {% elif entry.institution is defined and design.templates.education_entry is defined and design.templates.education_entry.main_column is defined %}
+                          {% set main_column_template = design.templates.education_entry.main_column %}
+                        {% endif %}
+                      {% endif %}
+
+                      {% if main_column_template %}
+                        {% set role_token = 'POSITION' if entry.position is defined and entry.position else ('AREA' if entry.area is defined and entry.area else '') %}
+                        {% set organization_token = 'COMPANY' if entry.company is defined and entry.company else ('INSTITUTION' if entry.institution is defined and entry.institution else '') %}
+
+                        {% if role_token %}
+                          {% if '**' ~ role_token ~ '**' in main_column_template %}
+                            {% set entry_title_style = 'bold' %}
+                          {% elif ('*' ~ role_token ~ '*') in main_column_template %}
+                            {% set entry_title_style = 'italic' %}
+                          {% else %}
+                            {% set entry_title_style = 'plain' %}
+                          {% endif %}
+                        {% endif %}
+
+                        {% if organization_token %}
+                          {% if '**' ~ organization_token ~ '**' in main_column_template %}
+                            {% set entry_subtitle_style = 'bold' %}
+                          {% elif ('*' ~ organization_token ~ '*') in main_column_template %}
+                            {% set entry_subtitle_style = 'italic' %}
+                          {% else %}
+                            {% set entry_subtitle_style = 'plain' %}
+                          {% endif %}
+                        {% endif %}
                       {% endif %}
                     {% else %}
                       {% if entry.name %}
@@ -513,11 +662,30 @@
                         {% set entry_subtitle = entry.label %}
                       {% endif %}
                     {% endif %}
-                    <h3 class="title is-6 mb-1" style="color: var(--cv-name)">
-                      {{ render_markdown_inline(entry_title) }}
+                    <h3 class="title is-6 mb-1 cv-entry-primary">
+                      {% if entry_title_style == 'bold' %}
+                        <strong>{{ render_markdown_inline(entry_title) }}</strong>
+                      {% elif entry_title_style == 'italic' %}
+                        <em>{{ render_markdown_inline(entry_title) }}</em>
+                      {% else %}
+                        {{ render_markdown_inline(entry_title) }}
+                      {% endif %}
                     </h3>
                     {% if entry_subtitle %}
-                      <p class="mb-2" style="color: var(--cv-connections)">{{ render_markdown_inline(entry_subtitle) }}</p>
+                      <p class="mb-2 cv-entry-secondary{% if entry_subtitle_style != 'default' %} cv-entry-secondary-custom{% endif %}">
+                        {% if entry_subtitle_style == 'bold' %}
+                          <strong>{{ render_markdown_inline(entry_subtitle) }}</strong>
+                        {% elif entry_subtitle_style == 'italic' %}
+                          <em>{{ render_markdown_inline(entry_subtitle) }}</em>
+                        {% elif entry_subtitle_style == 'plain' %}
+                          {{ render_markdown_inline(entry_subtitle) }}
+                        {% else %}
+                          {{ render_markdown_inline(entry_subtitle) }}
+                        {% endif %}
+                      </p>
+                    {% endif %}
+                    {% if entry_secondary %}
+                      <p class="mb-2"><strong>{{ render_markdown_inline(entry_secondary) }}</strong></p>
                     {% endif %}
                     {% if entry.details %}
                       {{ render_markdown_block(entry.details, 'mb-2') }}
@@ -526,9 +694,9 @@
                       {{ render_markdown_block(entry.summary, 'mb-2') }}
                     {% endif %}
                     {% if entry.highlights %}
-                      <ul class="cv-list">
+                      <ul class="cv-list cv-highlights">
                         {% for highlight in entry.highlights %}
-                          <li>{{ render_markdown_block(highlight, 'cv-highlight-content') }}</li>
+                          <li>{{ render_markdown_inline(highlight) }}</li>
                         {% endfor %}
                       </ul>
                     {% endif %}
@@ -547,169 +715,269 @@
                 </article>
               {% endfor %}
             {% elif view_mode == 'cards' and has_entries %}
-              <div class="columns is-multiline cv-cards-grid">
+              <div class="cv-cards-grid cv-cards-layout-{{ card_layout }}">
                 {% for entry in section_content %}
-                  <div class="column is-half-tablet">
-                    <article class="box cv-card p-5">
-                      {% if is_publication_section %}
-                        {% set publication_title = entry.title if entry.title is defined and entry.title else (entry.name if entry.name is defined and entry.name else '') %}
-                        {% if entry.authors is defined and entry.authors %}
-                          {% if entry.authors is sequence and entry.authors is not string %}
-                            {% set publication_authors = entry.authors|join(', ') %}
-                          {% else %}
-                            {% set publication_authors = entry.authors %}
-                          {% endif %}
+                  {% set card_score = namespace(value=0.0) %}
+                  {% for field_name in ['title', 'name', 'label', 'company', 'institution', 'position', 'area', 'degree', 'journal', 'publisher', 'venue', 'booktitle', 'conference'] %}
+                    {% if entry[field_name] is defined and entry[field_name] %}
+                      {% set card_score.value = card_score.value + ((entry[field_name]|string|length) / 44) + 0.35 %}
+                    {% endif %}
+                  {% endfor %}
+                  {% for field_name in ['summary', 'details', 'citation'] %}
+                    {% if entry[field_name] is defined and entry[field_name] %}
+                      {% set card_score.value = card_score.value + ((entry[field_name]|string|length) / 52) + 0.8 %}
+                    {% endif %}
+                  {% endfor %}
+                  {% if entry.highlights is defined and entry.highlights %}
+                    {% for highlight in entry.highlights %}
+                      {% if highlight %}
+                        {% set card_score.value = card_score.value + ((highlight|string|length) / 58) + 0.85 %}
+                      {% endif %}
+                    {% endfor %}
+                  {% endif %}
+                  {% if entry.authors is defined and entry.authors %}
+                    {% if entry.authors is sequence and entry.authors is not string %}
+                      {% for author in entry.authors %}
+                        {% if author %}
+                          {% set card_score.value = card_score.value + ((author|string|length) / 64) + 0.55 %}
+                        {% endif %}
+                      {% endfor %}
+                    {% else %}
+                      {% set card_score.value = card_score.value + ((entry.authors|string|length) / 64) + 0.55 %}
+                    {% endif %}
+                  {% endif %}
+                  {% for field_name in ['date', 'start_date', 'end_date', 'location', 'url', 'doi'] %}
+                    {% if entry[field_name] is defined and entry[field_name] %}
+                      {% set card_score.value = card_score.value + 0.22 %}
+                    {% endif %}
+                  {% endfor %}
+                  {% set card_colspan = 1 %}
+                  {% if card_layout == 'three-weighted' and card_score.value >= 9.2 %}
+                    {% set card_colspan = 2 %}
+                  {% endif %}
+                  <article class="box cv-card p-5" style="--card-span: {{ card_colspan }};">
+                    {% if is_publication_section %}
+                      {% set publication_title = entry.title if entry.title is defined and entry.title else (entry.name if entry.name is defined and entry.name else '') %}
+                      {% if entry.authors is defined and entry.authors %}
+                        {% if entry.authors is sequence and entry.authors is not string %}
+                          {% set publication_authors = entry.authors|join(', ') %}
                         {% else %}
-                          {% set publication_authors = '' %}
-                        {% endif %}
-                        {% set publication_venue = '' %}
-                        {% if entry.journal is defined and entry.journal %}
-                          {% set publication_venue = entry.journal %}
-                        {% elif entry.publisher is defined and entry.publisher %}
-                          {% set publication_venue = entry.publisher %}
-                        {% elif entry.venue is defined and entry.venue %}
-                          {% set publication_venue = entry.venue %}
-                        {% elif entry.booktitle is defined and entry.booktitle %}
-                          {% set publication_venue = entry.booktitle %}
-                        {% elif entry.conference is defined and entry.conference %}
-                          {% set publication_venue = entry.conference %}
-                        {% endif %}
-                        <h3 class="title is-6 mb-1" style="color: var(--cv-name)">
-                          {{ render_markdown_inline(publication_title) }}
-                        </h3>
-                        {% if publication_authors %}
-                          <p class="mb-2" style="color: var(--cv-connections)">{{ render_markdown_inline(publication_authors) }}</p>
-                        {% endif %}
-                        {% if publication_venue %}
-                          <p class="mb-2">{{ render_markdown_inline(publication_venue) }}</p>
-                        {% endif %}
-                        {% if entry.date or entry.location %}
-                          <p class="cv-item-meta mb-2">
-                            {% if entry.date %}
-                              {{ entry.date }}
-                            {% endif %}
-                            {% if entry.location %}
-                              {% if entry.date %} · {% endif %}{{ entry.location }}
-                            {% endif %}
-                          </p>
-                        {% endif %}
-                        {% if entry.citation is defined and entry.citation %}
-                          {{ render_markdown_block(entry.citation, 'mb-2') }}
-                        {% endif %}
-                        {% if entry.details %}
-                          {{ render_markdown_block(entry.details, 'mb-2') }}
-                        {% endif %}
-                        {% if entry.summary %}
-                          {{ render_markdown_block(entry.summary, 'mb-2') }}
-                        {% endif %}
-                        {% if entry.highlights %}
-                          <ul class="cv-list mt-2">
-                            {% for highlight in entry.highlights %}
-                              <li>{{ render_markdown_block(highlight, 'cv-highlight-content') }}</li>
-                            {% endfor %}
-                          </ul>
-                        {% endif %}
-                        {% if entry.doi is defined and entry.doi or entry.url is defined and entry.url %}
-                          <div class="cv-publication-links mt-3 is-size-7">
-                            {% if entry.doi is defined and entry.doi %}
-                              {% set doi_value = entry.doi|replace('https://doi.org/', '')|replace('http://doi.org/', '')|replace('doi:', '')|replace('DOI:', '')|strip %}
-                              <a href="https://doi.org/{{ doi_value }}" target="_blank" rel="noreferrer">DOI: {{ doi_value }}</a>
-                            {% endif %}
-                            {% if entry.url is defined and entry.url %}
-                              <a href="{{ entry.url }}" target="_blank" rel="noreferrer">{{ entry.url|clean_url }}</a>
-                            {% endif %}
-                          </div>
+                          {% set publication_authors = entry.authors %}
                         {% endif %}
                       {% else %}
-                        {% set has_org = (entry.company is defined and entry.company) or (entry.institution is defined and entry.institution) %}
-                        {% set degree_line = '' %}
-                        {% if entry.degree %}
-                          {% set degree_line = entry.degree ~ ((' · ' ~ entry.area) if entry.area else '') %}
+                        {% set publication_authors = '' %}
+                      {% endif %}
+                      {% set publication_venue = '' %}
+                      {% if entry.journal is defined and entry.journal %}
+                        {% set publication_venue = entry.journal %}
+                      {% elif entry.publisher is defined and entry.publisher %}
+                        {% set publication_venue = entry.publisher %}
+                      {% elif entry.venue is defined and entry.venue %}
+                        {% set publication_venue = entry.venue %}
+                      {% elif entry.booktitle is defined and entry.booktitle %}
+                        {% set publication_venue = entry.booktitle %}
+                      {% elif entry.conference is defined and entry.conference %}
+                        {% set publication_venue = entry.conference %}
+                      {% endif %}
+                      <h3 class="title is-6 mb-1" style="color: var(--cv-name)">
+                        {{ render_markdown_inline(publication_title) }}
+                      </h3>
+                      {% if publication_authors %}
+                        <p class="mb-2" style="color: var(--cv-connections)">{{ render_markdown_inline(publication_authors) }}</p>
+                      {% endif %}
+                      {% if publication_venue %}
+                        <p class="mb-2">{{ render_markdown_inline(publication_venue) }}</p>
+                      {% endif %}
+                      {% if entry.date or entry.location %}
+                        <p class="cv-item-meta mb-2">
+                          {% if entry.date %}
+                            {{ entry.date }}
+                          {% endif %}
+                          {% if entry.location %}
+                            {% if entry.date %} · {% endif %}{{ entry.location }}
+                          {% endif %}
+                        </p>
+                      {% endif %}
+                      {% if entry.citation is defined and entry.citation %}
+                        {{ render_markdown_block(entry.citation, 'mb-2') }}
+                      {% endif %}
+                      {% if entry.details %}
+                        {{ render_markdown_block(entry.details, 'mb-2') }}
+                      {% endif %}
+                      {% if entry.summary %}
+                        {{ render_markdown_block(entry.summary, 'mb-2') }}
+                      {% endif %}
+                      {% if entry.highlights %}
+                        <ul class="cv-list cv-highlights mt-2">
+                          {% for highlight in entry.highlights %}
+                            <li>{{ render_markdown_inline(highlight) }}</li>
+                          {% endfor %}
+                        </ul>
+                      {% endif %}
+                      {% if entry.doi is defined and entry.doi or entry.url is defined and entry.url %}
+                        <div class="cv-publication-links mt-3 is-size-7">
+                          {% if entry.doi is defined and entry.doi %}
+                            {% set doi_value = entry.doi|replace('https://doi.org/', '')|replace('http://doi.org/', '')|replace('doi:', '')|replace('DOI:', '')|strip %}
+                            <a href="https://doi.org/{{ doi_value }}" target="_blank" rel="noreferrer">DOI: {{ doi_value }}</a>
+                          {% endif %}
+                          {% if entry.url is defined and entry.url %}
+                            <a href="{{ entry.url }}" target="_blank" rel="noreferrer">{{ entry.url|clean_url }}</a>
+                          {% endif %}
+                        </div>
+                      {% endif %}
+                    {% else %}
+                      {% set has_org = (entry.company is defined and entry.company) or (entry.institution is defined and entry.institution) %}
+                      {% set degree_line = '' %}
+                      {% if entry.degree %}
+                        {% set degree_line = entry.degree ~ ((' · ' ~ entry.area) if entry.area else '') %}
+                      {% endif %}
+                      {% set entry_title = '' %}
+                      {% set entry_subtitle = '' %}
+                      {% set entry_secondary = '' %}
+                      {% set entry_title_style = 'default' %}
+                      {% set entry_subtitle_style = 'default' %}
+                      {% if has_org %}
+                        {% set organization_name = '' %}
+                        {% if entry.company %}
+                          {% set organization_name = entry.company %}
+                        {% elif entry.institution %}
+                          {% set organization_name = entry.institution %}
                         {% endif %}
-                        {% set entry_title = '' %}
-                        {% set entry_subtitle = '' %}
-                        {% if has_org %}
-                          {% if entry.position %}
-                            {% set entry_title = entry.position %}
-                          {% elif degree_line %}
-                            {% set entry_title = degree_line %}
-                          {% elif entry.name %}
-                            {% set entry_title = entry.name %}
-                          {% elif entry.title %}
-                            {% set entry_title = entry.title %}
-                          {% elif entry.label %}
-                            {% set entry_title = entry.label %}
-                          {% endif %}
-                          {% if entry.company %}
-                            {% set entry_subtitle = entry.company %}
-                          {% elif entry.institution %}
-                            {% set entry_subtitle = entry.institution %}
-                          {% endif %}
+                        {% if entry.position %}
+                          {% set entry_title = entry.position %}
+                        {% elif entry.area %}
+                          {% set entry_title = entry.area %}
+                        {% elif degree_line %}
+                          {% set entry_title = degree_line %}
                         {% else %}
-                          {% if entry.name %}
-                            {% set entry_title = entry.name %}
-                          {% elif entry.title %}
-                            {% set entry_title = entry.title %}
-                          {% elif entry.label %}
-                            {% set entry_title = entry.label %}
-                          {% elif entry.position %}
-                            {% set entry_title = entry.position %}
-                          {% elif degree_line %}
-                            {% set entry_title = degree_line %}
-                          {% endif %}
-                          {% if entry.position and entry_title != entry.position %}
-                            {% set entry_subtitle = entry.position %}
-                          {% elif degree_line and entry_title != degree_line %}
-                            {% set entry_subtitle = degree_line %}
-                          {% elif entry.label and entry_title != entry.label %}
-                            {% set entry_subtitle = entry.label %}
+                          {% set entry_title = organization_name %}
+                        {% endif %}
+                        {% if organization_name and entry_title != organization_name %}
+                          {% set entry_subtitle = organization_name %}
+                        {% endif %}
+                        {% if entry.degree and (entry_subtitle != entry.degree) %}
+                          {% set entry_secondary = entry.degree %}
+                        {% endif %}
+
+                        {% set main_column_template = '' %}
+                        {% if design.templates is defined %}
+                          {% if entry.company is defined and design.templates.experience_entry is defined and design.templates.experience_entry.main_column is defined %}
+                            {% set main_column_template = design.templates.experience_entry.main_column %}
+                          {% elif entry.institution is defined and design.templates.education_entry is defined and design.templates.education_entry.main_column is defined %}
+                            {% set main_column_template = design.templates.education_entry.main_column %}
                           {% endif %}
                         {% endif %}
-                        <h3 class="title is-6 mb-1" style="color: var(--cv-name)">
-                          {{ render_markdown_inline(entry_title) }}
-                        </h3>
-                        {% if entry_subtitle %}
-                          <p class="mb-2" style="color: var(--cv-connections)">{{ render_markdown_inline(entry_subtitle) }}</p>
-                        {% endif %}
-                        {% if entry.date or entry.start_date or entry.location %}
-                          <p class="cv-item-meta mb-2">
-                            {% if entry.date %}
-                              {{ entry.date }}
-                            {% elif entry.start_date %}
-                              {{ entry.start_date }}{% if entry.end_date %} - {{ entry.end_date }}{% endif %}
+
+                        {% if main_column_template %}
+                          {% set role_token = 'POSITION' if entry.position is defined and entry.position else ('AREA' if entry.area is defined and entry.area else '') %}
+                          {% set organization_token = 'COMPANY' if entry.company is defined and entry.company else ('INSTITUTION' if entry.institution is defined and entry.institution else '') %}
+
+                          {% if role_token %}
+                            {% if '**' ~ role_token ~ '**' in main_column_template %}
+                              {% set entry_title_style = 'bold' %}
+                            {% elif ('*' ~ role_token ~ '*') in main_column_template %}
+                              {% set entry_title_style = 'italic' %}
+                            {% else %}
+                              {% set entry_title_style = 'plain' %}
                             {% endif %}
-                            {% if entry.location %}
-                              {% if entry.date or entry.start_date %} · {% endif %}{{ entry.location }}
+                          {% endif %}
+
+                          {% if organization_token %}
+                            {% if '**' ~ organization_token ~ '**' in main_column_template %}
+                              {% set entry_subtitle_style = 'bold' %}
+                            {% elif ('*' ~ organization_token ~ '*') in main_column_template %}
+                              {% set entry_subtitle_style = 'italic' %}
+                            {% else %}
+                              {% set entry_subtitle_style = 'plain' %}
                             {% endif %}
-                          </p>
+                          {% endif %}
                         {% endif %}
-                        {% if entry.details %}
-                          {{ render_markdown_block(entry.details, 'mb-2') }}
+                      {% else %}
+                        {% if entry.name %}
+                          {% set entry_title = entry.name %}
+                        {% elif entry.title %}
+                          {% set entry_title = entry.title %}
+                        {% elif entry.label %}
+                          {% set entry_title = entry.label %}
+                        {% elif entry.position %}
+                          {% set entry_title = entry.position %}
+                        {% elif degree_line %}
+                          {% set entry_title = degree_line %}
                         {% endif %}
-                        {% if entry.summary %}
-                          {{ render_markdown_block(entry.summary, 'mb-2') }}
-                        {% endif %}
-                        {% if entry.highlights %}
-                          <ul class="cv-list mt-2">
-                            {% for highlight in entry.highlights %}
-                              <li>{{ render_markdown_block(highlight, 'cv-highlight-content') }}</li>
-                            {% endfor %}
-                          </ul>
-                        {% endif %}
-                        {% if entry.doi is defined and entry.doi or entry.url is defined and entry.url %}
-                          <div class="cv-publication-links mt-2 is-size-7">
-                            {% if entry.doi is defined and entry.doi %}
-                              {% set doi_value = entry.doi|replace('https://doi.org/', '')|replace('http://doi.org/', '')|replace('doi:', '')|replace('DOI:', '')|strip %}
-                              <a href="https://doi.org/{{ doi_value }}" target="_blank" rel="noreferrer">DOI: {{ doi_value }}</a>
-                            {% endif %}
-                            {% if entry.url is defined and entry.url %}
-                              <a href="{{ entry.url }}" target="_blank" rel="noreferrer">{{ entry.url|clean_url }}</a>
-                            {% endif %}
-                          </div>
+                        {% if entry.position and entry_title != entry.position %}
+                          {% set entry_subtitle = entry.position %}
+                        {% elif degree_line and entry_title != degree_line %}
+                          {% set entry_subtitle = degree_line %}
+                        {% elif entry.label and entry_title != entry.label %}
+                          {% set entry_subtitle = entry.label %}
                         {% endif %}
                       {% endif %}
-                    </article>
-                  </div>
+                      <h3 class="title is-6 mb-1 cv-entry-primary">
+                        {% if entry_title_style == 'bold' %}
+                          <strong>{{ render_markdown_inline(entry_title) }}</strong>
+                        {% elif entry_title_style == 'italic' %}
+                          <em>{{ render_markdown_inline(entry_title) }}</em>
+                        {% else %}
+                          {{ render_markdown_inline(entry_title) }}
+                        {% endif %}
+                      </h3>
+                      {% if entry_subtitle %}
+                        <p class="mb-2 cv-entry-secondary{% if entry_subtitle_style != 'default' %} cv-entry-secondary-custom{% endif %}">
+                          {% if entry_subtitle_style == 'bold' %}
+                            <strong>{{ render_markdown_inline(entry_subtitle) }}</strong>
+                          {% elif entry_subtitle_style == 'italic' %}
+                            <em>{{ render_markdown_inline(entry_subtitle) }}</em>
+                          {% elif entry_subtitle_style == 'plain' %}
+                            {{ render_markdown_inline(entry_subtitle) }}
+                          {% else %}
+                            <span class="cv-org-inline">
+                              <span class="icon is-small"><i class="fa-solid fa-building"></i></span>
+                              {{ render_markdown_inline(entry_subtitle) }}
+                            </span>
+                          {% endif %}
+                        </p>
+                      {% endif %}
+                      {% if entry_secondary %}
+                        <p class="mb-2"><strong>{{ render_markdown_inline(entry_secondary) }}</strong></p>
+                      {% endif %}
+                      {% if entry.date or entry.start_date or entry.location %}
+                        <p class="cv-item-meta mb-2">
+                          {% if entry.date %}
+                            {{ entry.date }}
+                          {% elif entry.start_date %}
+                            {{ entry.start_date }}{% if entry.end_date %} - {{ entry.end_date }}{% endif %}
+                          {% endif %}
+                          {% if entry.location %}
+                            {% if entry.date or entry.start_date %} · {% endif %}{{ entry.location }}
+                          {% endif %}
+                        </p>
+                      {% endif %}
+                      {% if entry.details %}
+                        {{ render_markdown_block(entry.details, 'mb-2') }}
+                      {% endif %}
+                      {% if entry.summary %}
+                        {{ render_markdown_block(entry.summary, 'mb-2') }}
+                      {% endif %}
+                      {% if entry.highlights %}
+                        <ul class="cv-list cv-highlights mt-2">
+                          {% for highlight in entry.highlights %}
+                            <li>{{ render_markdown_inline(highlight) }}</li>
+                          {% endfor %}
+                        </ul>
+                      {% endif %}
+                      {% if entry.doi is defined and entry.doi or entry.url is defined and entry.url %}
+                        <div class="cv-publication-links mt-2 is-size-7">
+                          {% if entry.doi is defined and entry.doi %}
+                            {% set doi_value = entry.doi|replace('https://doi.org/', '')|replace('http://doi.org/', '')|replace('doi:', '')|replace('DOI:', '')|strip %}
+                            <a href="https://doi.org/{{ doi_value }}" target="_blank" rel="noreferrer">DOI: {{ doi_value }}</a>
+                          {% endif %}
+                          {% if entry.url is defined and entry.url %}
+                            <a href="{{ entry.url }}" target="_blank" rel="noreferrer">{{ entry.url|clean_url }}</a>
+                          {% endif %}
+                        </div>
+                      {% endif %}
+                    {% endif %}
+                  </article>
                 {% endfor %}
               </div>
             {% else %}

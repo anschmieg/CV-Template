@@ -83,6 +83,62 @@
 )
 
 #let anschmiegcv_section_view_mode = "auto"
+#let anschmiegcv_card_layout = "one"
+#let anschmiegcv_cards_state = state("anschmiegcv.cards.state", ())
+
+#let anschmiegcv_cards_clear() = context {
+  anschmiegcv_cards_state.update(_ => ())
+}
+
+#let anschmiegcv_cards_push(card, colspan: 1) = context {
+  anschmiegcv_cards_state.update(items => items + ((card, colspan),))
+}
+
+#let anschmiegcv_cards_columns(layout) = {
+  if layout == "four" {
+    (1fr, 1fr, 1fr, 1fr)
+  } else if layout == "three_equal" {
+    (1fr, 1fr, 1fr)
+  } else if layout == "three_weighted" {
+    (1fr, 1fr, 2fr)
+  } else if layout == "two" {
+    (1fr, 1fr)
+  } else {
+    (1fr,)
+  }
+}
+
+#let anschmiegcv_cards_render(layout: "one") = context {
+  let items = anschmiegcv_cards_state.get()
+  if items.len() == 0 {
+    none
+  } else {
+    let item_count = items.len()
+    let cells = range(0, item_count).map(index => {
+      let (card, colspan) = items.at(index)
+      let span = if layout == "two" and calc.rem(item_count, 2) == 1 and index == item_count - 1 {
+        2
+      } else if layout == "three_weighted" and colspan > 1 {
+        2
+      } else {
+        1
+      }
+      grid.cell(
+        colspan: span,
+        inset: 8pt,
+        stroke: 0.7pt + {{ design.colors.connections.as_rgb() }},
+      )[
+        #card
+      ]
+    })
+    grid(
+      columns: anschmiegcv_cards_columns(layout),
+      column-gutter: 0.24cm,
+      row-gutter: 0.24cm,
+      ..cells,
+    )
+  }
+}
 
 // Custom timeline entry function for Experience and Education sections
 #let timeline-entry(
@@ -91,14 +147,18 @@
   main-column-second-row: none,
   dot-color: {% if design.colors.timeline_dot %}{{ design.colors.timeline_dot.as_rgb() }}{% else %}{{ design.colors.connections.as_rgb() }}{% endif %},
   line-color: {% if design.colors.timeline_line %}{{ design.colors.timeline_line.as_rgb() }}{% else %}{{ design.colors.connections.as_rgb() }}{% endif %},
-) = {
-  let dot-size = 9.5pt
-  let line-width = 1.0pt
+) = context {
+  let body-font-size = {{ design.typography.font_size.body }}
+  let line-spacing = {{ design.typography.line_spacing }}
+  let cap-height = measure(text(size: body-font-size)[H]).height
+  let dot-size = cap-height / 1.34
+  let dot-outer-size = cap-height
+  let line-width = body-font-size * 0.095
+  let dot-outline-width = dot-size * 0.17
   let date-column-width = {{ design.entries.date_and_location_width }}
-  let side-space = {{ design.entries.side_space }}
   let space-between-columns = {{ design.entries.space_between_columns }}
   let timeline-indent = 0.24cm
-  let entry-gap = {{ design.sections.space_between_regular_entries }} + {{ design.typography.line_spacing }}
+  let entry-gap = {{ design.sections.space_between_regular_entries }} + line-spacing
 
   // Render one continuous vertical track per entry, including its continuation gap.
   block(
@@ -106,12 +166,10 @@
     above: 0pt,
     below: 0pt,
     grid(
-      columns: (side-space, date-column-width - side-space, space-between-columns, 1fr, side-space),
+      columns: (date-column-width, space-between-columns, 1fr),
       column-gutter: 0pt,
       row-gutter: 0pt,
-      align: (left, {{ design.typography.date_and_location_column_alignment }}, left, left, left),
-
-      [],
+      align: ({{ design.typography.date_and_location_column_alignment }}, left, left),
       date-and-location-column,
       [],
       [
@@ -120,9 +178,10 @@
           stroke: (left: line-width + line-color),
           [
             #place(
-              dx: -timeline-indent - dot-size / 2 + line-width / 2,
-              dy: -0.06em,
-              circle(radius: dot-size / 2, fill: dot-color, stroke: 1.6pt + white),
+              top + left,
+              dx: -timeline-indent - dot-outer-size / 2 + line-width / 2,
+              dy: cap-height * 0.58,
+              circle(radius: dot-size / 2, fill: dot-color, stroke: dot-outline-width + white),
             )
             #main-column
             #if main-column-second-row != none {
@@ -132,8 +191,7 @@
             #v(entry-gap)
           ],
         )
-      ],
-      [],
+      ]
     ),
   )
 }

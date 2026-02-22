@@ -33,9 +33,25 @@
 {% if has_custom_main_column_template and design.templates.education_entry.main_column is defined and design.templates.education_entry.main_column %}
 {% set main_column_template = design.templates.education_entry.main_column %}
 {% endif %}
-{% set organization_has_custom_style = false %}
-{% if has_custom_main_column_template and main_column_template and ("**INSTITUTION**" in main_column_template or "*INSTITUTION*" in main_column_template) %}
-{% set organization_has_custom_style = true %}
+{% set area_style = "default" %}
+{% if has_custom_main_column_template and main_column_template %}
+{% if "**AREA**" in main_column_template %}
+{% set area_style = "bold" %}
+{% elif "*AREA*" in main_column_template %}
+{% set area_style = "italic" %}
+{% else %}
+{% set area_style = "plain" %}
+{% endif %}
+{% endif %}
+{% set organization_style = "default" %}
+{% if has_custom_main_column_template and main_column_template %}
+{% if "**INSTITUTION**" in main_column_template %}
+{% set organization_style = "bold" %}
+{% elif "*INSTITUTION*" in main_column_template %}
+{% set organization_style = "italic" %}
+{% else %}
+{% set organization_style = "plain" %}
+{% endif %}
 {% endif %}
 #timeline-education-entry(
   [
@@ -46,17 +62,45 @@
   ],
   [
 {% if area_line %}
-    #text(fill: {{ design.colors.name.as_rgb() }}, weight: {% if design.typography.bold.section_titles %}700{% else %}600{% endif %})[{{ area_line|indent(4) }}]
-
-{% endif %}
-{% if organization_line %}
-{% if organization_has_custom_style %}
-    #text(fill: {{ design.colors.footer.as_rgb() }})[{{ organization_line|indent(4) }}]
-
+    #text(fill: {{ design.colors.name.as_rgb() }}, weight: {% if design.typography.bold.section_titles %}700{% else %}600{% endif %})[
+{% if area_style == "bold" %}
+      #strong[{{ area_line|indent(6) }}]
+{% elif area_style == "italic" %}
+      #emph[{{ area_line|indent(6) }}]
 {% else %}
-    #text(fill: {{ design.colors.footer.as_rgb() }}, weight: 600)[{{ organization_plain|indent(4) }}]
-
+      {{ area_line|indent(6) }}
 {% endif %}
+    ]
+{% elif organization_line %}
+    #text(
+      fill: {{ design.colors.footer.as_rgb() }},
+      weight: {% if organization_style == "default" %}600{% else %}400{% endif %},
+    )[
+{% if organization_style == "bold" %}
+      #strong[{{ organization_plain|indent(6) }}]
+{% elif organization_style == "italic" %}
+      #emph[{{ organization_plain|indent(6) }}]
+{% else %}
+      {{ organization_plain|indent(6) }}
+{% endif %}
+    ]
+{% endif %}
+  ],
+{% if (area_line and organization_line) or entry.degree_column or ns.body|length > 0 %}
+  main-column-second-row: [
+{% if area_line and organization_line %}
+    #text(
+      fill: {{ design.colors.footer.as_rgb() }},
+      weight: {% if organization_style == "default" %}600{% else %}400{% endif %},
+    )[
+{% if organization_style == "bold" %}
+      #strong[{{ organization_plain|indent(6) }}]
+{% elif organization_style == "italic" %}
+      #emph[{{ organization_plain|indent(6) }}]
+{% else %}
+      {{ organization_plain|indent(6) }}
+{% endif %}
+    ]
 {% endif %}
 {% if entry.degree_column %}
     {{ entry.degree_column|indent(4) }}
@@ -66,10 +110,6 @@
     {{ line|indent(4) }}
 
 {% endfor %}
-  ],
-{% if design.templates.education_entry.degree_column %}
-  degree-column: [
-    {{ entry.degree_column|indent(4) }}
   ],
 {% endif %}
 )
