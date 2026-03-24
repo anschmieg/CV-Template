@@ -1,0 +1,115 @@
+cv:
+  name: Max Mustermann
+  photo: profile_picture.jpg
+  location: Berlin, Germany
+  email: max.mustermann@email.de
+  phone: "+49 170 1234567"
+  social_networks:
+    - network: LinkedIn
+      username: maxmustermann
+
+  sections:
+    Experience:
+      - company: Example Ltd.
+        position: Project Manager
+        location: Berlin, Germany
+        start_date: 2022-01
+        end_date: present
+        highlights:
+          - Led projects with budgets up to €500,000
+          - Coordinated cross-functional teams of up to 15 employees
+          - Introduced agile methodologies to improve project efficiency
+
+      - company: Sample AG
+        position: Junior Consultant
+        location: Munich, Germany
+        start_date: 2020-03
+        end_date: 2021-12
+        highlights:
+          - Advised clients in the financial sector
+          - Conducted market analyses and competitive studies
+          - Supported CRM system implementation projects
+
+    Education:
+      - institution: Technical University of Berlin
+        area: Business Administration
+        degree: Master of Science
+        start_date: 2018-10
+        end_date: 2020-09
+        location: Berlin, Germany
+        highlights:
+          - "Focus: Strategic Management and Corporate Leadership"
+          - "Final grade: 1.7 (German scale)"
+
+      - institution: University of Hamburg
+        area: Economics
+        degree: Bachelor of Science
+        start_date: 2015-10
+        end_date: 2018-09
+        location: Hamburg, Germany
+        highlights:
+          - Exchange semester at University of Amsterdam
+
+    Volunteer:
+      - name: Mentor
+        position: Berlin Education Initiative
+        start_date: 2021-09
+        highlights:
+          - Supported students with career orientation
+          - Organized workshops and networking events
+
+      - name: Team Leader
+        position: Sports Club SV Blau-Weiß
+        start_date: 2019-01
+        end_date: 2022-06
+        highlights:
+          - Led a youth team of 25 players
+          - Planned training camps and tournament participation
+
+    "Languages {#languages .list}":
+      - label: German
+        details: Native
+
+      - label: English
+        details: C1 (IELTS 7.5)
+
+      - label: French
+        details: B2
+
+    "Technical Skills {#technical-skills .cards}":
+      - label: Data Analysis
+        details: Excel (advanced), Python (basic)
+
+      - label: Project Management
+        details: Jira, Trello, MS Project
+
+      - label: Office Software
+        details: Microsoft Office 365, Google Workspace
+
+locale:
+  language: english
+
+design:
+  theme: anschmiegcv
+  colors:
+    seed: rgb(0, 120, 135)
+    accent_seed: rgb(0, 138, 155)
+  page:
+    size: a4
+    show_footer: true
+    show_top_note: false
+  typography:
+    line_spacing: 0.6em
+    alignment: justified
+    font_family: "Source Sans 3"
+  header:
+    alignment: left
+    photo_width: "4.5cm"
+  section_titles:
+    type: moderncv
+    line_thickness: "1pt"
+    space_above: "0.67cm"
+    space_below: "0.33cm"
+
+settings:
+  current_date: "2026-03-24"

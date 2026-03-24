@@ -1,0 +1,115 @@
+cv:
+  name: Max Mustermann
+  photo: profile_picture.jpg
+  location: Berlin, Deutschland
+  email: max.mustermann@email.de
+  phone: "+49 170 1234567"
+  social_networks:
+    - network: LinkedIn
+      username: maxmustermann
+
+  sections:
+    Berufserfahrung:
+      - company: Beispiel GmbH
+        position: Projektmanager
+        location: Berlin, Deutschland
+        start_date: 2022-01
+        end_date: present
+        highlights:
+          - Leitung von Projekten mit Budgets bis zu 500.000 €
+          - Koordination interdisziplinärer Teams mit bis zu 15 Mitarbeitenden
+          - Einführung agiler Methoden zur Steigerung der Projekteffizienz
+
+      - company: Muster AG
+        position: Junior Consultant
+        location: München, Deutschland
+        start_date: 2020-03
+        end_date: 2021-12
+        highlights:
+          - Beratung von Kunden im Finanzsektor
+          - Erstellung von Marktanalysen und Wettbewerbsstudien
+          - Unterstützung bei der Implementierung von CRM-Systemen
+
+    Ausbildung:
+      - institution: Technische Universität Berlin
+        area: Betriebswirtschaftslehre
+        degree: Master of Science
+        start_date: 2018-10
+        end_date: 2020-09
+        location: Berlin, Deutschland
+        highlights:
+          - "Schwerpunkt: Strategisches Management und Unternehmensführung"
+          - "Abschlussnote: 1,7"
+
+      - institution: Universität Hamburg
+        area: Wirtschaftswissenschaften
+        degree: Bachelor of Science
+        start_date: 2015-10
+        end_date: 2018-09
+        location: Hamburg, Deutschland
+        highlights:
+          - Auslandssemester an der Universität von Amsterdam
+
+    Ehrenamt:
+      - name: Mentor
+        position: Bildungsinitiative Berlin
+        start_date: 2021-09
+        highlights:
+          - Unterstützung von Studierenden bei der beruflichen Orientierung
+          - Organisation von Workshops und Netzwerkveranstaltungen
+
+      - name: Teamleiter
+        position: Sportverein SV Blau-Weiß
+        start_date: 2019-01
+        end_date: 2022-06
+        highlights:
+          - Leitung einer Jugendmannschaft mit 25 Spielern
+          - Planung von Trainingscamps und Turnierteilnahmen
+
+    "Sprachen {#sprachen .list}":
+      - label: Deutsch
+        details: Erstsprache
+
+      - label: Englisch
+        details: C1 (IELTS 7.5)
+
+      - label: Französisch
+        details: B2
+
+    "IT-Fähigkeiten {#technische-faehigkeiten .cards}":
+      - label: Datenanalyse
+        details: Excel (fortgeschritten), Python (Grundkenntnisse)
+
+      - label: Projektmanagement
+        details: Jira, Trello, MS Project
+
+      - label: Office-Software
+        details: Microsoft Office 365, Google Workspace
+
+locale:
+  language: german
+
+design:
+  theme: anschmiegcv
+  colors:
+    seed: rgb(0, 120, 135)
+    accent_seed: rgb(0, 138, 155)
+  page:
+    size: a4
+    show_footer: true
+    show_top_note: false
+  typography:
+    line_spacing: 0.6em
+    alignment: justified
+    font_family: "Source Sans 3"
+  header:
+    alignment: left
+    photo_width: "4.5cm"
+  section_titles:
+    type: moderncv
+    line_thickness: "1pt"
+    space_above: "0.67cm"
+    space_below: "0.33cm"
+
+settings:
+  current_date: "2026-03-24"

@@ -1,0 +1,157 @@
+# Design Configuration for CV-Template
+# This file centralizes all design settings for both PDF and HTML output
+# Copy this file and customize the values to match your preferences
+
+design:
+  # Theme selection
+  theme: anschmiegcv
+
+  # Page settings (PDF)
+  page:
+    size: a4 # Options: a4, us-letter, a5, us-executive
+    top_margin: 0.7in
+    bottom_margin: 0.7in
+    left_margin: 0.7in
+    right_margin: 0.7in
+    show_footer: true
+    show_top_note: false
+
+  # Color scheme - easily customizable
+  colors:
+    # Primary brand color (used for name, links, accents)
+    seed: rgb(0, 120, 135) # Teal/cyan - main brand color
+    accent_seed: rgb(0, 138, 155) # Slightly lighter accent
+
+    # Additional color options (for other themes)
+    # body: rgb(45, 45, 45) # Almost black for body text
+    # name: rgb(0, 120, 135)
+    # headline: rgb(0, 120, 135)
+    # connections: rgb(100, 100, 100) # Medium gray for contact info
+    # section_titles: rgb(0, 138, 155)
+    # links: rgb(0, 120, 135)
+    # footer: rgb(128, 128, 128)
+
+  # Typography
+  typography:
+    # Font family
+    font_family: Source Sans 3
+
+    # Line spacing
+    line_spacing: 0.6em
+    alignment: justified
+
+    # Font sizes (for classic theme)
+    # font_size:
+    #   body: 10pt
+    #   name: 28pt
+    #   headline: 10pt
+    #   connections: 9pt
+    #   section_titles: 1.6em
+
+    # Font weights
+    # bold:
+    #   name: false
+    #   headline: false
+    #   connections: false
+    #   section_titles: true
+
+  # Links
+  links:
+    underline: false
+    show_external_link_icon: true
+
+  # Header layout
+  header:
+    alignment: left # Options: left, center, right
+    photo_width: 4.5cm # Size of profile photo
+    space_below_name: 0.5cm
+    connections:
+      show_icons: true
+      separator: ""
+      space_between_connections: 0.5cm
+
+  # Section styling
+  section_titles:
+    type: moderncv # Options: with_partial_line, with_full_line, without_line, moderncv
+    line_thickness: 1pt
+    space_above: 0.67cm
+    space_below: 0.33cm
+
+  # Entry spacing
+  sections:
+    space_between_regular_entries: 0.5cm
+    show_time_spans_in: []
+  entries:
+    allow_page_break: true
+    date_and_location_width: 3.2cm
+    space_between_columns: 0.5cm
+
+  # Templates for date formatting
+  templates:
+    single_date: "MONTH_ABBREVIATION YEAR"
+    date_range: "START_DATE – END_DATE"
+    footer: "NAME -- Seite PAGE_NUMBER von TOTAL_PAGES"
+
+# Output configuration
+output:
+  dir: output
+  name_template: "{last_name}_{lang}"
+  lang_map:
+    english: en
+    englisch: en
+    german: de
+    deutsch: de
+
+# RenderCV settings
+settings:
+  current_date: "2026-03-24"
+  bold_keywords:
+    - Python
+    - SQL
+    - Project Management
+    - Agile
+    - Scrum
+    - C1
+  keyword_highlight:
+    enabled: true
+    style: semibold
+    weight: 600
+
+# HTML-specific settings
+html:
+  layout:
+    sidebar_width: 320px
+    max_width: 1400px
+    responsive_breakpoint: 968px
+  colors:
+    primary: rgb(0, 120, 135)
+    primary_dark: rgb(0, 90, 102)
+    text_light: rgb(102, 102, 102)
+    border: rgb(224, 224, 224)
+    bg_sidebar: rgb(248, 249, 250)
+    bg_main: rgb(255, 255, 255)
+    accent: rgb(0, 138, 155)
+  features:
+    show_photo: true
+    show_languages_in_sidebar: true
+    show_skills_in_sidebar: true
+    group_by_type: true
+
+# Color presets (uncomment to use)
+# presets:
+#   minimal:
+#     colors:
+#       seed: rgb(0, 0, 0)
+#       accent_seed: rgb(60, 60, 60)
+#   colorful:
+#     colors:
+#       seed: rgb(231, 76, 60)  # Red
+#       accent_seed: rgb(192, 57, 43)
+#   professional:
+#     colors:
+#       seed: rgb(52, 73, 94)   # Navy blue
+#       accent_seed: rgb(44, 62, 80)
+#   warm:
+#     colors:
+#       seed: rgb(211, 84, 0)   # Burnt orange
+#       accent_seed: rgb(170, 60, 0)
