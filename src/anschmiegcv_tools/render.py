@@ -16,6 +16,9 @@ KEYWORD_DEFAULT_WEIGHT = 600
 SECTION_TITLE_DIRECTIVE_PATTERN = re.compile(r"^(?P<title>.*?)(?:\s*\{(?P<directive>[^{}]*)\})?\s*$")
 CARDS_LAYOUT_CLASS_PATTERN = re.compile(r"^\.cards-(?:1|2|3|4|3w)$")
 
+# Default design config filename
+DESIGN_CONFIG_FILENAME = "design_config.yaml"
+
 
 def _load_yaml(path: Path) -> dict[str, Any]:
     with path.open("r", encoding="utf-8") as handle:
@@ -33,6 +36,29 @@ def _section_title_directive_doc() -> str:
         "Cards sections are auto-tuned per section with layout classes "
         "(.cards-1/.cards-2/.cards-3/.cards-3w/.cards-4)."
     )
+
+
+def _deep_merge(base: dict[str, Any], overlay: dict[str, Any]) -> dict[str, Any]:
+    """Deep merge overlay into base, with overlay taking precedence."""
+    result = copy.deepcopy(base)
+    for key, value in overlay.items():
+        if key in result and isinstance(result[key], dict) and isinstance(value, dict):
+            result[key] = _deep_merge(result[key], value)
+        else:
+            result[key] = copy.deepcopy(value)
+    return result
+
+
+def _merge_with_design_config(cv_data: dict[str, Any], cv_path: Path) -> dict[str, Any]:
+    """Merge CV content with design config if it exists."""
+    design_path = cv_path.parent / DESIGN_CONFIG_FILENAME
+    if not design_path.exists():
+        return cv_data
+    
+    design_data = _load_yaml(design_path)
+    # Design config provides defaults, CV content overrides
+    merged = _deep_merge(design_data, cv_data)
+    return merged
 
 
 def _apply_seed_palette(data: dict[str, Any]) -> tuple[dict[str, Any], bool]:
@@ -281,8 +307,11 @@ def _render_one_file(
     enable_keyword_highlight: bool,
 ) -> None:
     raw = _load_yaml(yaml_path)
+    
+    # Merge with design config if it exists
+    merged = _merge_with_design_config(raw, yaml_path)
 
-    prepared, has_seed = _apply_seed_palette(raw)
+    prepared, has_seed = _apply_seed_palette(merged)
     prepared, has_adaptive_cards = _apply_adaptive_cards_layout(prepared)
     if enable_keyword_highlight:
         prepared = _apply_keyword_highlighting(prepared)

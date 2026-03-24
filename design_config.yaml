@@ -1,6 +1,6 @@
 # Design Configuration for CV-Template
-# This file centralizes all design settings for both PDF and HTML output
-# Copy this file and customize the values to match your preferences
+# This file contains all design settings. It is automatically merged with
+# your CV content file (example_CV.yaml) when running anschmiegcv render.
 
 design:
   # Theme selection
@@ -22,38 +22,11 @@ design:
     seed: rgb(0, 120, 135) # Teal/cyan - main brand color
     accent_seed: rgb(0, 138, 155) # Slightly lighter accent
 
-    # Additional color options (for other themes)
-    # body: rgb(45, 45, 45) # Almost black for body text
-    # name: rgb(0, 120, 135)
-    # headline: rgb(0, 120, 135)
-    # connections: rgb(100, 100, 100) # Medium gray for contact info
-    # section_titles: rgb(0, 138, 155)
-    # links: rgb(0, 120, 135)
-    # footer: rgb(128, 128, 128)
-
   # Typography
   typography:
-    # Font family
     font_family: Source Sans 3
-
-    # Line spacing
     line_spacing: 0.6em
     alignment: justified
-
-    # Font sizes (for classic theme)
-    # font_size:
-    #   body: 10pt
-    #   name: 28pt
-    #   headline: 10pt
-    #   connections: 9pt
-    #   section_titles: 1.6em
-
-    # Font weights
-    # bold:
-    #   name: false
-    #   headline: false
-    #   connections: false
-    #   section_titles: true
 
   # Links
   links:
@@ -92,17 +65,6 @@ design:
     date_range: "START_DATE – END_DATE"
     footer: "NAME -- Seite PAGE_NUMBER von TOTAL_PAGES"
 
-# Output configuration
-output:
-  dir: output
-  name_template: "{last_name}_{lang}"
-  lang_map:
-    english: en
-    englisch: en
-    german: de
-    deutsch: de
-
-# RenderCV settings
 settings:
   current_date: "2026-03-24"
   bold_keywords:
@@ -112,46 +74,10 @@ settings:
     - Agile
     - Scrum
     - C1
-  keyword_highlight:
-    enabled: true
-    style: semibold
-    weight: 600
-
-# HTML-specific settings
-html:
-  layout:
-    sidebar_width: 320px
-    max_width: 1400px
-    responsive_breakpoint: 968px
-  colors:
-    primary: rgb(0, 120, 135)
-    primary_dark: rgb(0, 90, 102)
-    text_light: rgb(102, 102, 102)
-    border: rgb(224, 224, 224)
-    bg_sidebar: rgb(248, 249, 250)
-    bg_main: rgb(255, 255, 255)
-    accent: rgb(0, 138, 155)
-  features:
-    show_photo: true
-    show_languages_in_sidebar: true
-    show_skills_in_sidebar: true
-    group_by_type: true
-
-# Color presets (uncomment to use)
-# presets:
-#   minimal:
-#     colors:
-#       seed: rgb(0, 0, 0)
-#       accent_seed: rgb(60, 60, 60)
-#   colorful:
-#     colors:
-#       seed: rgb(231, 76, 60)  # Red
-#       accent_seed: rgb(192, 57, 43)
-#   professional:
-#     colors:
-#       seed: rgb(52, 73, 94)   # Navy blue
-#       accent_seed: rgb(44, 62, 80)
-#   warm:
-#     colors:
-#       seed: rgb(211, 84, 0)   # Burnt orange
-#       accent_seed: rgb(170, 60, 0)
+  # Output paths - change NAME for your CV
+  render_command:
+    typst_path: output/Max_Mustermann_CV.typ
+    pdf_path: output/Max_Mustermann_CV.pdf
+    markdown_path: output/Max_Mustermann_CV.md
+    html_path: output/Max_Mustermann_CV.html
+    png_path: output/Max_Mustermann_CV.png

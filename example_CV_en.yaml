@@ -88,28 +88,3 @@ cv:
 
 locale:
   language: english
-
-design:
-  theme: anschmiegcv
-  colors:
-    seed: rgb(0, 120, 135)
-    accent_seed: rgb(0, 138, 155)
-  page:
-    size: a4
-    show_footer: true
-    show_top_note: false
-  typography:
-    line_spacing: 0.6em
-    alignment: justified
-    font_family: "Source Sans 3"
-  header:
-    alignment: left
-    photo_width: "4.5cm"
-  section_titles:
-    type: moderncv
-    line_thickness: "1pt"
-    space_above: "0.67cm"
-    space_below: "0.33cm"
-
-settings:
-  current_date: "2026-03-24"
