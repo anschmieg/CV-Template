@@ -157,7 +157,7 @@
   let dot-outline-width = dot-size * 0.16
   let date-column-width = {{ design.entries.date_and_location_width }}
   let space-between-columns = {{ design.entries.space_between_columns }}
-  let timeline-indent = 0.24cm
+  let timeline-indent = 0.15cm
   let entry-gap = {{ design.sections.space_between_regular_entries }} + line-spacing
 
   // Render one continuous vertical track per entry, including its continuation gap.
