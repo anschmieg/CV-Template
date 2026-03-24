@@ -260,44 +260,38 @@
   )
 }
 
-// Custom regular entry that aligns with timeline entries for consistent spacing
-// Uses smaller indent (0.08cm) than timeline (0.24cm) for tighter left padding
+// Custom regular entry with minimal left padding
+// Date flows inline above content instead of in a wide left column
 #let regular-entry(
   main-column,
   date-and-location-column,
   main-column-second-row: none,
 ) = context {
-  let body-font-size = {{ design.typography.font_size.body }}
   let line-spacing = {{ design.typography.line_spacing }}
-  let date-column-width = {{ design.entries.date_and_location_width }}
-  let space-between-columns = {{ design.entries.space_between_columns }}
-  let regular-entry-indent = 0.08cm
   let entry-gap = {{ design.sections.space_between_regular_entries }} + line-spacing
+  let regular-entry-indent = 0.08cm
 
   block(
     breakable: true,
     above: 0pt,
     below: 0pt,
-    grid(
-      columns: (date-column-width, space-between-columns, 1fr),
-      column-gutter: 0pt,
-      row-gutter: 0pt,
-      align: ({{ design.typography.date_and_location_column_alignment }}, left, left),
-      date-and-location-column,
-      [],
-      [
-        #box(
-          inset: (left: regular-entry-indent),
-          [
-            #main-column
-            #if main-column-second-row != none {
-              linebreak()
-              main-column-second-row
-            }
-            #v(entry-gap)
-          ],
-        )
-      ]
-    ),
+    [
+      // Date flows inline at the start, then content
+      #box(
+        inset: (left: regular-entry-indent),
+        [
+          #text(size: 0.9em, fill: {{ design.colors.connections.as_rgb() }})[
+            #date-and-location-column
+          ]
+          #v(0.1em)
+          #main-column
+          #if main-column-second-row != none {
+            linebreak()
+            main-column-second-row
+          }
+          #v(entry-gap)
+        ],
+      )
+    ]
   )
 }
