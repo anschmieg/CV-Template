@@ -1,112 +1,112 @@
 cv:
-  name: Max Mustermann
+  name: Joe Mama
   photo: profile_picture.jpg
-  location: Berlin, Deutschland
-  email: max.mustermann@email.de
+  location: Berlin, Germany
+  email: joe.mama@email.de
   phone: "+49 170 1234567"
   social_networks:
     - network: LinkedIn
-      username: maxmustermann
+      username: joemama
 
   sections:
-    Berufserfahrung:
-      - company: Beispiel GmbH
-        position: Projektmanager
-        location: Berlin, Deutschland
+    Experience:
+      - company: Example Ltd.
+        position: Project Manager
+        location: Berlin, Germany
         start_date: 2022-01
         end_date: present
         highlights:
-          - Leitung von Projekten mit Budgets bis zu 500.000 €
-          - Koordination interdisziplinärer Teams mit bis zu 15 Mitarbeitenden
-          - Einführung agiler Methoden zur Steigerung der Projekteffizienz
+          - Led projects with budgets up to €500,000
+          - Coordinated cross-functional teams of up to 15 employees
+          - Introduced agile methodologies to improve project efficiency
 
-      - company: Muster AG
+      - company: Sample AG
         position: Junior Consultant
-        location: München, Deutschland
+        location: Munich, Germany
         start_date: 2020-03
         end_date: 2021-12
         highlights:
-          - Beratung von Kunden im Finanzsektor
-          - Erstellung von Marktanalysen und Wettbewerbsstudien
-          - Unterstützung bei der Implementierung von CRM-Systemen
+          - Advised clients in the financial sector
+          - Conducted market analyses and competitive studies
+          - Supported CRM system implementation projects
 
-    Ausbildung:
-      - institution: Technische Universität Berlin
-        area: Betriebswirtschaftslehre
+    Education:
+      - institution: Technical University of Berlin
+        area: Business Administration
         degree: Master of Science
         start_date: 2018-10
         end_date: 2020-09
-        location: Berlin, Deutschland
+        location: Berlin, Germany
         highlights:
-          - "Schwerpunkt: Strategisches Management und Unternehmensführung"
-          - "Abschlussnote: 1,7"
+          - "Focus: Strategic Management and Corporate Leadership"
+          - "Final grade: 1.7 (German scale)"
 
-      - institution: Universität Hamburg
-        area: Wirtschaftswissenschaften
+      - institution: University of Hamburg
+        area: Economics
         degree: Bachelor of Science
         start_date: 2015-10
         end_date: 2018-09
-        location: Hamburg, Deutschland
+        location: Hamburg, Germany
         highlights:
-          - Auslandssemester an der Universität von Amsterdam
+          - Exchange semester at University of Amsterdam
 
-    Publikationen:
-      - title: "Digitale Transformation in mittelständischen Unternehmen"
+    Publications:
+      - title: "Digital Transformation in Medium-Sized Enterprises"
         authors:
-          - M. Mustermann
-          - A. Beispiel
+          - J. Mama
+          - A. Example
         date: "2024-03-15"
         url: "https://example.com/publication"
         doi: "10.1234/example.2024"
-      - title: "Nachhaltige Geschäftsmodelle im 21. Jahrhundert"
+      - title: "Sustainable Business Models in the 21st Century"
         authors:
-          - M. Mustermann
+          - J. Mama
         date: "2023-08-20"
         url: "https://example.com/article"
 
-    Zertifizierungen:
+    Certifications:
       - name: Professional Scrum Master I
         position: scrum.org
         date: 2024-08
         highlights:
-          - Verständnis von Professional Scrum und Zuständigkeiten
-          - Anwendung von Scrum-Prinzipien und agilem Denken
-      - name: Projektmanagement Professional (PMP)
+          - Understanding of Professional Scrum and responsibilities
+          - Application of Scrum principles and agile mindset
+      - name: Project Management Professional (PMP)
         position: PMI
         date: 2023-06
         highlights:
-          - Expertenwissen in Projektplanung und -steuerung
+          - Expert knowledge in project planning and control
 
-    "Sprachen {#sprachen .list}":
-      - label: Deutsch
-        details: Erstsprache
-      - label: Englisch
+    "Languages {#languages .list}":
+      - label: German
+        details: Native
+      - label: English
         details: C1 (IELTS 7.5)
-      - label: Französisch
+      - label: French
         details: B2
 
-    "IT-Fähigkeiten {#technische-faehigkeiten .cards}":
-      - label: Datenanalyse
-        details: Excel (fortgeschritten), Python (Grundkenntnisse)
-      - label: Projektmanagement
+    "Technical Skills {#technical-skills .cards}":
+      - label: Data Analysis
+        details: Excel (advanced), Python (basic)
+      - label: Project Management
         details: Jira, Trello, MS Project
-      - label: Office-Software
+      - label: Office Software
         details: Microsoft Office 365, Google Workspace
 
-    Ehrenamt:
+    Volunteer:
       - name: Mentor
-        position: Bildungsinitiative Berlin
+        position: Berlin Education Initiative
         start_date: 2021-09
         highlights:
-          - Unterstützung von Studierenden bei der beruflichen Orientierung
-          - Organisation von Workshops und Netzwerkveranstaltungen
-      - name: Teamleiter
-        position: Sportverein SV Blau-Weiß
+          - Supported students with career orientation
+          - Organized workshops and networking events
+      - name: Team Leader
+        position: Sports Club SV Blau-Weiß
         start_date: 2019-01
         end_date: 2022-06
         highlights:
-          - Leitung einer Jugendmannschaft mit 25 Spielern
-          - Planung von Trainingscamps und Turnierteilnahmen
+          - Led a youth team of 25 players
+          - Planned training camps and tournament participation
 
 locale:
-  language: german
+  language: english

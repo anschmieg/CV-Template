@@ -63,7 +63,7 @@ design:
   templates:
     single_date: "MONTH_ABBREVIATION YEAR"
     date_range: "START_DATE – END_DATE"
-    footer: "NAME -- Seite PAGE_NUMBER von TOTAL_PAGES"
+    footer: "NAME -- Page PAGE_NUMBER of TOTAL_PAGES"
 
 settings:
   current_date: "2026-03-24"
@@ -76,8 +76,8 @@ settings:
     - C1
   # Output paths - change NAME for your CV
   render_command:
-    typst_path: output/Max_Mustermann_CV.typ
-    pdf_path: output/Max_Mustermann_CV.pdf
-    markdown_path: output/Max_Mustermann_CV.md
-    html_path: output/Max_Mustermann_CV.html
-    png_path: output/Max_Mustermann_CV.png
+    typst_path: output/Joe_Mama_CV.typ
+    pdf_path: output/Joe_Mama_CV.pdf
+    markdown_path: output/Joe_Mama_CV.md
+    html_path: output/Joe_Mama_CV.html
+    png_path: output/Joe_Mama_CV.png
