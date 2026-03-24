@@ -217,3 +217,45 @@
     line-color: line-color,
   )
 }
+
+// Custom regular entry that aligns with timeline entries for consistent spacing
+// Used for Publications, Certifications, Volunteer - same left padding, no timeline graphics
+#let regular-entry(
+  main-column,
+  date-and-location-column,
+  main-column-second-row: none,
+) = context {
+  let body-font-size = {{ design.typography.font_size.body }}
+  let line-spacing = {{ design.typography.line_spacing }}
+  let date-column-width = {{ design.entries.date_and_location_width }}
+  let space-between-columns = {{ design.entries.space_between_columns }}
+  let timeline-indent = 0.15cm
+  let entry-gap = {{ design.sections.space_between_regular_entries }} + line-spacing
+
+  block(
+    breakable: true,
+    above: 0pt,
+    below: 0pt,
+    grid(
+      columns: (date-column-width, space-between-columns, 1fr),
+      column-gutter: 0pt,
+      row-gutter: 0pt,
+      align: ({{ design.typography.date_and_location_column_alignment }}, left, left),
+      date-and-location-column,
+      [],
+      [
+        #box(
+          inset: (left: timeline-indent),
+          [
+            #main-column
+            #if main-column-second-row != none {
+              linebreak()
+              main-column-second-row
+            }
+            #v(entry-gap)
+          ],
+        )
+      ]
+    ),
+  )
+}
