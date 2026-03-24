@@ -50,6 +50,49 @@ cv:
         highlights:
           - Auslandssemester an der Universität von Amsterdam
 
+    Publikationen:
+      - title: "Digitale Transformation in mittelständischen Unternehmen"
+        authors:
+          - M. Mustermann
+          - A. Beispiel
+        date: "2024-03-15"
+        url: "https://example.com/publication"
+        doi: "10.1234/example.2024"
+      - title: "Nachhaltige Geschäftsmodelle im 21. Jahrhundert"
+        authors:
+          - M. Mustermann
+        date: "2023-08-20"
+        url: "https://example.com/article"
+
+    Zertifizierungen:
+      - name: Professional Scrum Master I
+        position: scrum.org
+        date: 2024-08
+        highlights:
+          - Verständnis von Professional Scrum und Zuständigkeiten
+          - Anwendung von Scrum-Prinzipien und agilem Denken
+      - name: Projektmanagement Professional (PMP)
+        position: PMI
+        date: 2023-06
+        highlights:
+          - Expertenwissen in Projektplanung und -steuerung
+
+    "Sprachen {#sprachen .list}":
+      - label: Deutsch
+        details: Erstsprache
+      - label: Englisch
+        details: C1 (IELTS 7.5)
+      - label: Französisch
+        details: B2
+
+    "IT-Fähigkeiten {#technische-faehigkeiten .cards}":
+      - label: Datenanalyse
+        details: Excel (fortgeschritten), Python (Grundkenntnisse)
+      - label: Projektmanagement
+        details: Jira, Trello, MS Project
+      - label: Office-Software
+        details: Microsoft Office 365, Google Workspace
+
     Ehrenamt:
       - name: Mentor
         position: Bildungsinitiative Berlin
@@ -57,7 +100,6 @@ cv:
         highlights:
           - Unterstützung von Studierenden bei der beruflichen Orientierung
           - Organisation von Workshops und Netzwerkveranstaltungen
-
       - name: Teamleiter
         position: Sportverein SV Blau-Weiß
         start_date: 2019-01
@@ -65,26 +107,6 @@ cv:
         highlights:
           - Leitung einer Jugendmannschaft mit 25 Spielern
           - Planung von Trainingscamps und Turnierteilnahmen
-
-    "Sprachen {#sprachen .list}":
-      - label: Deutsch
-        details: Erstsprache
-
-      - label: Englisch
-        details: C1 (IELTS 7.5)
-
-      - label: Französisch
-        details: B2
-
-    "IT-Fähigkeiten {#technische-faehigkeiten .cards}":
-      - label: Datenanalyse
-        details: Excel (fortgeschritten), Python (Grundkenntnisse)
-
-      - label: Projektmanagement
-        details: Jira, Trello, MS Project
-
-      - label: Office-Software
-        details: Microsoft Office 365, Google Workspace
 
 locale:
   language: german
