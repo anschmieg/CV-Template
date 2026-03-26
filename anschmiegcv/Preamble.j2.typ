@@ -179,7 +179,7 @@
           [
             #place(
               top + left,
-              dx: -timeline-indent - (dot-size + dot-outline-width) / 2,
+              dx: -timeline-indent + line-width / 2,
               dy: (cap-height - dot-size - dot-outline-width) / 2,
               circle(radius: dot-size / 2, fill: dot-color, stroke: dot-outline-width + white),
             )
