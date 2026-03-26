@@ -27,6 +27,8 @@ design:
     font_family: Source Sans 3
     line_spacing: 0.6em
     alignment: justified
+    small_caps:
+      section_titles: true
 
   # Links
   links:
@@ -36,7 +38,9 @@ design:
   # Header layout
   header:
     alignment: left # Options: left, center, right
-    photo_width: 4.5cm # Size of profile photo
+    photo_width: 3.5cm # Size of profile photo
+    photo_space_left: 0cm # Left padding for photo alignment
+    photo_space_right: 0.5cm # Right padding between photo and content
     space_below_name: 0.5cm
     connections:
       show_icons: true
@@ -45,7 +49,7 @@ design:
 
   # Section styling
   section_titles:
-    type: moderncv # Options: with_partial_line, with_full_line, without_line, moderncv
+    type: with_full_line # Options: with_partial_line, with_full_line, without_line, moderncv
     line_thickness: 1pt
     space_above: 0.67cm
     space_below: 0.33cm
@@ -55,9 +59,9 @@ design:
     space_between_regular_entries: 0.5cm
     show_time_spans_in: []
   entries:
-    allow_page_break: true
-    date_and_location_width: 3.2cm
-    space_between_columns: 0.5cm
+    allow_page_break: false
+    date_and_location_width: 3cm
+    space_between_columns: 1cm
 
   # Templates for date formatting
   templates:
@@ -74,10 +78,3 @@ settings:
     - Agile
     - Scrum
     - C1
-  # Output paths - change NAME for your CV
-  render_command:
-    typst_path: output/Joe_Mama_CV.typ
-    pdf_path: output/Joe_Mama_CV.pdf
-    markdown_path: output/Joe_Mama_CV.md
-    html_path: output/Joe_Mama_CV.html
-    png_path: output/Joe_Mama_CV.png

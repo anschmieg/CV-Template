@@ -151,13 +151,13 @@
   let body-font-size = {{ design.typography.font_size.body }}
   let line-spacing = {{ design.typography.line_spacing }}
   let cap-height = measure(text(size: body-font-size)[H]).height
-  let dot-size = cap-height / 1.30
-  let dot-outer-size = cap-height
+  let dot-size = cap-height / 1.00
   let line-width = body-font-size * 0.095
   let dot-outline-width = dot-size * 0.16
+  let dot-outer-size = dot-size + dot-outline-width
   let date-column-width = {{ design.entries.date_and_location_width }}
   let space-between-columns = {{ design.entries.space_between_columns }}
-  let timeline-indent = 0.15cm
+  let timeline-indent = space-between-columns
   let entry-gap = {{ design.sections.space_between_regular_entries }} + line-spacing
 
   // Render one continuous vertical track per entry, including its continuation gap.
@@ -179,8 +179,8 @@
           [
             #place(
               top + left,
-              dx: -timeline-indent - dot-outer-size / 2 + line-width / 2,
-              dy: (cap-height - dot-size) / 2 + dot-outline-width / 4,
+              dx: -timeline-indent - dot-outer-size / 2,
+              dy: (cap-height - dot-size - dot-outline-width) / 2,
               circle(radius: dot-size / 2, fill: dot-color, stroke: dot-outline-width + white),
             )
             #main-column
@@ -229,7 +229,7 @@
   let line-spacing = {{ design.typography.line_spacing }}
   let date-column-width = {{ design.entries.date_and_location_width }}
   let space-between-columns = {{ design.entries.space_between_columns }}
-  let timeline-indent = 0.15cm
+  let timeline-indent = space-between-columns
   let entry-gap = {{ design.sections.space_between_regular_entries }} + line-spacing
 
   block(

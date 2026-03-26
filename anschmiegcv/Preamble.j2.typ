@@ -151,13 +151,13 @@
   let body-font-size = {{ design.typography.font_size.body }}
   let line-spacing = {{ design.typography.line_spacing }}
   let cap-height = measure(text(size: body-font-size)[H]).height
-  let dot-size = cap-height / 1.30
-  let dot-outer-size = cap-height
+  let dot-size = cap-height / 1.00
   let line-width = body-font-size * 0.095
   let dot-outline-width = dot-size * 0.16
+  let dot-outer-size = dot-size + dot-outline-width
   let date-column-width = {{ design.entries.date_and_location_width }}
   let space-between-columns = {{ design.entries.space_between_columns }}
-  let timeline-indent = 0.15cm
+  let timeline-indent = space-between-columns
   let entry-gap = {{ design.sections.space_between_regular_entries }} + line-spacing
 
   // Render one continuous vertical track per entry, including its continuation gap.
@@ -179,8 +179,8 @@
           [
             #place(
               top + left,
-              dx: -timeline-indent - dot-outer-size / 2 + line-width / 2,
-              dy: (cap-height - dot-size) / 2 + dot-outline-width / 4,
+              dx: -timeline-indent - dot-outer-size / 2,
+              dy: (cap-height - dot-size - dot-outline-width) / 2,
               circle(radius: dot-size / 2, fill: dot-color, stroke: dot-outline-width + white),
             )
             #main-column
@@ -215,5 +215,83 @@
     main-column-second-row: main-column-second-row,
     dot-color: dot-color,
     line-color: line-color,
+  )
+}
+
+// Custom regular entry that aligns with timeline entries for consistent spacing
+// Used for Publications, Certifications, Volunteer - same left padding, no timeline graphics
+#let regular-entry(
+  main-column,
+  date-and-location-column,
+  main-column-second-row: none,
+) = context {
+  let body-font-size = {{ design.typography.font_size.body }}
+  let line-spacing = {{ design.typography.line_spacing }}
+  let date-column-width = {{ design.entries.date_and_location_width }}
+  let space-between-columns = {{ design.entries.space_between_columns }}
+  let timeline-indent = space-between-columns
+  let entry-gap = {{ design.sections.space_between_regular_entries }} + line-spacing
+
+  block(
+    breakable: true,
+    above: 0pt,
+    below: 0pt,
+    grid(
+      columns: (date-column-width, space-between-columns, 1fr),
+      column-gutter: 0pt,
+      row-gutter: 0pt,
+      align: ({{ design.typography.date_and_location_column_alignment }}, left, left),
+      date-and-location-column,
+      [],
+      [
+        #box(
+          inset: (left: timeline-indent),
+          [
+            #main-column
+            #if main-column-second-row != none {
+              linebreak()
+              main-column-second-row
+            }
+            #v(entry-gap)
+          ],
+        )
+      ]
+    ),
+  )
+}
+
+// Custom regular entry with minimal left padding
+// Date flows inline above content instead of in a wide left column
+#let regular-entry(
+  main-column,
+  date-and-location-column,
+  main-column-second-row: none,
+) = context {
+  let line-spacing = {{ design.typography.line_spacing }}
+  let entry-gap = {{ design.sections.space_between_regular_entries }} + line-spacing
+  let regular-entry-indent = 0.08cm
+
+  block(
+    breakable: true,
+    above: 0pt,
+    below: 0pt,
+    [
+      // Date flows inline at the start, then content
+      #box(
+        inset: (left: regular-entry-indent),
+        [
+          #text(size: 0.9em, fill: {{ design.colors.connections.as_rgb() }})[
+            #date-and-location-column
+          ]
+          #v(0.1em)
+          #main-column
+          #if main-column-second-row != none {
+            linebreak()
+            main-column-second-row
+          }
+          #v(entry-gap)
+        ],
+      )
+    ]
   )
 }
