@@ -150,9 +150,8 @@
 ) = context {
   let body-font-size = {{ design.typography.font_size.body }}
   let line-spacing = {{ design.typography.line_spacing }}
-  let body-cap-height = measure(text(size: body-font-size)[H]).height
-  let headline-cap-height = measure(text(size: {{ design.typography.font_size.headline }})[H]).height
-  let dot-size = body-cap-height / 0.90  // Dot size based on body cap-height
+  let cap-height = measure(text(size: body-font-size)[H]).height
+  let dot-size = cap-height / 1.00
   let line-width = body-font-size * 0.095
   let dot-outline-width = dot-size * 0.16
   let dot-outer-size = dot-size + dot-outline-width
@@ -180,8 +179,8 @@
           [
             #place(
               top + left,
-              dx: -timeline-indent - dot-size / 2,
-              dy: (headline-cap-height - dot-size) / 2,
+              dx: -timeline-indent - dot-outer-size / 2,
+              dy: (cap-height - dot-size - dot-outline-width) / 2,
               circle(radius: dot-size / 2, fill: dot-color, stroke: dot-outline-width + white),
             )
             #main-column
@@ -208,7 +207,7 @@
   main-column-second-row: none,
   dot-color: {% if design.colors.timeline_dot %}{{ design.colors.timeline_dot.as_rgb() }}{% else %}{{ design.colors.connections.as_rgb() }}{% endif %},
   line-color: {% if design.colors.timeline_line %}{{ design.colors.timeline_line.as_rgb() }}{% else %}{{ design.colors.connections.as_rgb() }}{% endif %},
-) = {
+) = context {
   // Use same timeline layout as regular entries
   timeline-entry(
     date-and-location-column,
