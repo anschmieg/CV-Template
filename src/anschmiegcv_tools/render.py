@@ -301,23 +301,31 @@ def _apply_keyword_highlighting(data: dict[str, Any]) -> dict[str, Any]:
 
 
 def _extract_education_style(data: dict[str, Any]) -> tuple[dict[str, Any], dict[str, Any] | None]:
-    """Extract education_style from design, returning (data_without_style, style_config).
+    """Extract style from education_entry template, returning (data_without_style, style_config).
 
-    RenderCV's schema doesn't allow education_style, so we need to remove it
+    RenderCV's schema doesn't allow custom style fields, so we need to remove it
     before validation and use it for post-processing.
     """
     design = data.get("design")
     if not isinstance(design, dict):
         return data, None
 
-    education_style = design.get("education_style")
-    if education_style is None:
+    templates = design.get("templates")
+    if not isinstance(templates, dict):
         return data, None
 
-    # Create a copy without the education_style field
+    education_entry = templates.get("education_entry")
+    if not isinstance(education_entry, dict):
+        return data, None
+
+    style = education_entry.get("style")
+    if style is None:
+        return data, None
+
+    # Create a copy without the style field
     updated = copy.deepcopy(data)
-    updated.get("design", {}).pop("education_style", None)
-    return updated, education_style
+    updated.get("design", {}).get("templates", {}).get("education_entry", {}).pop("style", None)
+    return updated, style
 
 
 def _find_typst_output(yaml_path: Path, yaml_data: dict[str, Any]) -> Path | None:
