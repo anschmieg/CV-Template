@@ -300,6 +300,127 @@ def _apply_keyword_highlighting(data: dict[str, Any]) -> dict[str, Any]:
     return updated
 
 
+def _extract_education_style(data: dict[str, Any]) -> tuple[dict[str, Any], dict[str, Any] | None]:
+    """Extract education_style from design, returning (data_without_style, style_config).
+
+    RenderCV's schema doesn't allow education_style, so we need to remove it
+    before validation and use it for post-processing.
+    """
+    design = data.get("design")
+    if not isinstance(design, dict):
+        return data, None
+
+    education_style = design.get("education_style")
+    if education_style is None:
+        return data, None
+
+    # Create a copy without the education_style field
+    updated = copy.deepcopy(data)
+    updated.get("design", {}).pop("education_style", None)
+    return updated, education_style
+
+
+def _find_typst_output(yaml_path: Path, yaml_data: dict[str, Any]) -> Path | None:
+    """Find the generated Typst file for a CV YAML file.
+
+    The output filename is based on cv.name, not the YAML filename.
+    """
+    cv_data = yaml_data.get("cv", {})
+    cv_name = cv_data.get("name", "")
+    if cv_name:
+        # Convert "Joe Mama" to "Joe_Mama_CV.typ"
+        name_slug = cv_name.replace(" ", "_")
+        candidate = yaml_path.parent / "rendercv_output" / f"{name_slug}_CV.typ"
+        if candidate.exists():
+            return candidate
+
+    # Fallback: find the most recent .typ file in rendercv_output
+    output_dir = yaml_path.parent / "rendercv_output"
+    if output_dir.is_dir():
+        typst_files = list(output_dir.glob("*.typ"))
+        if typst_files:
+            # Return the most recently modified one
+            return max(typst_files, key=lambda p: p.stat().st_mtime)
+    return None
+
+
+def _recompile_pdf(typst_path: Path) -> None:
+    """Re-compile the Typst file to PDF after modifications."""
+    import shutil
+
+    # Find typst compiler
+    typst_cmd = shutil.which("typst")
+    if typst_cmd is None:
+        print("[anschmiegcv] Warning: typst not found, skipping PDF re-compilation")
+        return
+
+    pdf_path = typst_path.with_suffix(".pdf")
+
+    try:
+        subprocess.run(
+            [typst_cmd, "compile", str(typst_path), str(pdf_path)],
+            check=True,
+            capture_output=True,
+        )
+        print(f"[anschmiegcv] Re-compiled PDF with education style")
+    except subprocess.CalledProcessError as e:
+        print(f"[anschmiegcv] Warning: Failed to re-compile PDF: {e.stderr.decode() if e.stderr else str(e)}")
+
+
+def _inject_education_style(typst_path: Path, education_style: dict[str, Any], colors: dict[str, Any]) -> None:
+    """Replace education_style variable defaults in the Typst file with configured values.
+
+    The Preamble defines default values for education styling variables.
+    This function replaces them with values from design_config.yaml.
+    """
+    # Resolve color references
+    def resolve_color(color_ref: str) -> str:
+        """Convert 'text' to footer color RGB, 'primary' to name color RGB."""
+        if color_ref == "text":
+            # Use footer color (grey)
+            if "footer" in colors and hasattr(colors["footer"], "as_rgb"):
+                return colors["footer"].as_rgb()
+            return "rgb(39, 57, 59)"  # Default grey
+        elif color_ref == "primary":
+            # Use name color (teal/theme)
+            if "name" in colors and hasattr(colors["name"], "as_rgb"):
+                return colors["name"].as_rgb()
+            return "rgb(0, 120, 135)"  # Default teal
+        return f'rgb("{color_ref}")'
+
+    degree_style = education_style.get("degree", {})
+    area_style = education_style.get("area", {})
+    institution_style = education_style.get("institution", {})
+
+    degree_color = resolve_color(degree_style.get("color", "text"))
+    degree_weight = degree_style.get("weight", 600)
+    area_color = resolve_color(area_style.get("color", "text"))
+    area_weight = area_style.get("weight", 700)
+    institution_color = resolve_color(institution_style.get("color", "primary"))
+    institution_weight = institution_style.get("weight", 600)
+
+    # Read the Typst file
+    content = typst_path.read_text(encoding="utf-8")
+
+    # Replace each variable definition line
+    # The Preamble defines these with defaults; we override with configured values
+    import re
+
+    replacements = [
+        (r'#let anschmiegcv_education_degree_color = rgb\([^)]+\)', f'#let anschmiegcv_education_degree_color = {degree_color}'),
+        (r'#let anschmiegcv_education_degree_weight = \d+', f'#let anschmiegcv_education_degree_weight = {degree_weight}'),
+        (r'#let anschmiegcv_education_area_color = rgb\([^)]+\)', f'#let anschmiegcv_education_area_color = {area_color}'),
+        (r'#let anschmiegcv_education_area_weight = \d+', f'#let anschmiegcv_education_area_weight = {area_weight}'),
+        (r'#let anschmiegcv_education_institution_color = rgb\([^)]+\)', f'#let anschmiegcv_education_institution_color = {institution_color}'),
+        (r'#let anschmiegcv_education_institution_weight = \d+', f'#let anschmiegcv_education_institution_weight = {institution_weight}'),
+    ]
+
+    for pattern, replacement in replacements:
+        content = re.sub(pattern, replacement, content)
+
+    typst_path.write_text(content, encoding="utf-8")
+
+
 def _render_one_file(
     yaml_path: Path,
     *,
@@ -307,7 +428,7 @@ def _render_one_file(
     enable_keyword_highlight: bool,
 ) -> None:
     raw = _load_yaml(yaml_path)
-    
+
     # Merge with design config if it exists
     merged = _merge_with_design_config(raw, yaml_path)
 
@@ -315,6 +436,12 @@ def _render_one_file(
     prepared, has_adaptive_cards = _apply_adaptive_cards_layout(prepared)
     if enable_keyword_highlight:
         prepared = _apply_keyword_highlighting(prepared)
+
+    # Extract education_style before passing to rendercv (schema doesn't allow it)
+    prepared, education_style = _extract_education_style(prepared)
+
+    # Keep colors for resolving color references
+    design_colors = prepared.get("design", {}).get("colors", {})
 
     suffix = f".{yaml_path.stem}.anschmiegcv.yaml"
     with NamedTemporaryFile(
@@ -334,6 +461,15 @@ def _render_one_file(
             print(f"[anschmiegcv] Applied generated palette for {yaml_path.name}")
         if has_adaptive_cards:
             print(f"[anschmiegcv] Applied adaptive cards layout for {yaml_path.name}")
+
+        # Inject education_style into generated Typst and re-compile PDF
+        if education_style:
+            typst_path = _find_typst_output(yaml_path, prepared)
+            if typst_path and typst_path.exists():
+                _inject_education_style(typst_path, education_style, design_colors)
+                print(f"[anschmiegcv] Applied education style for {yaml_path.name}")
+                # Re-compile PDF since we modified the Typst
+                _recompile_pdf(typst_path)
     finally:
         temp_yaml.unlink(missing_ok=True)
 

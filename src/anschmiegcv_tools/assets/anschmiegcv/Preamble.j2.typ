@@ -82,6 +82,15 @@
   ),
 )
 
+// Education entry styling defaults (can be overridden via design_config.yaml education_style)
+// These are set to match the default YAML configuration
+#let anschmiegcv_education_degree_color = {{ design.colors.footer.as_rgb() }}
+#let anschmiegcv_education_degree_weight = 600
+#let anschmiegcv_education_area_color = {{ design.colors.footer.as_rgb() }}
+#let anschmiegcv_education_area_weight = 700
+#let anschmiegcv_education_institution_color = {{ design.colors.name.as_rgb() }}
+#let anschmiegcv_education_institution_weight = 600
+
 #let anschmiegcv_section_view_mode = "auto"
 #let anschmiegcv_card_layout = "one"
 #let anschmiegcv_cards_state = state("anschmiegcv.cards.state", ())

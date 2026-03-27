@@ -67,7 +67,26 @@ design:
   templates:
     single_date: "MONTH_ABBREVIATION YEAR"
     date_range: "START_DATE – END_DATE"
+    time_span: "HOW_MANY_YEARS YEARS HOW_MANY_MONTHS MONTHS"
     footer: "NAME -- Page PAGE_NUMBER of TOTAL_PAGES"
+    education_entry:
+      main_column: "DEGREE AREA\nINSTITUTION\nHIGHLIGHTS"
+      date_and_location_column: "LOCATION\nDATE"
+      degree_column: null
+    experience_entry:
+      date_and_location_column: "LOCATION\nDATE"
+  # Custom styling for education entries (anschmiegcv-specific)
+  # These values are injected into the generated Typst as variables
+  education_style:
+    degree:
+      color: "text" # Options: "text" (grey), "primary" (teal)
+      weight: 600 # 400=regular, 600=semi-bold, 700=bold
+    area:
+      color: "primary" # Options: "text" (grey), "primary" (teal)
+      weight: 600 # 400=regular, 600=semi-bold, 700=bold
+    institution:
+      color: "text" # Options: "text" (grey), "primary" (teal)
+      weight: 700 # 400=regular, 600=semi-bold, 700=bold
 
 settings:
   current_date: "2026-03-24"
