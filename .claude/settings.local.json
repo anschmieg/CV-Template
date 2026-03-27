@@ -1,0 +1,20 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(ls:*)",
+      "Bash(tail:*)",
+      "Bash(git stash:*)",
+      "Bash(head:*)",
+      "Bash(rendercv render:*)",
+      "Bash(cat:*)",
+      "Bash(pip show:*)",
+      "Bash(which rendercv && rendercv --version 2>&1)",
+      "Bash(git log:*)",
+      "Bash(grep rendercv:*)",
+      "Bash(pip show rendercv 2>/dev/null || python3 -c \"import rendercv; print\\(rendercv.__file__\\)\" 2>/dev/null)",
+      "Bash(uv tool run rendercv --version 2>&1 || uv run rendercv --version 2>&1)"
+    ]
+  },
+  "prefersReducedMotion": true,
+  "outputStyle": "default"
+}

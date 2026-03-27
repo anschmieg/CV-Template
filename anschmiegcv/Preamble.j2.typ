@@ -147,6 +147,7 @@
   main-column-second-row: none,
   dot-color: {% if design.colors.timeline_dot %}{{ design.colors.timeline_dot.as_rgb() }}{% else %}{{ design.colors.connections.as_rgb() }}{% endif %},
   line-color: {% if design.colors.timeline_line %}{{ design.colors.timeline_line.as_rgb() }}{% else %}{{ design.colors.connections.as_rgb() }}{% endif %},
+  is_last_entry: false,
 ) = context {
   let body-font-size = {{ design.typography.font_size.body }}
   let line-spacing = {{ design.typography.line_spacing }}
@@ -161,7 +162,9 @@
   let timeline-indent = space-between-columns
   let entry-gap = {{ design.sections.space_between_regular_entries }} + line-spacing
 
-  // Render one continuous vertical track per entry, including its continuation gap.
+  // Render one continuous vertical track per entry.
+  // For non-last entries: gap is inside the stroked box (line continues).
+  // For last entry: gap is outside the stroked box (line stops at content).
   block(
     breakable: true,
     above: 0pt,
@@ -189,7 +192,9 @@
               linebreak()
               main-column-second-row
             }
-            #v(entry-gap)
+            #if not is_last_entry {
+              v(entry-gap)
+            }
           ],
         )
       ]
@@ -208,6 +213,7 @@
   main-column-second-row: none,
   dot-color: {% if design.colors.timeline_dot %}{{ design.colors.timeline_dot.as_rgb() }}{% else %}{{ design.colors.connections.as_rgb() }}{% endif %},
   line-color: {% if design.colors.timeline_line %}{{ design.colors.timeline_line.as_rgb() }}{% else %}{{ design.colors.connections.as_rgb() }}{% endif %},
+  is_last_entry: false,
 ) = context {
   // Use same timeline layout as regular entries
   timeline-entry(
@@ -216,6 +222,7 @@
     main-column-second-row: main-column-second-row,
     dot-color: dot-color,
     line-color: line-color,
+    is_last_entry: is_last_entry,
   )
 }
 
@@ -225,6 +232,7 @@
   main-column,
   date-and-location-column,
   main-column-second-row: none,
+  is_last_entry: false,
 ) = context {
   let body-font-size = {{ design.typography.font_size.body }}
   let line-spacing = {{ design.typography.line_spacing }}
@@ -253,7 +261,9 @@
               linebreak()
               main-column-second-row
             }
-            #v(entry-gap)
+            #if not is_last_entry {
+              v(entry-gap)
+            }
           ],
         )
       ]
@@ -267,6 +277,7 @@
   main-column,
   date-and-location-column,
   main-column-second-row: none,
+  is_last_entry: false,
 ) = context {
   let line-spacing = {{ design.typography.line_spacing }}
   let entry-gap = {{ design.sections.space_between_regular_entries }} + line-spacing
@@ -290,7 +301,9 @@
             linebreak()
             main-column-second-row
           }
-          #v(entry-gap)
+          #if not is_last_entry {
+            v(entry-gap)
+          }
         ],
       )
     ]

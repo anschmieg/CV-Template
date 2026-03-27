@@ -112,4 +112,5 @@
 {% endfor %}
   ],
 {% endif %}
+  is_last_entry: {{ is_last_entry|lower }},
 )
