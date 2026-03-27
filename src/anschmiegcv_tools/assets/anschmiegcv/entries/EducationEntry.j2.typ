@@ -8,17 +8,43 @@
 {% endif %}
 {% endfor %}
 {% if "], " in ns.header and "[" in ns.header %}
+{# Pattern: [markdown]Organization, Area #}
 {% set header_parts = ns.header.split("], ", 1) %}
 {% set organization_line = header_parts[0] ~ "]" %}
 {% set area_line = header_parts[1] %}
 {% set degree_line = none %}
+{% elif ", " in ns.header %}
+{# Check for AREA, DEGREE pattern (comma-separated area and degree) #}
+{% set header_parts = ns.header.split(", ", 1) %}
+{% set first_part = header_parts[0].strip() %}
+{% set second_part = header_parts[1].strip() if header_parts|length == 2 else "" %}
+{# Check if this matches known area and degree values #}
+{% set entry_area = entry.area if entry.area is defined and entry.area else "" %}
+{% set entry_degree = entry.degree if entry.degree is defined and entry.degree else "" %}
+{% if (first_part == entry_area and second_part == entry_degree) or (first_part == entry_degree and second_part == entry_area) %}
+{# Pattern: Area, Degree or Degree, Area - both parts match known values #}
+{% if first_part == entry_area %}
+{% set area_line = entry_area %}
+{% set degree_line = entry_degree %}
 {% else %}
-{% set header_parts = ns.header.rsplit(", ", 1) %}
-{% if header_parts|length == 2 %}
+{% set area_line = entry_area %}
+{% set degree_line = entry_degree %}
+{% endif %}
+{% set organization_line = entry.institution if entry.institution is defined and entry.institution else "" %}
+{% set institution_stripped = organization_line|replace("#strong[", "")|replace("]", "")|replace("#emph[", "")|trim %}
+{% if ns.body and ns.body[0].strip() == institution_stripped %}
+{% set ns.body = ns.body[1:] %}
+{% elif ns.body and ns.body[0].strip() == organization_line %}
+{% set ns.body = ns.body[1:] %}
+{% endif %}
+{% else %}
+{# Pattern: Organization, Area #}
 {% set organization_line = header_parts[0] %}
 {% set area_line = header_parts[1] %}
 {% set degree_line = none %}
+{% endif %}
 {% else %}
+{# Pattern: Degree Area (space-separated) or just Area #}
 {% set organization_line = entry.institution if entry.institution is defined and entry.institution else "" %}
 {% set area_line = ns.header %}
 {# When degree+area appear in header, split them using entry.degree and entry.area #}
@@ -30,7 +56,6 @@
 {% set ns.body = ns.body[1:] %}
 {% elif ns.body and ns.body[0].strip() == organization_line %}
 {% set ns.body = ns.body[1:] %}
-{% endif %}
 {% endif %}
 {% endif %}
 {% set organization_plain = organization_line|replace("#strong[", "")|replace("#emph[", "") %}
@@ -85,8 +110,7 @@
   ],
   [
 {% if degree_line %}
-    #text(fill: {{ degree_color }}, weight: {{ degree_weight }})[{{ degree_line }}]
-    #text(fill: {{ area_color }}, weight: {{ area_weight }})[ {{ area_line }}]
+    #text(fill: {{ area_color }}, weight: {{ area_weight }})[{{ area_line }},]#text(fill: {{ degree_color }}, weight: {{ degree_weight }})[ {{ degree_line }}]
 {% elif area_line %}
     #text(
       fill: {{ area_color }},
