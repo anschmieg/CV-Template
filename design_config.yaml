@@ -63,6 +63,18 @@ design:
     date_and_location_width: 3cm
     space_between_columns: 1cm
 
+  # Cards styling (used for .cards sections)
+  cards:
+    border_radius: 8pt # Border radius for cards
+    border_width: 0.5pt # Border width
+    gap: 0.24cm # Gap between cards
+    padding: 8pt # Internal card padding
+
+  # Timeline styling (used for .timeline sections)
+  timeline:
+    dot_size: 14pt # Timeline dot diameter (PDF uses points, HTML uses pixels)
+    line_width: 2pt # Timeline line thickness
+
   # Templates for date formatting
   templates:
     single_date: "MONTH_ABBREVIATION YEAR"

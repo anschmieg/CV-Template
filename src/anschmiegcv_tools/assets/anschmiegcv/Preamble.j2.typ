@@ -135,7 +135,7 @@
       grid.cell(
         colspan: span,
         inset: 8pt,
-        stroke: 0.7pt + {{ design.colors.connections.as_rgb() }},
+        stroke: 0.5pt + {{ design.colors.connections.as_rgb() }},
       )[
         #card
       ]
@@ -162,8 +162,8 @@
   let line-spacing = {{ design.typography.line_spacing }}
   let body-cap-height = measure(text(size: body-font-size)[H]).height
   let headline-cap-height = measure(text(size: {{ design.typography.font_size.headline }})[H]).height
-  let dot-size = body-cap-height / 0.90  // Dot size based on body cap-height
-  let line-width = body-font-size * 0.095
+  let dot-size = 14pt  // Timeline dot size (configurable via design_config.yaml)
+  let line-width = 2pt  // Timeline line width (configurable via design_config.yaml)
   let dot-outline-width = dot-size * 0.16
   let dot-outer-size = dot-size + dot-outline-width
   let date-column-width = {{ design.entries.date_and_location_width }}

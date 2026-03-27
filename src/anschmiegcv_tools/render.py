@@ -328,6 +328,46 @@ def _extract_education_style(data: dict[str, Any]) -> tuple[dict[str, Any], dict
     return updated, style
 
 
+def _extract_cards_config(data: dict[str, Any]) -> tuple[dict[str, Any], dict[str, Any] | None]:
+    """Extract cards styling config, returning (data_without_cards, cards_config).
+
+    RenderCV's schema doesn't allow custom styling fields, so we need to remove it
+    before validation and use it for post-processing.
+    """
+    design = data.get("design")
+    if not isinstance(design, dict):
+        return data, None
+
+    cards = design.get("cards")
+    if not isinstance(cards, dict):
+        return data, None
+
+    # Create a copy without the cards field
+    updated = copy.deepcopy(data)
+    updated.get("design", {}).pop("cards", None)
+    return updated, cards
+
+
+def _extract_timeline_config(data: dict[str, Any]) -> tuple[dict[str, Any], dict[str, Any] | None]:
+    """Extract timeline styling config, returning (data_without_timeline, timeline_config).
+
+    RenderCV's schema doesn't allow custom styling fields, so we need to remove it
+    before validation and use it for post-processing.
+    """
+    design = data.get("design")
+    if not isinstance(design, dict):
+        return data, None
+
+    timeline = design.get("timeline")
+    if not isinstance(timeline, dict):
+        return data, None
+
+    # Create a copy without the timeline field
+    updated = copy.deepcopy(data)
+    updated.get("design", {}).pop("timeline", None)
+    return updated, timeline
+
+
 def _find_typst_output(yaml_path: Path, yaml_data: dict[str, Any]) -> Path | None:
     """Find the generated Typst file for a CV YAML file.
 
@@ -429,6 +469,160 @@ def _inject_education_style(typst_path: Path, education_style: dict[str, Any], c
     typst_path.write_text(content, encoding="utf-8")
 
 
+def _find_html_output(yaml_path: Path, yaml_data: dict[str, Any]) -> Path | None:
+    """Find the generated HTML file for a CV YAML file.
+
+    The output filename is based on cv.name, not the YAML filename.
+    """
+    cv_data = yaml_data.get("cv", {})
+    cv_name = cv_data.get("name", "")
+    if cv_name:
+        name_slug = cv_name.replace(" ", "_")
+        candidate = yaml_path.parent / "rendercv_output" / f"{name_slug}_CV.html"
+        if candidate.exists():
+            return candidate
+
+    # Fallback: find the most recent .html file in rendercv_output
+    output_dir = yaml_path.parent / "rendercv_output"
+    if output_dir.is_dir():
+        html_files = list(output_dir.glob("*.html"))
+        if html_files:
+            return max(html_files, key=lambda p: p.stat().st_mtime)
+    return None
+
+
+def _inject_education_style_html(html_path: Path, education_style: dict[str, Any], colors: dict[str, Any]) -> None:
+    """Inject education CSS variable values into the generated HTML file.
+
+    The HTML template defines default --cv-education-* CSS variables. This function
+    replaces those default values with the configured values from design_config.yaml,
+    matching the same color resolution logic used for the Typst/PDF output.
+    """
+    def resolve_color_css(color_ref: str) -> str:
+        """Convert 'text' to footer color RGB string, 'primary' to name color RGB string."""
+        if color_ref == "text":
+            if "footer" in colors and hasattr(colors["footer"], "as_rgb"):
+                return colors["footer"].as_rgb()
+            return "rgb(39, 57, 59)"
+        elif color_ref == "primary":
+            if "name" in colors and hasattr(colors["name"], "as_rgb"):
+                return colors["name"].as_rgb()
+            return "rgb(0, 120, 135)"
+        return color_ref
+
+    degree_style = education_style.get("degree", {})
+    area_style = education_style.get("area", {})
+    institution_style = education_style.get("institution", {})
+
+    area_color = resolve_color_css(area_style.get("color", "text"))
+    area_weight = area_style.get("weight", 700)
+    degree_color = resolve_color_css(degree_style.get("color", "text"))
+    degree_weight = degree_style.get("weight", 600)
+    institution_color = resolve_color_css(institution_style.get("color", "primary"))
+    institution_weight = institution_style.get("weight", 600)
+
+    content = html_path.read_text(encoding="utf-8")
+
+    replacements = [
+        (r'--cv-education-area:\s*[^;]+;', f'--cv-education-area: {area_color};'),
+        (r'--cv-education-area-weight:\s*\d+;', f'--cv-education-area-weight: {area_weight};'),
+        (r'--cv-education-degree:\s*[^;]+;', f'--cv-education-degree: {degree_color};'),
+        (r'--cv-education-degree-weight:\s*\d+;', f'--cv-education-degree-weight: {degree_weight};'),
+        (r'--cv-education-institution:\s*[^;]+;', f'--cv-education-institution: {institution_color};'),
+        (r'--cv-education-institution-weight:\s*\d+;', f'--cv-education-institution-weight: {institution_weight};'),
+    ]
+
+    for pattern, replacement in replacements:
+        content = re.sub(pattern, replacement, content)
+
+    html_path.write_text(content, encoding="utf-8")
+
+
+def _inject_cards_style_html(html_path: Path, cards_config: dict[str, Any]) -> None:
+    """Inject cards CSS variable values into the generated HTML file.
+
+    The HTML template defines default --cv-card-* CSS variables. This function
+    replaces those default values with the configured values from design_config.yaml.
+    """
+    if not cards_config:
+        return
+
+    # Convert config values to CSS-acceptable values
+    # Config uses pt/cm for PDF, HTML needs px or rem
+
+    def convert_to_px(val: str) -> str:
+        """Convert pt or cm to px for CSS."""
+        if isinstance(val, str):
+            if val.endswith("pt"):
+                try:
+                    pt_val = float(val[:-2])
+                    return f"{round(pt_val * 1.33)}px"
+                except ValueError:
+                    pass
+            elif val.endswith("cm"):
+                try:
+                    cm_val = float(val[:-2])
+                    return f"{round(cm_val * 37.795)}px"  # 1cm = 37.795px at 96dpi
+                except ValueError:
+                    pass
+        return val  # Return as-is if no conversion needed
+
+    border_radius = convert_to_px(cards_config.get("border_radius", "8pt"))
+    border_width = convert_to_px(cards_config.get("border_width", "1pt"))
+    gap = convert_to_px(cards_config.get("gap", "0.24cm"))
+    padding = convert_to_px(cards_config.get("padding", "8pt"))
+
+    content = html_path.read_text(encoding="utf-8")
+
+    replacements = [
+        (r'--cv-card-border-radius:\s*[^;]+;', f'--cv-card-border-radius: {border_radius};'),
+        (r'--cv-card-border-width:\s*[^;]+;', f'--cv-card-border-width: {border_width};'),
+        (r'--cv-card-gap:\s*[^;]+;', f'--cv-card-gap: {gap};'),
+        (r'--cv-card-padding:\s*[^;]+;', f'--cv-card-padding: {padding};'),
+    ]
+
+    for pattern, replacement in replacements:
+        content = re.sub(pattern, replacement, content)
+
+    html_path.write_text(content, encoding="utf-8")
+
+
+def _inject_timeline_style_html(html_path: Path, timeline_config: dict[str, Any]) -> None:
+    """Inject timeline CSS variable values into the generated HTML file.
+
+    The HTML template defines default --cv-timeline-* CSS variables. This function
+    replaces those default values with the configured values from design_config.yaml.
+    """
+    if not timeline_config:
+        return
+
+    def convert_to_px(val: str) -> str:
+        """Convert pt to px for CSS."""
+        if isinstance(val, str):
+            if val.endswith("pt"):
+                try:
+                    pt_val = float(val[:-2])
+                    return f"{round(pt_val * 1.33)}px"
+                except ValueError:
+                    pass
+        return val  # Return as-is if no conversion needed (e.g., already in px)
+
+    dot_size = convert_to_px(timeline_config.get("dot_size", "14pt"))
+    line_width = convert_to_px(timeline_config.get("line_width", "2pt"))
+
+    content = html_path.read_text(encoding="utf-8")
+
+    replacements = [
+        (r'--cv-timeline-dot-size:\s*[^;]+;', f'--cv-timeline-dot-size: {dot_size};'),
+        (r'--cv-timeline-line-width:\s*[^;]+;', f'--cv-timeline-line-width: {line_width};'),
+    ]
+
+    for pattern, replacement in replacements:
+        content = re.sub(pattern, replacement, content)
+
+    html_path.write_text(content, encoding="utf-8")
+
+
 def _render_one_file(
     yaml_path: Path,
     *,
@@ -447,6 +641,12 @@ def _render_one_file(
 
     # Extract education_style before passing to rendercv (schema doesn't allow it)
     prepared, education_style = _extract_education_style(prepared)
+
+    # Extract cards styling config before passing to rendercv (schema doesn't allow it)
+    prepared, cards_config = _extract_cards_config(prepared)
+
+    # Extract timeline styling config before passing to rendercv (schema doesn't allow it)
+    prepared, timeline_config = _extract_timeline_config(prepared)
 
     # Keep colors for resolving color references
     design_colors = prepared.get("design", {}).get("colors", {})
@@ -478,6 +678,26 @@ def _render_one_file(
                 print(f"[anschmiegcv] Applied education style for {yaml_path.name}")
                 # Re-compile PDF since we modified the Typst
                 _recompile_pdf(typst_path)
+
+            # Also inject education CSS variables into the generated HTML
+            html_path = _find_html_output(yaml_path, prepared)
+            if html_path and html_path.exists():
+                _inject_education_style_html(html_path, education_style, design_colors)
+                print(f"[anschmiegcv] Applied education style to HTML for {yaml_path.name}")
+
+        # Inject cards styling into HTML
+        if cards_config:
+            html_path = _find_html_output(yaml_path, prepared)
+            if html_path and html_path.exists():
+                _inject_cards_style_html(html_path, cards_config)
+                print(f"[anschmiegcv] Applied cards style to HTML for {yaml_path.name}")
+
+        # Inject timeline styling into HTML
+        if timeline_config:
+            html_path = _find_html_output(yaml_path, prepared)
+            if html_path and html_path.exists():
+                _inject_timeline_style_html(html_path, timeline_config)
+                print(f"[anschmiegcv] Applied timeline style to HTML for {yaml_path.name}")
     finally:
         temp_yaml.unlink(missing_ok=True)
 
