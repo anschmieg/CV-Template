@@ -73,8 +73,8 @@ design:
 
   # Timeline styling (used for .timeline sections)
   timeline:
-    dot_size: 14pt # Timeline dot diameter (PDF uses points, HTML uses pixels)
-    line_width: 2pt # Timeline line thickness
+    dot_size: 7pt # Timeline dot diameter (PDF uses points, HTML uses pixels)
+    line_width: 1.5pt # Timeline line thickness
 
   # Templates for date formatting
   templates:

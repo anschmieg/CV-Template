@@ -278,6 +278,7 @@
         position: relative;
         display: flex;
         justify-content: center;
+        align-items: center;
       }
 
       .cv-timeline-track::before {
@@ -286,7 +287,7 @@
         left: 50%;
         transform: translateX(-50%);
         top: 0;
-        bottom: -1.25rem;
+        bottom: 0;
         width: var(--cv-timeline-line-width);
         background: var(--cv-timeline-line);
       }
@@ -295,7 +296,6 @@
         position: relative;
         width: var(--cv-timeline-dot-size);
         height: var(--cv-timeline-dot-size);
-        margin-top: 0.2rem;
         border-radius: 50%;
         background: var(--cv-timeline-dot);
         border: calc(var(--cv-timeline-dot-size) * 0.1875) solid white;
@@ -717,13 +717,18 @@
                       {% endif %}
                     {% endif %}
                     {% set is_education_entry = entry.institution is defined and entry.institution %}
-                    <h3 class="title is-6 mb-1 {% if is_education_entry %}cv-education-area{% else %}cv-entry-primary{% endif %}">
-                      {% if entry_title_style == 'bold' %}
-                        <strong>{{ render_markdown_inline(entry_title) }}</strong>
-                      {% elif entry_title_style == 'italic' %}
-                        <em>{{ render_markdown_inline(entry_title) }}</em>
+                    <h3 class="title is-6 mb-1 {% if not is_education_entry %}cv-entry-primary{% endif %}">
+                      {% if is_education_entry %}
+                        {# Render area and degree on same line, matching PDF "AREA, DEGREE" format #}
+                        <span class="cv-education-area">{{ render_markdown_inline(entry_title) }}</span><span class="cv-education-degree">, {{ render_markdown_inline(entry_secondary) }}</span>
                       {% else %}
-                        {{ render_markdown_inline(entry_title) }}
+                        {% if entry_title_style == 'bold' %}
+                          <strong>{{ render_markdown_inline(entry_title) }}</strong>
+                        {% elif entry_title_style == 'italic' %}
+                          <em>{{ render_markdown_inline(entry_title) }}</em>
+                        {% else %}
+                          {{ render_markdown_inline(entry_title) }}
+                        {% endif %}
                       {% endif %}
                     </h3>
                     {% if entry_subtitle %}
@@ -736,15 +741,6 @@
                           {{ render_markdown_inline(entry_subtitle) }}
                         {% else %}
                           {{ render_markdown_inline(entry_subtitle) }}
-                        {% endif %}
-                      </p>
-                    {% endif %}
-                    {% if entry_secondary %}
-                      <p class="mb-2 {% if is_education_entry %}cv-education-degree{% endif %}">
-                        {% if is_education_entry %}
-                          {{ render_markdown_inline(entry_secondary) }}
-                        {% else %}
-                          <strong>{{ render_markdown_inline(entry_secondary) }}</strong>
                         {% endif %}
                       </p>
                     {% endif %}
@@ -974,13 +970,18 @@
                         {% endif %}
                       {% endif %}
                       {% set is_education_entry = entry.institution is defined and entry.institution %}
-                      <h3 class="title is-6 mb-1 {% if is_education_entry %}cv-education-area{% else %}cv-entry-primary{% endif %}">
-                        {% if entry_title_style == 'bold' %}
-                          <strong>{{ render_markdown_inline(entry_title) }}</strong>
-                        {% elif entry_title_style == 'italic' %}
-                          <em>{{ render_markdown_inline(entry_title) }}</em>
+                      <h3 class="title is-6 mb-1 {% if not is_education_entry %}cv-entry-primary{% endif %}">
+                        {% if is_education_entry %}
+                          {# Render area and degree on same line, matching PDF "AREA, DEGREE" format #}
+                          <span class="cv-education-area">{{ render_markdown_inline(entry_title) }}</span><span class="cv-education-degree">, {{ render_markdown_inline(entry_secondary) }}</span>
                         {% else %}
-                          {{ render_markdown_inline(entry_title) }}
+                          {% if entry_title_style == 'bold' %}
+                            <strong>{{ render_markdown_inline(entry_title) }}</strong>
+                          {% elif entry_title_style == 'italic' %}
+                            <em>{{ render_markdown_inline(entry_title) }}</em>
+                          {% else %}
+                            {{ render_markdown_inline(entry_title) }}
+                          {% endif %}
                         {% endif %}
                       </h3>
                       {% if entry_subtitle %}
@@ -1000,15 +1001,6 @@
                                 {{ render_markdown_inline(entry_subtitle) }}
                               </span>
                             {% endif %}
-                          {% endif %}
-                        </p>
-                      {% endif %}
-                      {% if entry_secondary %}
-                        <p class="mb-2 {% if is_education_entry %}cv-education-degree{% endif %}">
-                          {% if is_education_entry %}
-                            {{ render_markdown_inline(entry_secondary) }}
-                          {% else %}
-                            <strong>{{ render_markdown_inline(entry_secondary) }}</strong>
                           {% endif %}
                         </p>
                       {% endif %}
