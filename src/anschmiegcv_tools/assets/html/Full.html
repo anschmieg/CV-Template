@@ -8,18 +8,8 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    {% set body_font = design.typography.font_family.body %}
-    {% set title_font = design.typography.font_family.section_titles %}
-    {% set name_font = design.typography.font_family.name %}
-    {% set body_font_url = body_font|replace(' ', '+') %}
-    {% set title_font_url = title_font|replace(' ', '+') %}
-    {% set name_font_url = name_font|replace(' ', '+') %}
-    {% set google_fonts_families = [] %}
-    {% if body_font_url not in google_fonts_families %}{% set google_fonts_families = google_fonts_families + [body_font_url + ':wght@300;400;500;600;700'] %}{% endif %}
-    {% if title_font_url != body_font_url %}{% set google_fonts_families = google_fonts_families + [title_font_url + ':wght@500;600;700'] %}{% endif %}
-    {% if name_font_url != body_font_url and name_font_url != title_font_url %}{% set google_fonts_families = google_fonts_families + [name_font_url + ':wght@500;600;700'] %}{% endif %}
     <link
-      href="https://fonts.googleapis.com/css2?{% for f in google_fonts_families %}family={{ f }}{% if not loop.last %}&{% endif %}{% endfor %}&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Raleway:wght@500;600;700&display=swap"
       rel="stylesheet"
     />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.2/css/bulma.min.css" />
@@ -48,31 +38,9 @@
         --cv-card-gap: 0.9rem;
         --cv-card-padding: 1rem;
         --cv-background: #f7f8fa;
-        --cv-font-body: "{{ design.typography.font_family.body }}", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-        --cv-font-title: "{{ design.typography.font_family.section_titles }}", "{{ design.typography.font_family.name }}", "Segoe UI", sans-serif;
+        --cv-font-body: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        --cv-font-title: "Raleway", "Segoe UI", sans-serif;
         --cv-entry-emphasis-weight: {% if design.typography.bold.section_titles %}700{% else %}600{% endif %};
-        {% if design.templates is defined and design.templates.education_entry is defined and design.templates.education_entry.style is defined %}
-        {% set edu_style = design.templates.education_entry.style %}
-        {% set area_color_key = edu_style.area.color if edu_style.area is defined and edu_style.area.color is defined else 'text' %}
-        {% set degree_color_key = edu_style.degree.color if edu_style.degree is defined and edu_style.degree.color is defined else 'text' %}
-        {% set institution_color_key = edu_style.institution.color if edu_style.institution is defined and edu_style.institution.color is defined else 'primary' %}
-        {% set area_weight = edu_style.area.weight if edu_style.area is defined and edu_style.area.weight is defined else 700 %}
-        {% set degree_weight = edu_style.degree.weight if edu_style.degree is defined and edu_style.degree.weight is defined else 600 %}
-        {% set institution_weight = edu_style.institution.weight if edu_style.institution is defined and edu_style.institution.weight is defined else 600 %}
-        --cv-education-area: {% if area_color_key == 'primary' %}{{ design.colors.name.as_rgb() }}{% else %}{{ design.colors.footer.as_rgb() }}{% endif %};
-        --cv-education-area-weight: {{ area_weight }};
-        --cv-education-degree: {% if degree_color_key == 'primary' %}{{ design.colors.name.as_rgb() }}{% else %}{{ design.colors.footer.as_rgb() }}{% endif %};
-        --cv-education-degree-weight: {{ degree_weight }};
-        --cv-education-institution: {% if institution_color_key == 'primary' %}{{ design.colors.name.as_rgb() }}{% else %}{{ design.colors.footer.as_rgb() }}{% endif %};
-        --cv-education-institution-weight: {{ institution_weight }};
-        {% else %}
-        --cv-education-area: {{ design.colors.footer.as_rgb() }};
-        --cv-education-area-weight: 700;
-        --cv-education-degree: {{ design.colors.footer.as_rgb() }};
-        --cv-education-degree-weight: 600;
-        --cv-education-institution: {{ design.colors.name.as_rgb() }};
-        --cv-education-institution-weight: 600;
-        {% endif %}
       }
 
       html,
@@ -80,8 +48,8 @@
         background: var(--cv-background);
         color: var(--cv-body);
         font-family: var(--cv-font-body);
-        font-size: {{ design.typography.font_size.body }};
-        line-height: calc(1em + {{ design.typography.line_spacing }});
+        font-size: 16px;
+        line-height: 1.5;
         margin: 0;
       }
 
@@ -112,7 +80,7 @@
         overflow-y: auto;
         border-right: 1px solid color-mix(in srgb, var(--cv-connections) 20%, white 80%);
         background: color-mix(in srgb, var(--cv-connections) 5%, white 95%);
-        padding: {{ design.page.top_margin }} {{ design.page.left_margin }} !important;
+        padding: 2.25rem 1.75rem !important;
       }
 
       .cv-sidebar a {
@@ -120,7 +88,7 @@
       }
 
       .cv-main {
-        padding: {{ design.page.top_margin }} {{ design.page.right_margin }} !important;
+        padding: 2.5rem 2.25rem !important;
       }
 
       .cv-photo {
@@ -187,21 +155,6 @@
         font-weight: 400;
       }
 
-      .cv-education-area {
-        color: var(--cv-education-area);
-        font-weight: var(--cv-education-area-weight);
-      }
-
-      .cv-education-degree {
-        color: var(--cv-education-degree);
-        font-weight: var(--cv-education-degree-weight);
-      }
-
-      .cv-education-institution {
-        color: var(--cv-education-institution);
-        font-weight: var(--cv-education-institution-weight);
-      }
-
       .cv-org-inline {
         display: inline-flex;
         align-items: center;
@@ -222,8 +175,9 @@
       .cv-cards-grid {
         --cv-card-grid-template: repeat(2, minmax(0, 1fr));
         display: grid;
-        grid-template-columns: var(--cv-card-grid-template);
         gap: var(--cv-card-gap);
+        grid-template-columns: var(--cv-card-grid-template);
+        gap: 0.9rem;
         align-items: stretch;
       }
 
@@ -278,7 +232,6 @@
         position: relative;
         display: flex;
         justify-content: center;
-        align-items: center;
       }
 
       .cv-timeline-track::before {
@@ -287,7 +240,7 @@
         left: 50%;
         transform: translateX(-50%);
         top: 0;
-        bottom: 0;
+        bottom: -1.25rem;
         width: var(--cv-timeline-line-width);
         background: var(--cv-timeline-line);
       }
@@ -296,6 +249,7 @@
         position: relative;
         width: var(--cv-timeline-dot-size);
         height: var(--cv-timeline-dot-size);
+        margin-top: 0.2rem;
         border-radius: 50%;
         background: var(--cv-timeline-dot);
         border: calc(var(--cv-timeline-dot-size) * 0.1875) solid white;
@@ -716,23 +670,17 @@
                         {% set entry_subtitle = entry.label %}
                       {% endif %}
                     {% endif %}
-                    {% set is_education_entry = entry.institution is defined and entry.institution %}
-                    <h3 class="title is-6 mb-1 {% if not is_education_entry %}cv-entry-primary{% endif %}">
-                      {% if is_education_entry %}
-                        {# Render area and degree on same line, matching PDF "AREA, DEGREE" format #}
-                        <span class="cv-education-area">{{ render_markdown_inline(entry_title) }}</span><span class="cv-education-degree">, {{ render_markdown_inline(entry_secondary) }}</span>
+                    <h3 class="title is-6 mb-1 cv-entry-primary">
+                      {% if entry_title_style == 'bold' %}
+                        <strong>{{ render_markdown_inline(entry_title) }}</strong>
+                      {% elif entry_title_style == 'italic' %}
+                        <em>{{ render_markdown_inline(entry_title) }}</em>
                       {% else %}
-                        {% if entry_title_style == 'bold' %}
-                          <strong>{{ render_markdown_inline(entry_title) }}</strong>
-                        {% elif entry_title_style == 'italic' %}
-                          <em>{{ render_markdown_inline(entry_title) }}</em>
-                        {% else %}
-                          {{ render_markdown_inline(entry_title) }}
-                        {% endif %}
+                        {{ render_markdown_inline(entry_title) }}
                       {% endif %}
                     </h3>
                     {% if entry_subtitle %}
-                      <p class="mb-2 {% if is_education_entry %}cv-education-institution{% else %}cv-entry-secondary{% if entry_subtitle_style != 'default' %} cv-entry-secondary-custom{% endif %}{% endif %}">
+                      <p class="mb-2 cv-entry-secondary{% if entry_subtitle_style != 'default' %} cv-entry-secondary-custom{% endif %}">
                         {% if entry_subtitle_style == 'bold' %}
                           <strong>{{ render_markdown_inline(entry_subtitle) }}</strong>
                         {% elif entry_subtitle_style == 'italic' %}
@@ -743,6 +691,9 @@
                           {{ render_markdown_inline(entry_subtitle) }}
                         {% endif %}
                       </p>
+                    {% endif %}
+                    {% if entry_secondary %}
+                      <p class="mb-2"><strong>{{ render_markdown_inline(entry_secondary) }}</strong></p>
                     {% endif %}
                     {% if entry.details %}
                       {{ render_markdown_block(entry.details, 'mb-2') }}
@@ -969,23 +920,17 @@
                           {% set entry_subtitle = entry.label %}
                         {% endif %}
                       {% endif %}
-                      {% set is_education_entry = entry.institution is defined and entry.institution %}
-                      <h3 class="title is-6 mb-1 {% if not is_education_entry %}cv-entry-primary{% endif %}">
-                        {% if is_education_entry %}
-                          {# Render area and degree on same line, matching PDF "AREA, DEGREE" format #}
-                          <span class="cv-education-area">{{ render_markdown_inline(entry_title) }}</span><span class="cv-education-degree">, {{ render_markdown_inline(entry_secondary) }}</span>
+                      <h3 class="title is-6 mb-1 cv-entry-primary">
+                        {% if entry_title_style == 'bold' %}
+                          <strong>{{ render_markdown_inline(entry_title) }}</strong>
+                        {% elif entry_title_style == 'italic' %}
+                          <em>{{ render_markdown_inline(entry_title) }}</em>
                         {% else %}
-                          {% if entry_title_style == 'bold' %}
-                            <strong>{{ render_markdown_inline(entry_title) }}</strong>
-                          {% elif entry_title_style == 'italic' %}
-                            <em>{{ render_markdown_inline(entry_title) }}</em>
-                          {% else %}
-                            {{ render_markdown_inline(entry_title) }}
-                          {% endif %}
+                          {{ render_markdown_inline(entry_title) }}
                         {% endif %}
                       </h3>
                       {% if entry_subtitle %}
-                        <p class="mb-2 {% if is_education_entry %}cv-education-institution{% else %}cv-entry-secondary{% if entry_subtitle_style != 'default' %} cv-entry-secondary-custom{% endif %}{% endif %}">
+                        <p class="mb-2 cv-entry-secondary{% if entry_subtitle_style != 'default' %} cv-entry-secondary-custom{% endif %}">
                           {% if entry_subtitle_style == 'bold' %}
                             <strong>{{ render_markdown_inline(entry_subtitle) }}</strong>
                           {% elif entry_subtitle_style == 'italic' %}
@@ -993,16 +938,15 @@
                           {% elif entry_subtitle_style == 'plain' %}
                             {{ render_markdown_inline(entry_subtitle) }}
                           {% else %}
-                            {% if is_education_entry %}
+                            <span class="cv-org-inline">
+                              <span class="icon is-small"><i class="fa-solid fa-building"></i></span>
                               {{ render_markdown_inline(entry_subtitle) }}
-                            {% else %}
-                              <span class="cv-org-inline">
-                                <span class="icon is-small"><i class="fa-solid fa-building"></i></span>
-                                {{ render_markdown_inline(entry_subtitle) }}
-                              </span>
-                            {% endif %}
+                            </span>
                           {% endif %}
                         </p>
+                      {% endif %}
+                      {% if entry_secondary %}
+                        <p class="mb-2"><strong>{{ render_markdown_inline(entry_secondary) }}</strong></p>
                       {% endif %}
                       {% if entry.date or entry.start_date or entry.location %}
                         <p class="cv-item-meta mb-2">
