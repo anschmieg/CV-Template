@@ -3,6 +3,16 @@
 {% set view_mode = "auto" %}
 {% set card_columns = 1 %}
 {% set card_layout = "one" %}
+{# Auto-detect publication sections and enable cards mode #}
+{% set is_publication_section = false %}
+{% if section_content is defined and section_content %}
+{% set first_entry = section_content[0] %}
+{% if first_entry is not string %}
+{% if first_entry.doi is defined or first_entry.authors is defined or first_entry.journal is defined or (first_entry.url is defined and first_entry.title is defined) %}
+{% set is_publication_section = true %}
+{% endif %}
+{% endif %}
+{% endif %}
 {% if ".cards" in raw_title %}
 {% set view_mode = "cards" %}
 {% set card_columns = 2 %}
@@ -23,6 +33,11 @@
 {% set card_columns = 1 %}
 {% set card_layout = "one" %}
 {% endif %}
+{% elif is_publication_section %}
+{# Auto-enable cards for publication sections with default layout #}
+{% set view_mode = "cards" %}
+{% set card_columns = 2 %}
+{% set card_layout = "two" %}
 {% elif ".list" in raw_title %}
 {% set view_mode = "list" %}
 {% elif ".timeline" in raw_title %}

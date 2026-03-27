@@ -50,7 +50,7 @@ cv:
         highlights:
           - Exchange semester at University of Amsterdam
 
-    Publications:
+    Publications {.cards}:
       - title: "Digital Transformation in Medium-Sized Enterprises"
         authors:
           - J. Mama
