@@ -78,15 +78,15 @@ design:
       degree_column: null
       # Custom styling for education entries (anschmiegcv-specific)
       style:
-        degree:
-          color: "text" # Options: "text" (grey), "primary" (teal)
-          weight: 600 # 400=regular, 600=semi-bold, 700=bold
         area:
           color: "primary" # Options: "text" (grey), "primary" (teal)
-          weight: 600 # 400=regular, 600=semi-bold, 700=bold
+          weight: 700 # 400=regular, 600=semi-bold, 700=bold
+        degree:
+          color: "text" # Options: "text" (grey), "primary" (teal)
+          weight: 500 # 400=regular, 600=semi-bold, 700=bold
         institution:
           color: "text" # Options: "text" (grey), "primary" (teal)
-          weight: 700 # 400=regular, 600=semi-bold, 700=bold
+          weight: 600 # 400=regular, 600=semi-bold, 700=bold
     experience_entry:
       date_and_location_column: "LOCATION\nDATE"
 

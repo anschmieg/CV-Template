@@ -33,7 +33,7 @@ cv:
     Education:
       - institution: Technical University of Berlin
         area: Business Administration
-        degree: Master of Science
+        degree: MSc
         start_date: 2018-10
         end_date: 2020-09
         location: Berlin, Germany
@@ -43,7 +43,7 @@ cv:
 
       - institution: University of Hamburg
         area: Economics
-        degree: Bachelor of Science
+        degree: BSc
         start_date: 2015-10
         end_date: 2018-09
         location: Hamburg, Germany
