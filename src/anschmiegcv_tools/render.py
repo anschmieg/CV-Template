@@ -368,6 +368,30 @@ def _extract_timeline_config(data: dict[str, Any]) -> tuple[dict[str, Any], dict
     return updated, timeline
 
 
+def _extract_page_background_color(data: dict[str, Any]) -> tuple[dict[str, Any], str | None]:
+    """Extract page.background_color, returning (data_without_bg, bg_color).
+
+    RenderCV's schema doesn't allow custom page fields, so we need to remove it
+    before validation and use it for post-processing.
+    """
+    design = data.get("design")
+    if not isinstance(design, dict):
+        return data, None
+
+    page = design.get("page")
+    if not isinstance(page, dict):
+        return data, None
+
+    bg_color = page.get("background_color")
+    if bg_color is None:
+        return data, None
+
+    # Create a copy without the background_color field
+    updated = copy.deepcopy(data)
+    updated.get("design", {}).get("page", {}).pop("background_color", None)
+    return updated, bg_color
+
+
 def _find_typst_output(yaml_path: Path, yaml_data: dict[str, Any]) -> Path | None:
     """Find the generated Typst file for a CV YAML file.
 
@@ -623,6 +647,24 @@ def _inject_timeline_style_html(html_path: Path, timeline_config: dict[str, Any]
     html_path.write_text(content, encoding="utf-8")
 
 
+def _inject_background_color_html(html_path: Path, bg_color: str) -> None:
+    """Inject background color into the generated HTML file.
+
+    The HTML template defines a default --cv-background CSS variable.
+    This function replaces it with the configured value from design_config.yaml.
+    """
+    content = html_path.read_text(encoding="utf-8")
+
+    # Replace the background color variable
+    content = re.sub(
+        r'--cv-background:\s*[^;]+;',
+        f'--cv-background: {bg_color};',
+        content
+    )
+
+    html_path.write_text(content, encoding="utf-8")
+
+
 def _render_one_file(
     yaml_path: Path,
     *,
@@ -647,6 +689,9 @@ def _render_one_file(
 
     # Extract timeline styling config before passing to rendercv (schema doesn't allow it)
     prepared, timeline_config = _extract_timeline_config(prepared)
+
+    # Extract page background_color before passing to rendercv (schema doesn't allow it)
+    prepared, background_color = _extract_page_background_color(prepared)
 
     # Keep colors for resolving color references
     design_colors = prepared.get("design", {}).get("colors", {})
@@ -698,6 +743,13 @@ def _render_one_file(
             if html_path and html_path.exists():
                 _inject_timeline_style_html(html_path, timeline_config)
                 print(f"[anschmiegcv] Applied timeline style to HTML for {yaml_path.name}")
+
+        # Inject background color into HTML
+        if background_color:
+            html_path = _find_html_output(yaml_path, prepared)
+            if html_path and html_path.exists():
+                _inject_background_color_html(html_path, background_color)
+                print(f"[anschmiegcv] Applied background color to HTML for {yaml_path.name}")
     finally:
         temp_yaml.unlink(missing_ok=True)
 
