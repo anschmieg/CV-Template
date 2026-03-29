@@ -1,5 +1,6 @@
 // Import the rendercv function and all the refactored components
 #import "@preview/rendercv:0.1.0": *
+#import "@preview/fontawesome:0.6.0": fa-icon
 
 // Apply the rendercv template with custom configuration
 #show: rendercv.with(
@@ -302,7 +303,7 @@
         inset: (left: regular-entry-indent),
         [
           #text(size: 0.9em, fill: {{ design.colors.connections.as_rgb() }})[
-            #date-and-location-column
+            date-and-location-column
           ]
           #v(0.1em)
           #main-column

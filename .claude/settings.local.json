@@ -12,9 +12,12 @@
       "Bash(git log:*)",
       "Bash(grep rendercv:*)",
       "Bash(pip show rendercv 2>/dev/null || python3 -c \"import rendercv; print\\(rendercv.__file__\\)\" 2>/dev/null)",
-      "Bash(uv tool run rendercv --version 2>&1 || uv run rendercv --version 2>&1)"
+      "Bash(uv tool run rendercv --version 2>&1 || uv run rendercv --version 2>&1)",
+      "Bash(source .venv/bin/activate && python -m anschmiegcv_tools.cli render example_CV.yaml 2>&1)",
+      "Bash(python:*)",
+      "Bash(python3:*)"
     ]
   },
-  "prefersReducedMotion": true,
-  "outputStyle": "default"
+  "outputStyle": "default",
+  "prefersReducedMotion": true
 }

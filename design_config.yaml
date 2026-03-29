@@ -73,8 +73,9 @@ design:
 
   # Timeline styling (used for .timeline sections)
   timeline:
-    dot_size: 4pt # Timeline dot diameter (PDF uses points, HTML uses pixels)
+    dot_size: 6pt # Timeline dot diameter (PDF uses points, HTML uses pixels)
     line_width: 1pt # Timeline line thickness
+    timespan_italic: true # Make timespan (date range) italic in timeline
 
   # Templates for date formatting
   templates:
@@ -87,7 +88,7 @@ design:
         AREA, DEGREE
         INSTITUTION
         HIGHLIGHTS
-      date_and_location_column: "LOCATION\nDATE"
+      date_and_location_column: "DATE\nLOCATION"
       degree_column: null
       # Custom styling for education entries (anschmiegcv-specific)
       style:
@@ -101,7 +102,7 @@ design:
           color: "text" # Options: "text" (grey), "primary" (teal)
           weight: 600 # 400=regular, 600=semi-bold, 700=bold
     experience_entry:
-      date_and_location_column: "LOCATION\nDATE"
+      date_and_location_column: "DATE\nLOCATION"
 
 settings:
   current_date: "2026-03-24"

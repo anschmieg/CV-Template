@@ -516,11 +516,10 @@ def _find_html_output(yaml_path: Path, yaml_data: dict[str, Any]) -> Path | None
 
 
 def _inject_education_style_html(html_path: Path, education_style: dict[str, Any], colors: dict[str, Any]) -> None:
-    """Inject education CSS variable values into the generated HTML file.
+    """Inject education styling and restructure HTML to match the Typst template.
 
-    The HTML template defines default --cv-education-* CSS variables. This function
-    replaces those default values with the configured values from design_config.yaml,
-    matching the same color resolution logic used for the Typst/PDF output.
+    The HTML renderer produces separate elements for area, institution, and degree.
+    This function restructures them to match the Typst template where DEGREE follows AREA on the same line.
     """
     def resolve_color_css(color_ref: str) -> str:
         """Convert 'text' to footer color RGB string, 'primary' to name color RGB string."""
@@ -538,26 +537,57 @@ def _inject_education_style_html(html_path: Path, education_style: dict[str, Any
     area_style = education_style.get("area", {})
     institution_style = education_style.get("institution", {})
 
-    area_color = resolve_color_css(area_style.get("color", "text"))
-    area_weight = area_style.get("weight", 700)
     degree_color = resolve_color_css(degree_style.get("color", "text"))
     degree_weight = degree_style.get("weight", 600)
-    institution_color = resolve_color_css(institution_style.get("color", "primary"))
-    institution_weight = institution_style.get("weight", 600)
 
     content = html_path.read_text(encoding="utf-8")
 
-    replacements = [
-        (r'--cv-education-area:\s*[^;]+;', f'--cv-education-area: {area_color};'),
-        (r'--cv-education-area-weight:\s*\d+;', f'--cv-education-area-weight: {area_weight};'),
-        (r'--cv-education-degree:\s*[^;]+;', f'--cv-education-degree: {degree_color};'),
-        (r'--cv-education-degree-weight:\s*\d+;', f'--cv-education-degree-weight: {degree_weight};'),
-        (r'--cv-education-institution:\s*[^;]+;', f'--cv-education-institution: {institution_color};'),
-        (r'--cv-education-institution-weight:\s*\d+;', f'--cv-education-institution-weight: {institution_weight};'),
-    ]
+    # Restructure education entries to match Typst template:
+    # Before: <h3>Area</h3><p>Institution</p><p><strong>Degree</strong></p>
+    # After:  <h3>Area, <span class="cv-degree">Degree</span></h3><p>Institution</p>
 
-    for pattern, replacement in replacements:
-        content = re.sub(pattern, replacement, content)
+    def restructure_match(match):
+        area = match.group(1)
+        institution = match.group(2)
+        degree = match.group(3)
+
+        # Build restructured HTML - area stays in h3, degree follows on same line
+        result = (
+            '<h3 class="title is-6 mb-1 cv-entry-primary">\n'
+            '                                <span class="cv-markdown-inline ">\n'
+            '          <script type="text/plain" class="cv-md-source">' + area + ', </script>\n'
+            '        </span><span class="cv-degree" style="color: ' + degree_color + '; font-weight: ' + str(degree_weight) + ';">' + degree + '</span>\n'
+            '                    </h3>\n'
+            '                      <p class="mb-2 cv-entry-secondary cv-entry-secondary-custom">\n'
+            '                                  <span class="cv-markdown-inline ">\n'
+            '          <script type="text/plain" class="cv-md-source">' + institution + '</script>\n'
+            '        </span>\n'
+            '                      </p>'
+        )
+        return result
+
+    # Match education entry: h3 with area, p with institution, p with strong/degree
+    # Pattern must consume ALL closing tags to avoid leaving garbage
+    pattern = (
+        r'<h3 class="title is-6 mb-1 cv-entry-primary">\s*'
+        r'<span class="cv-markdown-inline ">\s*'
+        r'<script type="text/plain" class="cv-md-source">([^<]+)</script>\s*'
+        r'</span>\s*'
+        r'</h3>\s*'
+        r'<p class="mb-2 cv-entry-secondary cv-entry-secondary-custom">\s*'
+        r'<span class="cv-markdown-inline ">\s*'
+        r'<script type="text/plain" class="cv-md-source">([^<]+)</script>\s*'
+        r'</span>\s*'
+        r'</p>\s*'
+        r'<p class="mb-2"><strong>\s*'
+        r'<span class="cv-markdown-inline ">\s*'
+        r'<script type="text/plain" class="cv-md-source">([^<]+)</script>\s*'
+        r'</span>\s*'
+        r'</strong>\s*'
+        r'</p>'
+    )
+
+    content = re.sub(pattern, restructure_match, content, flags=re.DOTALL)
 
     html_path.write_text(content, encoding="utf-8")
 
@@ -571,11 +601,8 @@ def _inject_cards_style_html(html_path: Path, cards_config: dict[str, Any]) -> N
     if not cards_config:
         return
 
-    # Convert config values to CSS-acceptable values
-    # Config uses pt/cm for PDF, HTML needs px or rem
-
     def convert_to_px(val: str) -> str:
-        """Convert pt or cm to px for CSS."""
+        """Convert pt to px for CSS."""
         if isinstance(val, str):
             if val.endswith("pt"):
                 try:
@@ -583,17 +610,11 @@ def _inject_cards_style_html(html_path: Path, cards_config: dict[str, Any]) -> N
                     return f"{round(pt_val * 1.33)}px"
                 except ValueError:
                     pass
-            elif val.endswith("cm"):
-                try:
-                    cm_val = float(val[:-2])
-                    return f"{round(cm_val * 37.795)}px"  # 1cm = 37.795px at 96dpi
-                except ValueError:
-                    pass
-        return val  # Return as-is if no conversion needed
+        return val
 
     border_radius = convert_to_px(cards_config.get("border_radius", "8pt"))
-    border_width = convert_to_px(cards_config.get("border_width", "1pt"))
-    gap = convert_to_px(cards_config.get("gap", "0.24cm"))
+    border_width = convert_to_px(cards_config.get("border_width", "0.5pt"))
+    gap = convert_to_px(cards_config.get("gap", "6pt"))
     padding = convert_to_px(cards_config.get("padding", "8pt"))
 
     content = html_path.read_text(encoding="utf-8")
@@ -644,7 +665,71 @@ def _inject_timeline_style_html(html_path: Path, timeline_config: dict[str, Any]
     for pattern, replacement in replacements:
         content = re.sub(pattern, replacement, content)
 
+    # Inject CSS to stop the timeline line at the last entry
+    # The line has bottom: -1.25rem to bridge gaps between entries.
+    # For the last entry in a timeline section, we want the line to stop at the dot.
+    # The dot has margin-top: 0.2rem, so we set bottom to calc(-1 * 0.2rem)
+    # Using section:has() to scope to sections with timeline entries
+    last_entry_css = """
+      /* Stop timeline line at the last entry in each timeline section */
+      section:has(.cv-timeline-entry) .cv-timeline-entry:last-of-type .cv-timeline-track::before {
+        bottom: calc(-1 * 0.2rem);
+      }
+    """
+
+    # Find the closing brace of the last .cv-timeline-dot rule and insert after it
+    # This is a bit fragile but works for the current template structure
+    content = re.sub(
+        r'(\.cv-timeline-dot \{[^}]+z-index: 1;\s*\})',
+        r'\1' + last_entry_css,
+        content
+    )
+
+    # Apply italic styling to timespan if configured
+    timespan_italic = timeline_config.get("timespan_italic", False)
+    if timespan_italic:
+        italic_css = """
+      /* Make timespan (date range) italic in timeline entries */
+      .cv-timeline-date {
+        font-style: italic;
+      }
+    """
+        # Insert before the closing style tag
+        content = re.sub(
+            r'(</style>)',
+            italic_css + r'\n    \1',
+            content
+        )
+
     html_path.write_text(content, encoding="utf-8")
+
+
+def _inject_timeline_style_typst(typst_path: Path, timeline_config: dict[str, Any]) -> None:
+    """Inject timeline dot-size and line-width values into the generated Typst file.
+
+    The rendercv library defines default values for dot-size and line-width.
+    This function replaces them with the configured values from design_config.yaml.
+    """
+    if not timeline_config:
+        return
+
+    dot_size = timeline_config.get("dot_size", "14pt")
+    line_width = timeline_config.get("line_width", "2pt")
+
+    content = typst_path.read_text(encoding="utf-8")
+
+    # Replace dot-size default (e.g., "let dot-size = 14pt" -> "let dot-size = 4pt")
+    # Use a raw replacement function to avoid regex group reference issues
+    def replace_dot_size(match):
+        return f'let dot-size = {dot_size}'
+    content = re.sub(r'let dot-size = [\d.]+pt', replace_dot_size, content)
+
+    # Replace line-width default (e.g., "let line-width = 2pt" -> "let line-width = 1pt")
+    def replace_line_width(match):
+        return f'let line-width = {line_width}'
+    content = re.sub(r'let line-width = [\d.]+pt', replace_line_width, content)
+
+    typst_path.write_text(content, encoding="utf-8")
 
 
 def _inject_background_color_html(html_path: Path, bg_color: str) -> None:
@@ -737,8 +822,15 @@ def _render_one_file(
                 _inject_cards_style_html(html_path, cards_config)
                 print(f"[anschmiegcv] Applied cards style to HTML for {yaml_path.name}")
 
-        # Inject timeline styling into HTML
+        # Inject timeline styling into Typst and HTML
         if timeline_config:
+            typst_path = _find_typst_output(yaml_path, prepared)
+            if typst_path and typst_path.exists():
+                _inject_timeline_style_typst(typst_path, timeline_config)
+                print(f"[anschmiegcv] Applied timeline style for {yaml_path.name}")
+                # Re-compile PDF since we modified the Typst
+                _recompile_pdf(typst_path)
+
             html_path = _find_html_output(yaml_path, prepared)
             if html_path and html_path.exists():
                 _inject_timeline_style_html(html_path, timeline_config)
