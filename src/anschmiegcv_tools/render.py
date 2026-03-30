@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import sys
+
 import copy
 import re
 import subprocess
@@ -708,7 +710,7 @@ def _render_one_file(
         temp_yaml = Path(handle.name)
 
     try:
-        command = ["rendercv", "render", str(temp_yaml), *extra_rendercv_args]
+        command = [sys.executable, "-m", "rendercv", "render", str(temp_yaml), *extra_rendercv_args]
         subprocess.run(command, check=True)
         if has_seed:
             print(f"[anschmiegcv] Applied generated palette for {yaml_path.name}")

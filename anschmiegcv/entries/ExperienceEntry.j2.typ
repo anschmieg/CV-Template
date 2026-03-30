@@ -56,11 +56,7 @@
 #timeline-entry(
   [
 {% for line in entry.date_and_location_column.splitlines() %}
-{% if loop.index0 == 0 %}
     {{ line|indent(4) }}
-{% else %}
-    #emph[{{ line|indent(4) }}]
-{% endif %}
 
 {% endfor %}
   ],
@@ -112,5 +108,4 @@
 {% endfor %}
   ],
 {% endif %}
-  is_last_entry: {{ is_last_entry|lower }},
 )
