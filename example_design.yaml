@@ -18,15 +18,15 @@ design:
   # Color scheme - easily customizable
   colors:
     body: rgb(25, 48, 51)
-    name: rgb(0, 120, 135)
-    headline: rgb(3, 103, 116)
+    name: rgb(0, 50, 108)
+    headline: rgb(0, 50, 108)
     section_titles: rgb(0, 50, 108)
-    links: rgb(0, 98, 111)
-    connections: rgb(26, 63, 68)
+    links: rgb(0, 50, 108)
+    connections: rgb(0, 50, 108)
     footer: rgb(39, 57, 59)
     top_note: rgb(43, 58, 60)
-    timeline_dot: rgb(0, 98, 111)
-    timeline_line: rgb(0, 120, 135)
+    timeline_dot: rgb(0, 50, 108)
+    timeline_line: rgb(0, 50, 108)
 
   # Typography
   typography:

@@ -146,8 +146,8 @@
   main-column,
   main-column-second-row: none,
   continue-line: true,
-  dot-color: {% if design.colors.timeline_dot %}{{ design.colors.timeline_dot.as_rgb() }}{% else %}{{ design.colors.connections.as_rgb() }}{% endif %},
-  line-color: {% if design.colors.timeline_line %}{{ design.colors.timeline_line.as_rgb() }}{% else %}{{ design.colors.connections.as_rgb() }}{% endif %},
+  dot-color: {% if design.colors.timeline_dot %}{{ design.colors.timeline_dot.as_rgb() }}{% else %}{{ design.colors.section_titles.as_rgb() }}{% endif %},
+  line-color: {% if design.colors.timeline_line %}{{ design.colors.timeline_line.as_rgb() }}{% else %}{{ design.colors.section_titles.as_rgb() }}{% endif %},
 ) = context {
   let body-font-size = {{ design.typography.font_size.body }}
   let body-cap-height = measure(text(size: body-font-size)[H]).height
@@ -209,8 +209,8 @@
   degree-column: none,
   main-column-second-row: none,
   continue-line: true,
-  dot-color: {% if design.colors.timeline_dot %}{{ design.colors.timeline_dot.as_rgb() }}{% else %}{{ design.colors.connections.as_rgb() }}{% endif %},
-  line-color: {% if design.colors.timeline_line %}{{ design.colors.timeline_line.as_rgb() }}{% else %}{{ design.colors.connections.as_rgb() }}{% endif %},
+  dot-color: {% if design.colors.timeline_dot %}{{ design.colors.timeline_dot.as_rgb() }}{% else %}{{ design.colors.section_titles.as_rgb() }}{% endif %},
+  line-color: {% if design.colors.timeline_line %}{{ design.colors.timeline_line.as_rgb() }}{% else %}{{ design.colors.section_titles.as_rgb() }}{% endif %},
 ) = context {
   // Use same timeline layout as regular entries
   timeline-entry(
