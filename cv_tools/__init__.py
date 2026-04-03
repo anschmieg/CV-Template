@@ -1,4 +1,4 @@
-"""Backward-compatibility shim for the renamed cv helper package."""
+"""Backward-compatibility shim for helper utilities that now live under cv."""
 
 from cv.merge import discover_default_input, merge_to_file, render_cv, resolve_inputs
 

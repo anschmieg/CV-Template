@@ -22,7 +22,7 @@ package = true
 
 [tool.setuptools.packages.find]
 where = ["."]
-include = ["cv", "cv.*", "anschmiegcv_tools", "anschmiegcv_tools.*"]
+include = ["cv", "cv.*", "cv_tools", "cv_tools.*"]
 
 [tool.setuptools.package-data]
 cv = [

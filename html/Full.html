@@ -458,6 +458,41 @@
       {% endif %}
     {%- endmacro %}
 
+    {% macro education_template_lines(entry) -%}
+      {% set main_column_template = '' %}
+      {% if design.templates is defined and design.templates.education_entry is defined and design.templates.education_entry.main_column is defined %}
+        {% set main_column_template = design.templates.education_entry.main_column %}
+      {% endif %}
+      {% set raw_lines = main_column_template.splitlines() if main_column_template else ['AREA, DEGREE', 'INSTITUTION', 'HIGHLIGHTS'] %}
+      {% set rendered = namespace(lines=[]) %}
+      {% for raw_line in raw_lines %}
+        {% set line = raw_line|trim %}
+        {% if line %}
+          {% set value = line %}
+          {% if entry.area is defined and entry.area %}
+            {% set value = value|replace('AREA', entry.area) %}
+          {% else %}
+            {% set value = value|replace('AREA', '') %}
+          {% endif %}
+          {% if entry.degree is defined and entry.degree %}
+            {% set value = value|replace('DEGREE', entry.degree) %}
+          {% else %}
+            {% set value = value|replace('DEGREE', '') %}
+          {% endif %}
+          {% if entry.institution is defined and entry.institution %}
+            {% set value = value|replace('INSTITUTION', entry.institution) %}
+          {% else %}
+            {% set value = value|replace('INSTITUTION', '') %}
+          {% endif %}
+          {% set value = value|replace('HIGHLIGHTS', '')|replace('  ', ' ')|replace(' ,', ',')|replace(', ,', ',')|trim %}
+          {% if value %}
+            {% set rendered.lines = rendered.lines + [value] %}
+          {% endif %}
+        {% endif %}
+      {% endfor %}
+      {{ rendered.lines|join('\n') }}
+    {%- endmacro %}
+
     <div class="columns is-variable is-6 cv-layout">
       <aside class="column is-one-quarter-desktop is-full-touch cv-sidebar p-5">
         {% if cv.photo %}
@@ -485,7 +520,8 @@
             <p><span class="icon is-small mr-1"><i class="fas fa-envelope"></i></span><a href="mailto:{{ cv.email }}">{{ cv.email }}</a></p>
           {% endif %}
           {% if cv.phone %}
-            <p><span class="icon is-small mr-1"><i class="fas fa-phone"></i></span><a href="tel:{{ cv.phone|replace('tel:', '') }}">{{ cv.phone|replace('tel:', '') }}</a></p>
+            {% set phone_display = cv.phone|replace('tel:', '') %}
+            <p><span class="icon is-small mr-1"><i class="fas fa-phone"></i></span><a href="tel:{{ phone_display }}">{{ phone_display }}</a></p>
           {% endif %}
           {% for network in cv.social_networks or [] %}
             {% set network_name = network.network|default('', true)|lower %}
@@ -626,7 +662,30 @@
                         {% endif %}
                       {% endif %}
 
-                      {% if main_column_template %}
+                      {% if entry.institution is defined and entry.institution %}
+                        {% set education_lines = education_template_lines(entry).split('\n') %}
+                        {% if education_lines %}
+                          {% set entry_title = education_lines[0] %}
+                        {% endif %}
+                        {% if education_lines|length > 1 %}
+                          {% set entry_subtitle = education_lines[1] %}
+                        {% else %}
+                          {% set entry_subtitle = '' %}
+                        {% endif %}
+                        {% set entry_secondary = '' %}
+                        {% if main_column_template and '**AREA**' in main_column_template %}
+                          {% set entry_title_style = 'bold' %}
+                        {% else %}
+                          {% set entry_title_style = 'plain' %}
+                        {% endif %}
+                        {% if main_column_template and '**INSTITUTION**' in main_column_template %}
+                          {% set entry_subtitle_style = 'bold' %}
+                        {% elif main_column_template and '*INSTITUTION*' in main_column_template %}
+                          {% set entry_subtitle_style = 'italic' %}
+                        {% else %}
+                          {% set entry_subtitle_style = 'plain' %}
+                        {% endif %}
+                      {% elif main_column_template %}
                         {% set role_token = 'POSITION' if entry.position is defined and entry.position else ('AREA' if entry.area is defined and entry.area else '') %}
                         {% set organization_token = 'COMPANY' if entry.company is defined and entry.company else ('INSTITUTION' if entry.institution is defined and entry.institution else '') %}
 

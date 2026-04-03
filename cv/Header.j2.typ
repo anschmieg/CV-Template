@@ -35,7 +35,7 @@
   [#link("mailto:{{ cv.email }}", icon: false, if-underline: false, if-color: false)[#connection-with-icon("envelope")[#text("{{ cv.email }}")]]],
 {% endif %}
 {% if cv.phone %}
-  [#link("tel:{{ cv.phone }}", icon: false, if-underline: false, if-color: false)[#connection-with-icon("phone")[{{ cv.phone }}]]],
+  [#link("tel:{{ cv.phone|replace('tel:', '') }}", icon: false, if-underline: false, if-color: false)[#connection-with-icon("phone")[{{ cv.phone|replace('tel:', '') }}]]],
 {% endif %}
 {% if cv.social_networks %}
 {% for social in cv.social_networks %}
