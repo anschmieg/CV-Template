@@ -145,11 +145,11 @@
   date-and-location-column,
   main-column,
   main-column-second-row: none,
+  continue-line: true,
   dot-color: {% if design.colors.timeline_dot %}{{ design.colors.timeline_dot.as_rgb() }}{% else %}{{ design.colors.connections.as_rgb() }}{% endif %},
   line-color: {% if design.colors.timeline_line %}{{ design.colors.timeline_line.as_rgb() }}{% else %}{{ design.colors.connections.as_rgb() }}{% endif %},
 ) = context {
   let body-font-size = {{ design.typography.font_size.body }}
-  let line-spacing = {{ design.typography.line_spacing }}
   let body-cap-height = measure(text(size: body-font-size)[H]).height
   let headline-cap-height = measure(text(size: {{ design.typography.font_size.headline }})[H]).height
   let dot-size = body-cap-height / 0.90  // Dot size based on body cap-height
@@ -159,7 +159,7 @@
   let date-column-width = {{ design.entries.date_and_location_width }}
   let space-between-columns = {{ design.entries.space_between_columns }}
   let timeline-indent = space-between-columns
-  let entry-gap = {{ design.sections.space_between_regular_entries }} + line-spacing
+  let entry-gap = {{ design.sections.space_between_regular_entries }}
 
   // Render one continuous vertical track per entry, including its continuation gap.
   block(
@@ -189,7 +189,9 @@
               linebreak()
               main-column-second-row
             }
-            #v(entry-gap)
+            #if continue-line {
+              v(entry-gap)
+            }
           ],
         )
       ]
@@ -206,6 +208,7 @@
   main-column,
   degree-column: none,
   main-column-second-row: none,
+  continue-line: true,
   dot-color: {% if design.colors.timeline_dot %}{{ design.colors.timeline_dot.as_rgb() }}{% else %}{{ design.colors.connections.as_rgb() }}{% endif %},
   line-color: {% if design.colors.timeline_line %}{{ design.colors.timeline_line.as_rgb() }}{% else %}{{ design.colors.connections.as_rgb() }}{% endif %},
 ) = context {
@@ -214,50 +217,9 @@
     date-and-location-column,
     main-column,
     main-column-second-row: main-column-second-row,
+    continue-line: continue-line,
     dot-color: dot-color,
     line-color: line-color,
-  )
-}
-
-// Custom regular entry that aligns with timeline entries for consistent spacing
-// Used for Publications, Certifications, Volunteer - same left padding, no timeline graphics
-#let regular-entry(
-  main-column,
-  date-and-location-column,
-  main-column-second-row: none,
-) = context {
-  let body-font-size = {{ design.typography.font_size.body }}
-  let line-spacing = {{ design.typography.line_spacing }}
-  let date-column-width = {{ design.entries.date_and_location_width }}
-  let space-between-columns = {{ design.entries.space_between_columns }}
-  let timeline-indent = space-between-columns
-  let entry-gap = {{ design.sections.space_between_regular_entries }} + line-spacing
-
-  block(
-    breakable: true,
-    above: 0pt,
-    below: 0pt,
-    grid(
-      columns: (date-column-width, space-between-columns, 1fr),
-      column-gutter: 0pt,
-      row-gutter: 0pt,
-      align: ({{ design.typography.date_and_location_column_alignment }}, left, left),
-      date-and-location-column,
-      [],
-      [
-        #box(
-          inset: (left: timeline-indent),
-          [
-            #main-column
-            #if main-column-second-row != none {
-              linebreak()
-              main-column-second-row
-            }
-            #v(entry-gap)
-          ],
-        )
-      ]
-    ),
   )
 }
 
@@ -268,9 +230,8 @@
   date-and-location-column,
   main-column-second-row: none,
 ) = context {
-  let line-spacing = {{ design.typography.line_spacing }}
-  let entry-gap = {{ design.sections.space_between_regular_entries }} + line-spacing
-  let regular-entry-indent = 0.08cm
+  let entry-gap = {{ design.sections.space_between_regular_entries }}
+  let regular-entry-indent = {{ design.entries.side_space }}
 
   block(
     breakable: true,
@@ -281,7 +242,7 @@
       #box(
         inset: (left: regular-entry-indent),
         [
-          #text(size: 0.9em, fill: {{ design.colors.connections.as_rgb() }})[
+          #text(size: 0.9em, fill: {{ design.colors.footer.as_rgb() }})[
             #date-and-location-column
           ]
           #v(0.1em)

@@ -3,7 +3,7 @@
 
 design:
   # Theme selection
-  theme: cv
+  theme: anschmiegcv
 
   # Page settings (PDF)
   page:
@@ -62,12 +62,12 @@ design:
 
   # Entry spacing
   sections:
-    space_between_regular_entries: 0.5cm
+    space_between_regular_entries: 0.65cm
     show_time_spans_in: []
   entries:
     allow_page_break: false
     date_and_location_width: 3cm
-    space_between_columns: 1cm
+    space_between_columns: 1.1cm
 
   # Templates for date formatting
   templates:
@@ -77,10 +77,13 @@ design:
     footer: "NAME -- Page PAGE_NUMBER of TOTAL_PAGES"
     education_entry:
       main_column: |
-        AREA, DEGREE
-        INSTITUTION
+        [AREA, ]{.color-section_titles .bold}[DEGREE]{.color-body .semibold}
+        [INSTITUTION]{.color-body .semibold}
         HIGHLIGHTS
       date_and_location_column: "LOCATION\nDATE"
       degree_column: null
     experience_entry:
+      main_column: |
+        [POSITION, ]{.color-section_titles .bold}[COMPANY]{.color-body .semibold}
+        HIGHLIGHTS
       date_and_location_column: "LOCATION\nDATE"

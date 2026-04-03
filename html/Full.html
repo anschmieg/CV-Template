@@ -29,13 +29,18 @@
         --cv-links: {{ design.colors.links.as_rgb() }};
         --cv-muted: {{ design.colors.footer.as_rgb() }};
         --cv-organization: color-mix(in srgb, var(--cv-body) 76%, white 24%);
+        --cv-body-size: {{ design.typography.font_size.body }};
+        --cv-date-column-width: {{ design.entries.date_and_location_width }};
+        --cv-column-gap: {{ design.entries.space_between_columns }};
+        --cv-entry-gap: {{ design.sections.space_between_regular_entries }};
+        --cv-entry-line-height: 1.35;
         --cv-timeline-dot: {% if design.colors.timeline_dot %}{{ design.colors.timeline_dot.as_rgb() }}{% else %}{{ design.colors.section_titles.as_rgb() }}{% endif %};
         --cv-timeline-line: {% if design.colors.timeline_line %}{{ design.colors.timeline_line.as_rgb() }}{% else %}{{ design.colors.connections.as_rgb() }}{% endif %};
-        --cv-timeline-dot-size: 16px;
-        --cv-timeline-line-width: 3px;
+        --cv-timeline-dot-size: calc(var(--cv-body-size) * 1.05);
+        --cv-timeline-line-width: calc(var(--cv-body-size) * 0.09);
         --cv-card-border-radius: 8px;
         --cv-card-border-width: 1px;
-        --cv-card-gap: 0.9rem;
+        --cv-card-gap: var(--cv-entry-gap);
         --cv-card-padding: 1rem;
         --cv-background: #f7f8fa;
         --cv-font-body: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
@@ -144,6 +149,7 @@
       .cv-entry-primary {
         color: var(--cv-name);
         font-weight: var(--cv-entry-emphasis-weight);
+        line-height: var(--cv-entry-line-height);
       }
 
       .cv-entry-secondary {
@@ -177,7 +183,6 @@
         display: grid;
         gap: var(--cv-card-gap);
         grid-template-columns: var(--cv-card-grid-template);
-        gap: 0.9rem;
         align-items: stretch;
       }
 
@@ -219,9 +224,9 @@
 
       .cv-timeline-entry {
         display: grid;
-        grid-template-columns: 146px 28px 1fr;
-        gap: 0.8rem;
-        margin-bottom: 1.25rem;
+        grid-template-columns: var(--cv-date-column-width) calc(var(--cv-timeline-dot-size) + var(--cv-column-gap)) 1fr;
+        gap: var(--cv-column-gap);
+        margin-bottom: var(--cv-entry-gap);
       }
 
       .cv-timeline-date {
@@ -232,6 +237,7 @@
         position: relative;
         display: flex;
         justify-content: center;
+        align-items: flex-start;
       }
 
       .cv-timeline-track::before {
@@ -240,16 +246,20 @@
         left: 50%;
         transform: translateX(-50%);
         top: 0;
-        bottom: -1.25rem;
+        bottom: calc(-1 * var(--cv-entry-gap));
         width: var(--cv-timeline-line-width);
         background: var(--cv-timeline-line);
+      }
+
+      .cv-timeline-entry:last-child .cv-timeline-track::before {
+        bottom: 0;
       }
 
       .cv-timeline-dot {
         position: relative;
         width: var(--cv-timeline-dot-size);
         height: var(--cv-timeline-dot-size);
-        margin-top: 0.2rem;
+        margin-top: calc((var(--cv-entry-line-height) * var(--cv-body-size) - var(--cv-timeline-dot-size)) / 2);
         border-radius: 50%;
         background: var(--cv-timeline-dot);
         border: calc(var(--cv-timeline-dot-size) * 0.1875) solid white;
@@ -390,7 +400,7 @@
         .cv-timeline-entry {
           grid-template-columns: 1fr;
           gap: 0.35rem;
-          margin-bottom: 1rem;
+          margin-bottom: var(--cv-entry-gap);
         }
 
         .cv-timeline-date {
@@ -445,7 +455,7 @@
     {% macro render_markdown_block(value, class_name='') -%}
       {% if value is defined and value %}
         <div class="cv-markdown {{ class_name }}">
-          <script type="text/plain" class="cv-md-source">{{ value|e }}</script>
+          {{ cv_html_block_markdown(value) }}
         </div>
       {% endif %}
     {%- endmacro %}
@@ -453,9 +463,66 @@
     {% macro render_markdown_inline(value, class_name='') -%}
       {% if value is defined and value %}
         <span class="cv-markdown-inline {{ class_name }}">
-          <script type="text/plain" class="cv-md-source">{{ value|e }}</script>
+          {{ cv_html_inline_markdown(value) }}
         </span>
       {% endif %}
+    {%- endmacro %}
+
+    {% macro render_colored_inline_segments(block, fallback_color='', fallback_weight='', fallback_font_style='', fallback_size='', fallback_decoration='') -%}
+      {% for segment in block.segments %}
+        {% set inline_style = cv_html_style(segment.style, default_color=fallback_color, default_weight=fallback_weight, default_font_style=fallback_font_style, default_size=fallback_size, default_decoration=fallback_decoration) %}
+        <span{% if inline_style %} style="{{ inline_style }}"{% endif %}>{{ render_markdown_inline(segment.text) }}</span>
+      {% endfor %}
+    {%- endmacro %}
+
+    {% macro render_entry_date_column(entry, section_name='', class_name='cv-item-meta') -%}
+      {% set date_blocks = cv_parse_entry_blocks(entry, design, locale, settings, 'date_and_location_column', section_name) %}
+      {% if date_blocks %}
+        <div class="{{ class_name }}">
+          {% for block in date_blocks %}
+            {% if block.type == 'line' %}
+              <div>{{ render_colored_inline_segments(block, design.colors.footer.as_rgb(), '', '', '0.85em') }}</div>
+            {% else %}
+              {% set block_style = cv_html_style(block.style) %}
+              <div{% if block_style %} style="{{ block_style }}"{% endif %}>{{ render_markdown_block(block.text) }}</div>
+            {% endif %}
+          {% endfor %}
+        </div>
+      {% endif %}
+    {%- endmacro %}
+
+    {% macro render_entry_main_column(entry, section_name='', title_tag='h3', title_class='title is-6 mb-1 cv-entry-primary') -%}
+      {% set main_blocks = cv_parse_entry_blocks(entry, design, locale, settings, 'main_column', section_name) %}
+      {% set header_count = cv_count_header_lines(cv_entry_main_template(entry, design)) %}
+      {% if header_count == 0 and main_blocks %}
+        {% set header_count = 1 %}
+      {% endif %}
+      {% if main_blocks %}
+        {% set primary_block = main_blocks[0] %}
+        {% if primary_block.type == 'line' %}
+          <{{ title_tag }} class="{{ title_class }}">
+            {{ render_colored_inline_segments(primary_block, design.colors.body.as_rgb(), '600') }}
+          </{{ title_tag }}>
+        {% else %}
+          {% set block_style = cv_html_style(primary_block.style) %}
+          <div{% if block_style %} style="{{ block_style }}"{% endif %}>{{ render_markdown_block(primary_block.text, 'mb-2') }}</div>
+        {% endif %}
+      {% endif %}
+      {% for block in main_blocks[1:] %}
+        {% set is_secondary_header = loop.index0 < (header_count - 1) %}
+        {% set fallback_color = design.colors.body.as_rgb() if is_secondary_header else none %}
+        {% set fallback_weight = '500' if is_secondary_header else '400' %}
+        {% if block.type == 'line' %}
+          <p class="mb-2{% if is_secondary_header %} cv-entry-secondary cv-entry-secondary-custom{% endif %}">
+            {{ render_colored_inline_segments(block, fallback_color or '', fallback_weight) }}
+          </p>
+        {% else %}
+          {% set block_style = cv_html_style(block.style) %}
+          <div{% if block_style %} style="{{ block_style }}"{% endif %}>
+            {{ render_markdown_block(block.text, 'mb-2') }}
+          </div>
+        {% endif %}
+      {% endfor %}
     {%- endmacro %}
 
     {% macro education_template_lines(entry) -%}
@@ -608,165 +675,10 @@
             {% elif view_mode == 'timeline' and has_entries %}
               {% for entry in section_content %}
                 <article class="cv-timeline-entry">
-                  <div class="cv-timeline-date cv-item-meta">
-                    {% if entry.date %}
-                      {{ entry.date }}
-                    {% else %}
-                      {{ entry.start_date }}{% if entry.end_date %} - {{ entry.end_date }}{% endif %}
-                    {% endif %}
-                    {% if entry.location %}
-                      <br />{{ entry.location }}
-                    {% endif %}
-                  </div>
+                  {{ render_entry_date_column(entry, section_title, 'cv-timeline-date cv-item-meta') }}
                   <div class="cv-timeline-track"><div class="cv-timeline-dot"></div></div>
                   <div>
-                    {% set has_org = (entry.company is defined and entry.company) or (entry.institution is defined and entry.institution) %}
-                    {% set degree_line = '' %}
-                    {% if entry.degree %}
-                      {% set degree_line = entry.degree ~ ((' · ' ~ entry.area) if entry.area else '') %}
-                    {% endif %}
-                    {% set entry_title = '' %}
-                    {% set entry_subtitle = '' %}
-                    {% set entry_secondary = '' %}
-                    {% set entry_title_style = 'default' %}
-                    {% set entry_subtitle_style = 'default' %}
-                    {% if has_org %}
-                      {% set organization_name = '' %}
-                      {% if entry.company %}
-                        {% set organization_name = entry.company %}
-                      {% elif entry.institution %}
-                        {% set organization_name = entry.institution %}
-                      {% endif %}
-                      {% if entry.position %}
-                        {% set entry_title = entry.position %}
-                      {% elif entry.area %}
-                        {% set entry_title = entry.area %}
-                      {% elif degree_line %}
-                        {% set entry_title = degree_line %}
-                      {% else %}
-                        {% set entry_title = organization_name %}
-                      {% endif %}
-                      {% if organization_name and entry_title != organization_name %}
-                        {% set entry_subtitle = organization_name %}
-                      {% endif %}
-                      {% if entry.degree and (entry_subtitle != entry.degree) %}
-                        {% set entry_secondary = entry.degree %}
-                      {% endif %}
-
-                      {% set main_column_template = '' %}
-                      {% if design.templates is defined %}
-                        {% if entry.company is defined and design.templates.experience_entry is defined and design.templates.experience_entry.main_column is defined %}
-                          {% set main_column_template = design.templates.experience_entry.main_column %}
-                        {% elif entry.institution is defined and design.templates.education_entry is defined and design.templates.education_entry.main_column is defined %}
-                          {% set main_column_template = design.templates.education_entry.main_column %}
-                        {% endif %}
-                      {% endif %}
-
-                      {% if entry.institution is defined and entry.institution %}
-                        {% set education_lines = education_template_lines(entry).split('\n') %}
-                        {% if education_lines %}
-                          {% set entry_title = education_lines[0] %}
-                        {% endif %}
-                        {% if education_lines|length > 1 %}
-                          {% set entry_subtitle = education_lines[1] %}
-                        {% else %}
-                          {% set entry_subtitle = '' %}
-                        {% endif %}
-                        {% set entry_secondary = '' %}
-                        {% if main_column_template and '**AREA**' in main_column_template %}
-                          {% set entry_title_style = 'bold' %}
-                        {% else %}
-                          {% set entry_title_style = 'plain' %}
-                        {% endif %}
-                        {% if main_column_template and '**INSTITUTION**' in main_column_template %}
-                          {% set entry_subtitle_style = 'bold' %}
-                        {% elif main_column_template and '*INSTITUTION*' in main_column_template %}
-                          {% set entry_subtitle_style = 'italic' %}
-                        {% else %}
-                          {% set entry_subtitle_style = 'plain' %}
-                        {% endif %}
-                      {% elif main_column_template %}
-                        {% set role_token = 'POSITION' if entry.position is defined and entry.position else ('AREA' if entry.area is defined and entry.area else '') %}
-                        {% set organization_token = 'COMPANY' if entry.company is defined and entry.company else ('INSTITUTION' if entry.institution is defined and entry.institution else '') %}
-
-                        {% if role_token %}
-                          {% if '**' ~ role_token ~ '**' in main_column_template %}
-                            {% set entry_title_style = 'bold' %}
-                          {% elif ('*' ~ role_token ~ '*') in main_column_template %}
-                            {% set entry_title_style = 'italic' %}
-                          {% else %}
-                            {% set entry_title_style = 'plain' %}
-                          {% endif %}
-                        {% endif %}
-
-                        {% if organization_token %}
-                          {% if '**' ~ organization_token ~ '**' in main_column_template %}
-                            {% set entry_subtitle_style = 'bold' %}
-                          {% elif ('*' ~ organization_token ~ '*') in main_column_template %}
-                            {% set entry_subtitle_style = 'italic' %}
-                          {% else %}
-                            {% set entry_subtitle_style = 'plain' %}
-                          {% endif %}
-                        {% endif %}
-                      {% endif %}
-                    {% else %}
-                      {% if entry.name %}
-                        {% set entry_title = entry.name %}
-                      {% elif entry.title %}
-                        {% set entry_title = entry.title %}
-                      {% elif entry.label %}
-                        {% set entry_title = entry.label %}
-                      {% elif entry.position %}
-                        {% set entry_title = entry.position %}
-                      {% elif degree_line %}
-                        {% set entry_title = degree_line %}
-                      {% endif %}
-                      {% if entry.position and entry_title != entry.position %}
-                        {% set entry_subtitle = entry.position %}
-                      {% elif degree_line and entry_title != degree_line %}
-                        {% set entry_subtitle = degree_line %}
-                      {% elif entry.label and entry_title != entry.label %}
-                        {% set entry_subtitle = entry.label %}
-                      {% endif %}
-                    {% endif %}
-                    <h3 class="title is-6 mb-1 cv-entry-primary">
-                      {% if entry_title_style == 'bold' %}
-                        <strong>{{ render_markdown_inline(entry_title) }}</strong>
-                      {% elif entry_title_style == 'italic' %}
-                        <em>{{ render_markdown_inline(entry_title) }}</em>
-                      {% else %}
-                        {{ render_markdown_inline(entry_title) }}
-                      {% endif %}
-                    </h3>
-                    {% if entry_subtitle %}
-                      <p class="mb-2 cv-entry-secondary{% if entry_subtitle_style != 'default' %} cv-entry-secondary-custom{% endif %}">
-                        {% if entry_subtitle_style == 'bold' %}
-                          <strong>{{ render_markdown_inline(entry_subtitle) }}</strong>
-                        {% elif entry_subtitle_style == 'italic' %}
-                          <em>{{ render_markdown_inline(entry_subtitle) }}</em>
-                        {% elif entry_subtitle_style == 'plain' %}
-                          {{ render_markdown_inline(entry_subtitle) }}
-                        {% else %}
-                          {{ render_markdown_inline(entry_subtitle) }}
-                        {% endif %}
-                      </p>
-                    {% endif %}
-                    {% if entry_secondary %}
-                      <p class="mb-2"><strong>{{ render_markdown_inline(entry_secondary) }}</strong></p>
-                    {% endif %}
-                    {% if entry.details %}
-                      {{ render_markdown_block(entry.details, 'mb-2') }}
-                    {% endif %}
-                    {% if entry.summary %}
-                      {{ render_markdown_block(entry.summary, 'mb-2') }}
-                    {% endif %}
-                    {% if entry.highlights %}
-                      <ul class="cv-list cv-highlights">
-                        {% for highlight in entry.highlights %}
-                          <li>{{ render_markdown_inline(highlight) }}</li>
-                        {% endfor %}
-                      </ul>
-                    {% endif %}
+                    {{ render_entry_main_column(entry, section_title) }}
                     {% if entry.doi is defined and entry.doi or entry.url is defined and entry.url %}
                       <div class="cv-publication-links mt-2 is-size-7">
                         {% if entry.doi is defined and entry.doi %}
@@ -1074,121 +986,5 @@
         {% endfor %}
       </main>
     </div>
-    <script>
-      document.addEventListener("DOMContentLoaded", () => {
-        const escapeHtml = (value) =>
-          value
-            .replaceAll("&", "&amp;")
-            .replaceAll("<", "&lt;")
-            .replaceAll(">", "&gt;")
-            .replaceAll('"', "&quot;")
-            .replaceAll("'", "&#39;");
-
-        const safeLink = (rawUrl) => {
-          try {
-            const url = new URL(rawUrl, window.location.href);
-            const allowedProtocols = new Set(["http:", "https:", "mailto:", "tel:"]);
-            if (!allowedProtocols.has(url.protocol)) {
-              return "#";
-            }
-            return url.href;
-          } catch {
-            return "#";
-          }
-        };
-
-        const decodeEntities = (value) => {
-          const textarea = document.createElement("textarea");
-          textarea.innerHTML = value;
-          return textarea.value;
-        };
-
-        const renderInline = (markdownText) => {
-          let html = escapeHtml(markdownText);
-          html = html.replace(
-            /\[([^\]]+)\]\(([^)\s]+)\)/g,
-            (_, label, url) =>
-              `<a href="${escapeHtml(safeLink(url))}" target="_blank" rel="noreferrer">${label}</a>`,
-          );
-          html = html.replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>");
-          html = html.replace(/__(.+?)__/g, "<strong>$1</strong>");
-          html = html.replace(/\*(.+?)\*/g, "<em>$1</em>");
-          html = html.replace(/_(.+?)_/g, "<em>$1</em>");
-          html = html.replace(/\n/g, "<br />");
-          return html;
-        };
-
-        const renderBlock = (markdownText) => {
-          const lines = markdownText.replace(/\r\n/g, "\n").split("\n");
-          let html = "";
-          let paragraph = [];
-          let currentListType = null;
-          let listItems = [];
-
-          const flushParagraph = () => {
-            if (!paragraph.length) return;
-            html += `<p>${renderInline(paragraph.join("\n"))}</p>`;
-            paragraph = [];
-          };
-
-          const flushList = () => {
-            if (!listItems.length) return;
-            const tag = currentListType === "ol" ? "ol" : "ul";
-            html += `<${tag}>${listItems.map((item) => `<li>${renderInline(item)}</li>`).join("")}</${tag}>`;
-            currentListType = null;
-            listItems = [];
-          };
-
-          for (const rawLine of lines) {
-            const line = rawLine.trimEnd();
-            const unorderedMatch = line.match(/^\s*[-*+]\s+(.*)$/);
-            const orderedMatch = line.match(/^\s*\d+\.\s+(.*)$/);
-
-            if (!line.trim()) {
-              flushParagraph();
-              flushList();
-              continue;
-            }
-
-            if (unorderedMatch) {
-              flushParagraph();
-              if (currentListType && currentListType !== "ul") flushList();
-              currentListType = "ul";
-              listItems.push(unorderedMatch[1]);
-              continue;
-            }
-
-            if (orderedMatch) {
-              flushParagraph();
-              if (currentListType && currentListType !== "ol") flushList();
-              currentListType = "ol";
-              listItems.push(orderedMatch[1]);
-              continue;
-            }
-
-            flushList();
-            paragraph.push(line);
-          }
-
-          flushParagraph();
-          flushList();
-          return html;
-        };
-
-        for (const node of document.querySelectorAll(".cv-markdown")) {
-          const sourceNode = node.querySelector(".cv-md-source");
-          if (!sourceNode) continue;
-          const source = decodeEntities(sourceNode.textContent || "");
-          node.innerHTML = renderBlock(source);
-        }
-
-        for (const node of document.querySelectorAll(".cv-markdown-inline")) {
-          const sourceNode = node.querySelector(".cv-md-source");
-          if (!sourceNode) continue;
-          const source = decodeEntities(sourceNode.textContent || "");
-          node.innerHTML = renderInline(source);
-        }
-      });
-    </script>
   </body>
 </html>

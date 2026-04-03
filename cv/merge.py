@@ -159,8 +159,7 @@ def merge_to_file(input_path: Path, *, output_path: Path | None = None) -> Path:
 def render_cv(input_path: Path, *, extra_rendercv_args: list[str] | None = None) -> None:
     resolved = resolve_inputs(input_path)
     extras = extra_rendercv_args or []
-
-    command = [sys.executable, "-m", "rendercv", "render", str(resolved.data_path)]
+    command = [sys.executable, "-m", "cv.rendercv_wrapper", "render", str(resolved.data_path)]
 
     if resolved.design_path is not None:
         command.extend(["--design", str(resolved.design_path)])
