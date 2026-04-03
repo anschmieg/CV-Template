@@ -5,6 +5,8 @@ This repo now centers on two things:
 - the local `anschmiegcv` RenderCV theme
 - a very small `cv` CLI wrapper that detects split YAML inputs and forwards them to RenderCV
 
+For a practical walkthrough of the wrapper and theme customizations, see `/Users/adrian/Projects/CV-Template/docs/USER_GUIDE.md:1`.
+
 ## Layout
 
 - `cv/`: the Python package that implements the `anschmiegcv` RenderCV theme
@@ -35,6 +37,12 @@ If there is exactly one `*_data.yaml` in the current directory, you can omit the
 
 ```bash
 uv run cv render
+```
+
+Any extra arguments after `render` are forwarded to native RenderCV, for example:
+
+```bash
+uv run cv render example_data.yaml --pdf-path output/custom.pdf
 ```
 
 You can also point `render` at either companion file:
