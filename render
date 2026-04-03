@@ -1,0 +1,32 @@
+#!/usr/bin/env python3
+from __future__ import annotations
+
+import os
+import subprocess
+import sys
+from pathlib import Path
+
+
+def _candidate_pythons(root: Path) -> list[Path]:
+    candidates = []
+    if os.name == "nt":
+        candidates.append(root / ".venv" / "Scripts" / "python.exe")
+    candidates.append(root / ".venv" / "bin" / "python")
+    candidates.append(Path(sys.executable))
+    return candidates
+
+
+def main() -> int:
+    root = Path(__file__).resolve().parent
+
+    for python_path in _candidate_pythons(root):
+        if python_path.exists():
+            command = [str(python_path), "-m", "cv.cli", "render", *sys.argv[1:]]
+            completed = subprocess.run(command, cwd=root)
+            return completed.returncode
+
+    raise SystemExit("No Python interpreter found.")
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

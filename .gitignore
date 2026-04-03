@@ -4,5 +4,6 @@
 .ipynb_checkpoints/
 .ipynb_checkpoints/*
 __pycache__/
+*.egg-info/
 output/
 rendercv_output/

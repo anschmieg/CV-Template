@@ -1,10 +1,9 @@
 # Design Configuration for CV-Template
-# This file contains all design settings. It is automatically merged with
-# your CV content file (example_CV.yaml) when running anschmiegcv render.
+# This file contains the design overlay for example_data.yaml.
 
 design:
   # Theme selection
-  theme: anschmiegcv
+  theme: cv
 
   # Page settings (PDF)
   page:
@@ -15,13 +14,19 @@ design:
     right_margin: 0.7in
     show_footer: true
     show_top_note: false
-    background_color: "#f7f8fa" # HTML background color
 
   # Color scheme - easily customizable
   colors:
-    # Primary brand color (used for name, links, accents)
-    seed: rgb(0, 120, 135) # Teal/cyan - main brand color
-    accent_seed: rgb(0, 138, 155) # Slightly lighter accent
+    body: rgb(25, 48, 51)
+    name: rgb(0, 120, 135)
+    headline: rgb(3, 103, 116)
+    section_titles: rgb(0, 50, 108)
+    links: rgb(0, 98, 111)
+    connections: rgb(26, 63, 68)
+    footer: rgb(39, 57, 59)
+    top_note: rgb(43, 58, 60)
+    timeline_dot: rgb(0, 98, 111)
+    timeline_line: rgb(0, 120, 135)
 
   # Typography
   typography:
@@ -64,18 +69,6 @@ design:
     date_and_location_width: 3cm
     space_between_columns: 1cm
 
-  # Cards styling (used for .cards sections)
-  cards:
-    border_radius: 8pt # Border radius for cards
-    border_width: 0.5pt # Border width
-    gap: 0.24cm # Gap between cards
-    padding: 8pt # Internal card padding
-
-  # Timeline styling (used for .timeline sections)
-  timeline:
-    dot_size: 4pt # Timeline dot diameter (PDF uses points, HTML uses pixels)
-    line_width: 1pt # Timeline line thickness
-
   # Templates for date formatting
   templates:
     single_date: "MONTH_ABBREVIATION YEAR"
@@ -89,26 +82,5 @@ design:
         HIGHLIGHTS
       date_and_location_column: "LOCATION\nDATE"
       degree_column: null
-      # Custom styling for education entries (anschmiegcv-specific)
-      style:
-        area:
-          color: "primary" # Options: "text" (grey), "primary" (teal)
-          weight: 700 # 400=regular, 600=semi-bold, 700=bold
-        degree:
-          color: "text" # Options: "text" (grey), "primary" (teal)
-          weight: 500 # 400=regular, 600=semi-bold, 700=bold
-        institution:
-          color: "text" # Options: "text" (grey), "primary" (teal)
-          weight: 600 # 400=regular, 600=semi-bold, 700=bold
     experience_entry:
       date_and_location_column: "LOCATION\nDATE"
-
-settings:
-  current_date: "2026-03-24"
-  bold_keywords:
-    - Python
-    - SQL
-    - Project Management
-    - Agile
-    - Scrum
-    - C1

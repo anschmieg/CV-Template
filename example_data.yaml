@@ -110,3 +110,13 @@ cv:
 
 locale:
   language: english
+
+settings:
+  current_date: "2026-03-24"
+  bold_keywords:
+    - Python
+    - SQL
+    - Project Management
+    - Agile
+    - Scrum
+    - C1

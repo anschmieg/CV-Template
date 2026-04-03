@@ -1,2 +1,0 @@
-[console_scripts]
-anschmiegcv = anschmiegcv_tools.cli:main

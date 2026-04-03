@@ -1,69 +1,81 @@
 # CV-Template
-Build a responsive and printable resume webpage from a structured markdown file. Screenshots [here](#screenshots).
 
-## How to
+This repo now centers on two things:
 
-### 1. Fill in your resumé information in markdown format
+- the local `cv` RenderCV theme
+- a very small `cv` CLI wrapper that detects split YAML inputs and forwards them to RenderCV
 
-An example can be found in _YourResume.md_.
+## Layout
 
-Some elements are needed to convert the information to the proper structure. 
+- `cv/`: the RenderCV theme
+- `cv/`: also contains the tiny helper modules for `merge` and `render`
+- `example_data.yaml`: sample CV data, plus `settings` and optional `locale`
+- `example_design.yaml`: sample `design` overlay
 
-- Empty lines are needed to separate elements
-- Dashes `-` and numbers `1.` start a list
-- Hash tags `#` indicate a heading (one # for first level, two ## for second level etc.)
-- Curly braces `{}` assign attributes to headings, e.g. `{.cards}`
-  - Some headings `#` contain `.fa .fa-something` in `{}`. This assigns an icon to the heading. Icons can be found [here](https://fontawesome.com/search).
-  - Skills `{.skills}` sections contain a list `-` with  
-    `- the text in the middle of the skill circle`  
-    `- a percentage to fill the circle by`.
-  - Cards `{.cards}` sections can contain virtually any content.
-  - Timelines `{.timeline}` accept a table with info to display above an entry – the header will be displayed, the body will be hidden.
-- Tables are written as:
+## Usage
 
-```
-| Col 1 | Col 2 |
-| ----- | ----- |
-| cont- | -ent  |
-```
+Install the project in editable mode, or run it from this repo with `uv`.
 
-Therefore timeline information is entered as:
+### Recommended naming
 
-```
-| Date | Location |
-|-|-|
+- `*_data.yaml`: main RenderCV input containing `cv`, plus optional `settings` and `locale`
+- `*_design.yaml`: companion file containing only the top-level `design:` block
+
+This avoids colliding with RenderCV’s common merged-file naming like `Name_CV.yaml`.
+
+### Render split inputs automatically
+
+```bash
+uv run cv render example_data.yaml
 ```
 
-### 2. Run the following command:
+If `example_design.yaml` exists next to it, the wrapper calls RenderCV with the native `--design` overlay.
+
+If there is exactly one `*_data.yaml` in the current directory, you can omit the filename:
+
+```bash
+uv run cv render
 ```
-pandoc -s --toc --toc-depth 1 -t html5 --template assets/template.html -o index.html YourResume.md
+
+You can also point `render` at either companion file:
+
+```bash
+uv run cv render example_design.yaml
 ```
-while replacing `YourResume.md` with your own file.
 
-## Multi-lingual support
-Repeat the above steps for each language, while linking the remaining languages at the top of each file in the `{.lang}` section.
+### Render without `uv`
 
-For example, change `index.html` in the command to `fr.html` for the French page and link it as  
+There is also a tiny repo-local runner:
 
-> `[French](fr.html)`
+```bash
+./render
+```
 
-## Well done, that should be it! ✅
+Or, if you prefer invoking Python directly:
 
-# Screenshots
+```bash
+python render
+```
 
-## Desktop: 
+It prefers the project `.venv` when present, and otherwise falls back to the current Python.
+
+### Merge split inputs into one file
+
+```bash
+uv run cv merge example_data.yaml
+```
+
+That writes `example.rendercv.yaml` by default.
+
+For compatibility, `uv run anschmiegcv ...` still works too.
+
+## Theme notes
+
+- The theme name is `cv`.
+- Section title directives like `{.cards}` and `{.timeline}` are handled by the theme templates.
+- Theme-specific colors `timeline_dot` and `timeline_line` are supported through `cv/__init__.py`.
+
+## Screenshots
 
 ![Screenshot - Desktop 1](pics/screenshots/desktop-1.png)
 ![Screenshot - Desktop 2](pics/screenshots/desktop-2.png)
-
-## Mobile:
-
-|![Screenshot - Mobile 1](pics/screenshots/mobile-1.png)|![Screenshot - Mobile 2](pics/screenshots/mobile-2.png)|
-|-|-|
-
-
-# Documentation
-
-## Progress Bar Plugin
-
-The plugin used is [kottenator/jquery-circle-progress](https://github.com/kottenator/jquery-circle-progress).

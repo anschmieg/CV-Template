@@ -1,15 +1,17 @@
 [project]
-name = "anschmiegcv-tools"
+name = "cv"
 version = "0.1.0"
-description = "Shared RenderCV extension assets and tooling for Anschmieg CV projects"
+description = "CV RenderCV theme with a minimal render wrapper"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
+  "rendercv>=2.8",
   "pyyaml>=6.0.2",
 ]
 
 [project.scripts]
-anschmiegcv = "anschmiegcv_tools.cli:main"
+cv = "cv.cli:main"
+anschmiegcv = "cv.cli:main"
 
 [build-system]
 requires = ["setuptools>=69", "wheel"]
@@ -18,15 +20,12 @@ build-backend = "setuptools.build_meta"
 [tool.uv]
 package = true
 
-[tool.setuptools]
-package-dir = {"" = "src"}
-
 [tool.setuptools.packages.find]
-where = ["src"]
+where = ["."]
+include = ["cv", "cv.*", "anschmiegcv_tools", "anschmiegcv_tools.*"]
 
 [tool.setuptools.package-data]
-anschmiegcv_tools = [
-  "assets/anschmiegcv/*.typ",
-  "assets/anschmiegcv/entries/*.typ",
-  "assets/html/*.html",
+cv = [
+  "*.typ",
+  "entries/*.typ",
 ]

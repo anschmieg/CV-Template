@@ -11,7 +11,7 @@ from rendercv.schema.models.design.color import Color
 
 
 class Colors(ClassicColors):
-    """Color extensions unique to anschmiegcv theme."""
+    """Color extensions unique to the cv theme."""
 
     timeline_dot: Color | None = pydantic.Field(
         default=None,
@@ -23,8 +23,8 @@ class Colors(ClassicColors):
     )
 
 
-class AnschmiegcvTheme(ClassicTheme, BaseModelWithoutExtraKeys):
-    """Custom theme model used by RenderCV for anschmiegcv templates."""
+class CvTheme(ClassicTheme, BaseModelWithoutExtraKeys):
+    """Custom theme model used by RenderCV for cv templates."""
 
-    theme: Literal["anschmiegcv"] = "anschmiegcv"
+    theme: Literal["cv"] = "cv"
     colors: Colors = pydantic.Field(default_factory=Colors)
