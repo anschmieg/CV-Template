@@ -50,13 +50,17 @@ cv:
           - "Didaktiken: Grundschule, Deutsch, Mathematik, Kunst"
       - institution: Julius-Maximilians-Universität Würzburg
         area: Grundschullehramt
-        degree: Staatsexamen
         start_date: 2019-09
         end_date: 2020-08
         location: Würzburg, Deutschland
+      - institution: Gymnasium Ernestinum Coburg
+        area: Abitur
+        start_date: 2011-09
+        end_date: 2019-07
+        location: Coburg, Deutschland
 
     Ehrenamt:
-      - name: Stiftung DeutschKlasse
+      - company: Stiftung DeutschKlasse (Sprachschule)
         position: Lehrerin
         location: Utrecht, Niederlande
         start_date: 2025-08
@@ -65,15 +69,15 @@ cv:
           - Planung und Durchführung eigenständigen Unterrichts
           - Teilnahme an Teamkonferenzen
           - Elternarbeit und -kommunikation
-      - name: Ehrenamtliche Koordination der Ausbildung
-        position: Pfadfindereibund Weltenbummler*innen (Pfadfinder:innenverband)
+      - company: Ehrenamtliche Koordination der Ausbildung
+        position: Pfadfindereibund Weltenbummler*innen
         start_date: 2021-04
         highlights:
           - Vorstand einer Ortsgruppe (2015-2020)
           - Leitung von Durchführung von Großveranstaltungen (bis 150 Teilnehmende)
           - Ausbildung von Jugendleiter:innen und Trainer:innen
           - Weiterentwicklung der Ausbildungskonzepte und -inhalte in Zusammenarbeit mit hauptamtlicher Bildungsreferentin
-      - name: Trainerin
+      - company: Schwimmtrainerin
         position: Allgemeiner Wassersportverein Coburg e.V.
         start_date: 2016-02
         end_date: 2019-08
@@ -92,7 +96,8 @@ cv:
     "Zertifizierungen {.cards}":
       - name: Deutsch als Fremdsprache / Deutsch als Zweitsprache
         position: Goethe-Institut
-        date: 2026-08
+        date: 2026-07
+        summary: "*voraussichtlicher Abschluss*"
         highlights:
           - Unterrichtsplanung für Deutsch als Fremdsprache
           - Erwerb interkultureller Kompetenzen
@@ -109,6 +114,8 @@ cv:
 
 locale:
   language: german
+  last_updated: Aktualisiert
+  present: aktuell
 
 settings:
   current_date: "2026-04-05"
