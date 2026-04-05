@@ -615,7 +615,7 @@
         {% set primary_block = main_blocks[0] %}
         {% if primary_block.type == 'line' %}
           <{{ title_tag }} class="{{ title_class }}">
-            {{ render_colored_inline_segments(primary_block, design.colors.body.as_rgb(), '600') }}
+            {{ render_colored_inline_segments(primary_block, design.colors.body.as_rgb() if header_count > 1 else design.colors.headline.as_rgb(), '600') }}
           </{{ title_tag }}>
         {% else %}
           {% set block_style = cv_html_style(primary_block.style) %}
@@ -624,7 +624,7 @@
       {% endif %}
       {% for block in main_blocks[1:] %}
         {% set is_secondary_header = loop.index0 < (header_count - 1) %}
-        {% set fallback_color = design.colors.body.as_rgb() if is_secondary_header else none %}
+        {% set fallback_color = design.colors.headline.as_rgb() if is_secondary_header else none %}
         {% set fallback_weight = '500' if is_secondary_header else '400' %}
         {% if block.type == 'line' %}
           <p class="mb-2{% if is_secondary_header %} cv-entry-secondary cv-entry-secondary-custom{% endif %}">
