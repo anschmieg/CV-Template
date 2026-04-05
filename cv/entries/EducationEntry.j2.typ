@@ -1,92 +1,75 @@
-{% set main_column_template = "" %}
-{% set has_custom_main_column_template = false %}
-{% if design.templates.education_entry is defined and design.templates.education_entry.model_fields_set is defined and "main_column" in design.templates.education_entry.model_fields_set %}
-{% set has_custom_main_column_template = true %}
+{% set date_blocks = cv_parse_styled_blocks(entry.date_and_location_column, design) %}
+{% set main_blocks = cv_parse_styled_blocks(entry.main_column, design) %}
+{% set main_template = cv_entry_main_template(entry, design) %}
+{% set header_count = cv_count_header_lines(main_template) %}
+{% if header_count == 0 and main_blocks %}
+{% set header_count = 1 %}
 {% endif %}
-{% if has_custom_main_column_template and design.templates.education_entry.main_column is defined and design.templates.education_entry.main_column %}
-{% set main_column_template = design.templates.education_entry.main_column %}
-{% endif %}
-
-{# Determine what goes in main-column (first column) #}
-{# Format: "AREA, DEGREE" using entry.area and entry.degree #}
-{% set area_value = entry.area if entry.area is defined and entry.area else "" %}
-{% set degree_value = entry.degree if entry.degree is defined and entry.degree else "" %}
-{% set institution_value = entry.institution if entry.institution is defined and entry.institution else "" %}
-
-{% set main_column_first_line = "" %}
-{% if has_custom_main_column_template %}
-{# Use template formatting #}
-{% if "**AREA**, **DEGREE**" in main_column_template or "**AREA**, DEGREE" in main_column_template or "**AREA**, **DEGREE**" in main_column_template %}
-{% set main_column_first_line = "#strong[" ~ area_value ~ "], " ~ degree_value %}
-{% elif "*AREA*, DEGREE" in main_column_template %}
-{% set main_column_first_line = "#emph[" ~ area_value ~ "], " ~ degree_value %}
-{% elif "AREA, DEGREE" in main_column_template %}
-{% set main_column_first_line = area_value ~ ", " ~ degree_value %}
-{% elif "AREA" in main_column_template and "DEGREE" in main_column_template %}
-{% set main_column_first_line = area_value ~ ", " ~ degree_value %}
-{% else %}
-{% set main_column_first_line = area_value ~ ", " ~ degree_value %}
-{% endif %}
-{% else %}
-{% set main_column_first_line = area_value ~ ", " ~ degree_value %}
-{% endif %}
-
-{% set area_style = "default" %}
-{% if has_custom_main_column_template and main_column_template %}
-{% if "**AREA**" in main_column_template %}
-{% set area_style = "bold" %}
-{% elif "*AREA*" in main_column_template %}
-{% set area_style = "italic" %}
-{% endif %}
-{% endif %}
-
-{% set institution_style = "default" %}
-{% if has_custom_main_column_template and main_column_template %}
-{% if "**INSTITUTION**" in main_column_template %}
-{% set institution_style = "bold" %}
-{% elif "*INSTITUTION*" in main_column_template %}
-{% set institution_style = "italic" %}
-{% endif %}
-{% endif %}
-
 #timeline-education-entry(
   [
-{% for line in entry.date_and_location_column.splitlines() %}
-    {{ line|indent(4) }}
-
+{% for block in date_blocks %}
+{% if block.type == "line" %}
+    {% for segment in block.segments %}
+    {% set text_options = cv_typst_text_options(segment.style, default_color=design.colors.footer.as_rgb(), default_size="0.85em") %}
+    #text({{ text_options }})[{{ segment.text|indent(6) }}]
+    {% endfor %}
+{% else %}
+    {% set block_options = cv_typst_text_options(block.style) %}
+    {% if block_options %}
+    #text({{ block_options }})[{{ block.text|indent(6) }}]
+    {% else %}
+    {{ block.text|indent(4) }}
+    {% endif %}
+{% endif %}
+{% if not loop.last %}
+    #linebreak()
+{% endif %}
 {% endfor %}
   ],
   [
-    #text(fill: {{ design.colors.name.as_rgb() }}, weight: {% if area_style == "bold" %}700{% else %}600{% endif %})[
-{% if area_style == "bold" %}
-      #strong[{{ main_column_first_line }}]
-{% elif area_style == "italic" %}
-      #emph[{{ main_column_first_line }}]
-{% else %}
-      {{ main_column_first_line }}
-{% endif %}
+{% if main_blocks %}
+{% set primary_block = main_blocks[0] %}
+{% if primary_block.type == "line" %}
+    {% for segment in primary_block.segments %}
+    {% set text_options = cv_typst_text_options(segment.style, default_color=design.colors.body.as_rgb(), default_weight=600) %}
+    #text({{ text_options }})[
+      {{ segment.text|indent(6) }}
     ]
+    {% endfor %}
+{% else %}
+    {% set block_options = cv_typst_text_options(primary_block.style) %}
+    {% if block_options %}
+    #text({{ block_options }})[{{ primary_block.text|indent(6) }}]
+    {% else %}
+    {{ primary_block.text|indent(4) }}
+    {% endif %}
+{% endif %}
+{% endif %}
   ],
+{% if main_blocks|length > 1 %}
   main-column-second-row: [
-{% if institution_value %}
-    #text(
-      fill: {{ design.colors.footer.as_rgb() }},
-      weight: {% if institution_style == "bold" %}700{% elif institution_style == "italic" %}400{% else %}600{% endif %},
-    )[
-{% if institution_style == "bold" %}
-      #strong[{{ institution_value }}]
-{% elif institution_style == "italic" %}
-      #emph[{{ institution_value }}]
-{% else %}
-      {{ institution_value }}
-{% endif %}
+{% for block in main_blocks[1:] %}
+{% if block.type == "line" %}
+{% set is_header_line = loop.index0 < (header_count - 1) %}
+    {% for segment in block.segments %}
+    {% set text_options = cv_typst_text_options(segment.style, default_color=(design.colors.body.as_rgb() if is_header_line else none), default_weight=(500 if is_header_line else 400)) %}
+    #text({{ text_options }})[
+      {{ segment.text|indent(6) }}
     ]
+    {% endfor %}
+{% else %}
+    {% set block_options = cv_typst_text_options(block.style) %}
+    {% if block_options %}
+    #text({{ block_options }})[{{ block.text|indent(6) }}]
+    {% else %}
+    {{ block.text|indent(4) }}
+    {% endif %}
 {% endif %}
-{% if entry.highlights %}
-{% for highlight in entry.highlights %}
-    {{ highlight|indent(4) }}
-
+{% if not loop.last %}
+    #linebreak()
+{% endif %}
 {% endfor %}
-{% endif %}
   ],
+{% endif %}
+  continue-line: {{ (not is_last_entry)|lower if is_last_entry is defined else "true" }},
 )

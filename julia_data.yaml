@@ -1,0 +1,121 @@
+cv:
+  name: Julia Müller
+  photo: julia_profile_picture.jpg
+  location: Coburg, Deutschland
+  email: julia.s.mueller@outlook.de
+  phone: "+49 1578 6076433"
+
+  sections:
+    Berufserfahrung:
+      - company: Colegio Alemán Alexander von Humboldt
+        position: Praktikantin
+        location: Lomas Verdes, Mexiko
+        start_date: 2023-02
+        end_date: 2023-07
+        highlights:
+          - Eigenständiger Unterricht in der Grundschulstufe
+          - Hospitation in der Grundschulstufe
+          - Teilnahme an Konferenzen
+          - Präsentationen bei internen Weiterbildungen
+      - company: Goethe-Institut
+        position: "*SCHULWÄRTS!* Stipendiatin"
+        location: Mexiko-Stadt, Mexiko
+        start_date: 2022-09
+        end_date: 2022-12
+        highlights:
+          - Eigenständiger Unterricht an der Prepa 6 (Vorbereitungsschule der UNAM)
+          - Hospitation an verschiedenen Goethe-Schulen
+          - Eigenständige Betreuung eines interkulturellen Projekts
+          - Eigenständige Initiierung und Leitung der Teilnahme an einem internationalen Wettbewerb zur nachhaltigen Entwicklung (1. Platz)
+      - company: Friedensreich-Hundertwasser-Schule
+        position: Differenzierungslehrerin
+        location: Würzburg, Deutschland
+        start_date: 2021-09
+        end_date: 2022-08
+        highlights:
+          - Differenzierungslehrerin in der 1. Klasse
+          - Unterstützung bei Arbeits-, Spiel- und Essensphasen
+          - Diagnostik und Förderplanung im Team
+
+    Ausbildung:
+      - institution: Julius-Maximilians-Universität Würzburg
+        area: Sonderpädagogik Lehramt
+        degree: Staatsexamen
+        start_date: 2020-09
+        end_date: 2026-07
+        location: Würzburg, Deutschland
+        highlights:
+          - "Schwerpunkt: Pädagogik bei Lernbeeinträchtigungen"
+          - "Qualifizierungsstudium: Sprachheilpädagogik"
+          - "Didaktiken: Grundschule, Deutsch, Mathematik, Kunst"
+      - institution: Julius-Maximilians-Universität Würzburg
+        area: Grundschullehramt
+        degree: Staatsexamen
+        start_date: 2019-09
+        end_date: 2020-08
+        location: Würzburg, Deutschland
+
+    Ehrenamt:
+      - name: Stiftung DeutschKlasse
+        position: Lehrerin
+        location: Utrecht, Niederlande
+        start_date: 2025-08
+        end_date: 2026-07
+        highlights:
+          - Planung und Durchführung eigenständigen Unterrichts
+          - Teilnahme an Teamkonferenzen
+          - Elternarbeit und -kommunikation
+      - name: Ehrenamtliche Koordination der Ausbildung
+        position: Pfadfindereibund Weltenbummler*innen (Pfadfinder:innenverband)
+        start_date: 2021-04
+        highlights:
+          - Vorstand einer Ortsgruppe (2015-2020)
+          - Leitung von Durchführung von Großveranstaltungen (bis 150 Teilnehmende)
+          - Ausbildung von Jugendleiter:innen und Trainer:innen
+          - Weiterentwicklung der Ausbildungskonzepte und -inhalte in Zusammenarbeit mit hauptamtlicher Bildungsreferentin
+      - name: Trainerin
+        position: Allgemeiner Wassersportverein Coburg e.V.
+        start_date: 2016-02
+        end_date: 2019-08
+        highlights:
+          - Leitung von Schwimmkursen für Kinder
+          - Schiedsrichterin bei Schwimmwettkämpfen
+
+    Sprachen:
+      - label: Deutsch
+        details: Erstsprache
+      - label: Englisch
+        details: C1
+      - label: Spanisch
+        details: B2
+
+    "Zertifizierungen {.cards}":
+      - name: Deutsch als Fremdsprache / Deutsch als Zweitsprache
+        position: Goethe-Institut
+        date: 2026-08
+        highlights:
+          - Unterrichtsplanung für Deutsch als Fremdsprache
+          - Erwerb interkultureller Kompetenzen
+          - Mediale Gestaltung und Methodik bei Fremdsprachenunterricht
+      - name: Trainerin
+        position: Pfadfindereibund Weltenbummler*innen
+        date: 2021-04
+        highlights:
+          - Lernentwicklung & -Psychologie
+          - Moderation & konstruktive Kommunikation (insb. Feedback)
+          - Gestaltung von Kursstruktur und -methoden
+          - Gruppenidentitäten & Konfliktlösung
+          - Personalentwicklung
+
+locale:
+  language: german
+
+settings:
+  current_date: "2026-04-05"
+  bold_keywords:
+    - Deutsch als Fremdsprache
+    - Deutsch als Zweitsprache
+    - Sprachheilpädagogik
+    - Sonderpädagogik
+    - C1
+    - B2

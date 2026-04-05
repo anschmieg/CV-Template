@@ -1,111 +1,75 @@
-{% set ns = namespace(header="", body=[]) %}
-{% for raw_line in entry.main_column.splitlines() %}
-{% set trimmed = raw_line.strip() %}
-{% if not ns.header and trimmed %}
-{% set ns.header = trimmed %}
-{% elif ns.header %}
-{% set ns.body = ns.body + [raw_line] %}
-{% endif %}
-{% endfor %}
-{% if "], " in ns.header and "[" in ns.header %}
-{% set header_parts = ns.header.split("], ", 1) %}
-{% set organization_line = header_parts[0] ~ "]" %}
-{% set position_line = header_parts[1] %}
-{% else %}
-{% set header_parts = ns.header.rsplit(", ", 1) %}
-{% if header_parts|length == 2 %}
-{% set organization_line = header_parts[0] %}
-{% set position_line = header_parts[1] %}
-{% else %}
-{% set organization_line = entry.company if entry.company is defined and entry.company else "" %}
-{% set position_line = ns.header %}
-{% endif %}
-{% endif %}
-{% set organization_plain = organization_line|replace("#strong[", "")|replace("#emph[", "") %}
-{% if organization_plain[-1:] == "]" %}
-{% set organization_plain = organization_plain[:-1]|trim %}
-{% endif %}
-{% set main_column_template = "" %}
-{% set has_custom_main_column_template = false %}
-{% if design.templates.experience_entry is defined and design.templates.experience_entry.model_fields_set is defined and "main_column" in design.templates.experience_entry.model_fields_set %}
-{% set has_custom_main_column_template = true %}
-{% endif %}
-{% if has_custom_main_column_template and design.templates.experience_entry.main_column is defined and design.templates.experience_entry.main_column %}
-{% set main_column_template = design.templates.experience_entry.main_column %}
-{% endif %}
-{% set position_style = "default" %}
-{% if has_custom_main_column_template and main_column_template %}
-{% if "**POSITION**" in main_column_template %}
-{% set position_style = "bold" %}
-{% elif "*POSITION*" in main_column_template %}
-{% set position_style = "italic" %}
-{% else %}
-{% set position_style = "plain" %}
-{% endif %}
-{% endif %}
-{% set organization_style = "default" %}
-{% if has_custom_main_column_template and main_column_template %}
-{% if "**COMPANY**" in main_column_template %}
-{% set organization_style = "bold" %}
-{% elif "*COMPANY*" in main_column_template %}
-{% set organization_style = "italic" %}
-{% else %}
-{% set organization_style = "plain" %}
-{% endif %}
+{% set date_blocks = cv_parse_styled_blocks(entry.date_and_location_column, design) %}
+{% set main_blocks = cv_parse_styled_blocks(entry.main_column, design) %}
+{% set main_template = cv_entry_main_template(entry, design) %}
+{% set header_count = cv_count_header_lines(main_template) %}
+{% if header_count == 0 and main_blocks %}
+{% set header_count = 1 %}
 {% endif %}
 #timeline-entry(
   [
-{% for line in entry.date_and_location_column.splitlines() %}
-    {{ line|indent(4) }}
-
+{% for block in date_blocks %}
+{% if block.type == "line" %}
+    {% for segment in block.segments %}
+    {% set text_options = cv_typst_text_options(segment.style, default_color=design.colors.footer.as_rgb(), default_size="0.85em") %}
+    #text({{ text_options }})[{{ segment.text|indent(6) }}]
+    {% endfor %}
+{% else %}
+    {% set block_options = cv_typst_text_options(block.style) %}
+    {% if block_options %}
+    #text({{ block_options }})[{{ block.text|indent(6) }}]
+    {% else %}
+    {{ block.text|indent(4) }}
+    {% endif %}
+{% endif %}
+{% if not loop.last %}
+    #linebreak()
+{% endif %}
 {% endfor %}
   ],
   [
-{% if position_line %}
-    #text(fill: {{ design.colors.name.as_rgb() }}, weight: {% if design.typography.bold.section_titles %}700{% else %}600{% endif %})[
-{% if position_style == "bold" %}
-      #strong[{{ position_line|indent(6) }}]
-{% elif position_style == "italic" %}
-      #emph[{{ position_line|indent(6) }}]
-{% else %}
-      {{ position_line|indent(6) }}
-{% endif %}
+{% if main_blocks %}
+{% set primary_block = main_blocks[0] %}
+{% if primary_block.type == "line" %}
+    {% for segment in primary_block.segments %}
+    {% set text_options = cv_typst_text_options(segment.style, default_color=design.colors.body.as_rgb(), default_weight=600) %}
+    #text({{ text_options }})[
+      {{ segment.text|indent(6) }}
     ]
-{% elif organization_line %}
-    #text(
-      fill: {{ design.colors.footer.as_rgb() }},
-      weight: {% if organization_style == "default" %}600{% else %}400{% endif %},
-    )[
-{% if organization_style == "bold" %}
-      #strong[{{ organization_plain|indent(6) }}]
-{% elif organization_style == "italic" %}
-      #emph[{{ organization_plain|indent(6) }}]
+    {% endfor %}
 {% else %}
-      {{ organization_plain|indent(6) }}
+    {% set block_options = cv_typst_text_options(primary_block.style) %}
+    {% if block_options %}
+    #text({{ block_options }})[{{ primary_block.text|indent(6) }}]
+    {% else %}
+    {{ primary_block.text|indent(4) }}
+    {% endif %}
 {% endif %}
-    ]
 {% endif %}
   ],
-{% if (position_line and organization_line) or ns.body|length > 0 %}
+{% if main_blocks|length > 1 %}
   main-column-second-row: [
-{% if position_line and organization_line %}
-    #text(
-      fill: {{ design.colors.footer.as_rgb() }},
-      weight: {% if organization_style == "default" %}600{% else %}400{% endif %},
-    )[
-{% if organization_style == "bold" %}
-      #strong[{{ organization_plain|indent(6) }}]
-{% elif organization_style == "italic" %}
-      #emph[{{ organization_plain|indent(6) }}]
-{% else %}
-      {{ organization_plain|indent(6) }}
-{% endif %}
+{% for block in main_blocks[1:] %}
+{% if block.type == "line" %}
+{% set is_header_line = loop.index0 < (header_count - 1) %}
+    {% for segment in block.segments %}
+    {% set text_options = cv_typst_text_options(segment.style, default_color=(design.colors.body.as_rgb() if is_header_line else none), default_weight=(500 if is_header_line else 400)) %}
+    #text({{ text_options }})[
+      {{ segment.text|indent(6) }}
     ]
+    {% endfor %}
+{% else %}
+    {% set block_options = cv_typst_text_options(block.style) %}
+    {% if block_options %}
+    #text({{ block_options }})[{{ block.text|indent(6) }}]
+    {% else %}
+    {{ block.text|indent(4) }}
+    {% endif %}
 {% endif %}
-{% for line in ns.body %}
-    {{ line|indent(4) }}
-
+{% if not loop.last %}
+    #linebreak()
+{% endif %}
 {% endfor %}
   ],
 {% endif %}
+  continue-line: {{ (not is_last_entry)|lower if is_last_entry is defined else "true" }},
 )

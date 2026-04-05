@@ -8,7 +8,7 @@
 }
 {% endif %}
 #if anschmiegcv_section_view_mode == "timeline" {
-  v({{ design.sections.space_between_regular_entries }} + {{ design.typography.line_spacing }})
+  v({{ design.sections.space_between_regular_entries }})
 }
 #let anschmiegcv_card_columns = 1
 #let anschmiegcv_card_layout = "one"

@@ -576,7 +576,6 @@ def render_entry_field(
     section_name: str | None = None,
 ) -> str:
     from rendercv.renderer.templater.entry_templates_from_input import render_entry_templates
-    from rendercv.renderer.templater.string_processor import make_keywords_bold
 
     if isinstance(entry, str) or not hasattr(entry, "entry_type_in_snake_case"):
         return ""
@@ -592,7 +591,39 @@ def render_entry_field(
     value = getattr(entry_copy, field_name, "")
     if value is None:
         return ""
-    return make_keywords_bold(str(value), settings.bold_keywords)
+    return str(value)
+
+
+def _apply_keyword_bolding_to_blocks(
+    blocks: list[dict[str, Any]],
+    keywords: list[str],
+    *,
+    header_count: int = 0,
+) -> list[dict[str, Any]]:
+    from rendercv.renderer.templater.string_processor import make_keywords_bold
+
+    if not keywords:
+        return blocks
+
+    processed_blocks: list[dict[str, Any]] = []
+    for index, block in enumerate(blocks):
+        block_copy = copy.deepcopy(block)
+        if index < header_count:
+            processed_blocks.append(block_copy)
+            continue
+
+        if block_copy["type"] == "line":
+            for segment in block_copy.get("segments", []):
+                segment["text"] = make_keywords_bold(segment["text"], keywords)
+            block_copy["text"] = "".join(
+                segment["text"] for segment in block_copy.get("segments", [])
+            )
+        else:
+            block_copy["text"] = make_keywords_bold(block_copy["text"], keywords)
+
+        processed_blocks.append(block_copy)
+
+    return processed_blocks
 
 
 def parse_entry_blocks(
@@ -606,10 +637,21 @@ def parse_entry_blocks(
 ) -> list[dict[str, Any]]:
     from rendercv.renderer.templater.markdown_parser import markdown_to_typst
 
+    rendered_value = render_entry_field(entry, design, locale, settings, field_name, section_name)
     blocks = parse_styled_blocks(
-        render_entry_field(entry, design, locale, settings, field_name, section_name),
+        rendered_value,
         design,
     )
+    if field_name == "main_column":
+        header_count = count_header_lines(entry_main_template(entry, design))
+        if header_count == 0 and blocks:
+            header_count = 1
+        blocks = _apply_keyword_bolding_to_blocks(
+            blocks,
+            getattr(settings, "bold_keywords", []),
+            header_count=header_count,
+        )
+
     if file_type != "typst":
         return blocks
 

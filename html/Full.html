@@ -6,12 +6,27 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>{{ cv.name }} - CV</title>
 
+    {% set font_families = [
+      design.typography.font_family.body,
+      design.typography.font_family.name,
+      design.typography.font_family.headline,
+      design.typography.font_family.connections,
+      design.typography.font_family.section_titles,
+    ] %}
+    {% set seen_fonts = namespace(values=[]) %}
+    {% for family in font_families %}
+      {% if family and family not in seen_fonts.values %}
+        {% set seen_fonts.values = seen_fonts.values + [family] %}
+      {% endif %}
+    {% endfor %}
+    {% if seen_fonts.values %}
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Raleway:wght@500;600;700&display=swap"
+      href="https://fonts.googleapis.com/css2?{% for family in seen_fonts.values %}family={{ family|replace(' ', '+') }}:wght@300;400;500;600;700{% if not loop.last %}&{% endif %}{% endfor %}&display=swap"
       rel="stylesheet"
     />
+    {% endif %}
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.2/css/bulma.min.css" />
     <link
       rel="stylesheet"
@@ -29,7 +44,17 @@
         --cv-links: {{ design.colors.links.as_rgb() }};
         --cv-muted: {{ design.colors.footer.as_rgb() }};
         --cv-organization: color-mix(in srgb, var(--cv-body) 76%, white 24%);
+        --cv-font-body: "{{ design.typography.font_family.body }}", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        --cv-font-name: "{{ design.typography.font_family.name }}", var(--cv-font-body);
+        --cv-font-headline: "{{ design.typography.font_family.headline }}", var(--cv-font-body);
+        --cv-font-connections: "{{ design.typography.font_family.connections }}", var(--cv-font-body);
+        --cv-font-section: "{{ design.typography.font_family.section_titles }}", var(--cv-font-body);
         --cv-body-size: {{ design.typography.font_size.body }};
+        --cv-name-size: {{ design.typography.font_size.name }};
+        --cv-headline-size: {{ design.typography.font_size.headline }};
+        --cv-connections-size: {{ design.typography.font_size.connections }};
+        --cv-section-title-size: {{ design.typography.font_size.section_titles }};
+        --cv-date-align: {{ design.typography.date_and_location_column_alignment }};
         --cv-date-column-width: {{ design.entries.date_and_location_width }};
         --cv-column-gap: {{ design.entries.space_between_columns }};
         --cv-entry-gap: {{ design.sections.space_between_regular_entries }};
@@ -46,9 +71,11 @@
         --cv-card-gap: var(--cv-entry-gap);
         --cv-card-padding: 1rem;
         --cv-background: #f7f8fa;
-        --cv-font-body: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-        --cv-font-title: "Raleway", "Segoe UI", sans-serif;
-        --cv-entry-emphasis-weight: {% if design.typography.bold.section_titles %}700{% else %}600{% endif %};
+        --cv-entry-emphasis-weight: 600;
+        --cv-name-weight: {% if design.typography.bold.name %}700{% else %}400{% endif %};
+        --cv-headline-weight: {% if design.typography.bold.headline %}700{% else %}400{% endif %};
+        --cv-connections-weight: {% if design.typography.bold.connections %}700{% else %}400{% endif %};
+        --cv-section-title-weight: {% if design.typography.bold.section_titles %}700{% else %}400{% endif %};
       }
 
       html,
@@ -56,8 +83,8 @@
         background: var(--cv-background);
         color: var(--cv-body);
         font-family: var(--cv-font-body);
-        font-size: 16px;
-        line-height: 1.5;
+        font-size: var(--cv-body-size);
+        line-height: var(--cv-entry-line-height);
         margin: 0;
       }
 
@@ -103,13 +130,22 @@
         box-shadow: var(--bulma-shadow-sm);
       }
 
-      .cv-name {
+      .title.cv-name {
         color: var(--cv-name);
-        font-family: var(--cv-font-title);
+        font-family: var(--cv-font-name);
+        font-size: var(--cv-name-size);
+        font-weight: var(--cv-name-weight);
+        font-variant-caps: {% if design.typography.small_caps.name %}all-small-caps{% else %}normal{% endif %};
+        line-height: 1.1;
       }
 
-      .cv-headline {
+      .subtitle.cv-headline {
         color: var(--cv-headline);
+        font-family: var(--cv-font-headline);
+        font-size: var(--cv-headline-size);
+        font-weight: var(--cv-headline-weight);
+        font-variant-caps: {% if design.typography.small_caps.headline %}all-small-caps{% else %}normal{% endif %};
+        line-height: 1.2;
       }
 
       .cv-contact i {
@@ -117,8 +153,10 @@
       }
 
       .cv-contact {
-        font-size: 1.08rem;
-        line-height: 1.45;
+        font-family: var(--cv-font-connections);
+        font-size: var(--cv-connections-size);
+        font-weight: var(--cv-connections-weight);
+        line-height: var(--cv-entry-line-height);
         word-break: break-word;
       }
 
@@ -133,9 +171,13 @@
         font-size: 1.02rem;
       }
 
-      .cv-section-title {
+      .title.cv-section-title {
         color: var(--cv-section);
-        font-family: var(--cv-font-title);
+        font-family: var(--cv-font-section);
+        font-size: var(--cv-section-title-size);
+        font-weight: var(--cv-section-title-weight);
+        font-variant-caps: {% if design.typography.small_caps.section_titles %}all-small-caps{% else %}normal{% endif %};
+        line-height: 1.2;
         border-bottom: 1px solid color-mix(in srgb, var(--cv-section) 32%, white 68%);
         letter-spacing: 0.06em;
         text-transform: uppercase;
@@ -143,22 +185,38 @@
 
       .cv-item-meta {
         color: var(--cv-muted);
-        font-size: 0.78rem;
-        text-transform: uppercase;
+        font-family: var(--cv-font-body);
+        font-size: calc(var(--cv-body-size) * 0.85);
+        font-variant-caps: all-small-caps;
+        text-transform: none;
         letter-spacing: 0.05em;
-        line-height: 1.35;
-      }
-
-      .title.cv-entry-primary {
-        color: var(--cv-name);
-        font-size: var(--cv-entry-primary-font-size);
-        font-weight: var(--cv-entry-emphasis-weight);
         line-height: var(--cv-entry-line-height);
       }
 
+      .title.cv-entry-primary,
+      .cv-entry-primary {
+        color: var(--cv-body);
+        font-family: var(--cv-font-body);
+        font-size: var(--cv-entry-primary-font-size);
+        font-weight: 400 !important;
+        line-height: var(--cv-entry-line-height);
+      }
+
+      .cv-entry-primary strong {
+        font-weight: inherit;
+      }
+
       .cv-entry-secondary {
-        color: var(--cv-organization);
-        font-weight: 600;
+        color: var(--cv-body);
+        font-family: var(--cv-font-body);
+        font-size: var(--cv-entry-primary-font-size);
+        font-weight: 400 !important;
+        line-height: var(--cv-entry-line-height);
+      }
+
+      .cv-entry-secondary strong,
+      .cv-entry-secondary.cv-entry-secondary-custom strong {
+        font-weight: 700 !important;
       }
 
       .cv-entry-secondary.cv-entry-secondary-custom {
@@ -180,6 +238,8 @@
       .cv-card {
         border: var(--cv-card-border-width) solid color-mix(in srgb, var(--cv-connections) 20%, white 80%);
         border-radius: var(--cv-card-border-radius);
+        font-size: var(--cv-body-size);
+        line-height: var(--cv-entry-line-height);
       }
 
       .cv-cards-grid {
@@ -234,7 +294,7 @@
       }
 
       .cv-timeline-date {
-        text-align: right;
+        text-align: var(--cv-date-align);
       }
 
       .cv-timeline-track {
@@ -304,6 +364,17 @@
 
       .cv-markdown-inline {
         display: inline;
+      }
+
+      .cv-markdown,
+      .cv-markdown p,
+      .cv-list,
+      .cv-list li,
+      .cv-highlights,
+      .cv-highlights li,
+      .cv-highlight-content {
+        font-size: var(--cv-body-size);
+        line-height: var(--cv-entry-line-height);
       }
 
       .cv-highlight-content p {
@@ -766,11 +837,11 @@
                       {% elif entry.conference is defined and entry.conference %}
                         {% set publication_venue = entry.conference %}
                       {% endif %}
-                      <h3 class="title is-6 mb-1" style="color: var(--cv-name)">
+                      <h3 class="title is-6 mb-1 cv-entry-primary">
                         {{ render_markdown_inline(publication_title) }}
                       </h3>
                       {% if publication_authors %}
-                        <p class="mb-2" style="color: var(--cv-connections)">{{ render_markdown_inline(publication_authors) }}</p>
+                        <p class="mb-2 cv-entry-secondary cv-entry-secondary-custom">{{ render_markdown_inline(publication_authors) }}</p>
                       {% endif %}
                       {% if publication_venue %}
                         <p class="mb-2">{{ render_markdown_inline(publication_venue) }}</p>
