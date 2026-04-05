@@ -11,7 +11,7 @@ design:
     show_top_note: false
 
   colors:
-    accent: "#941490"
+    accent: "#ad33a9"
     base: "#493f52"
 
   typography:
@@ -47,7 +47,7 @@ design:
 
   header:
     alignment: center
-    photo_width: 5cm
+    photo_width: 3cm
     photo_space_left: 0cm
     photo_space_right: 0cm
     space_below_name: 0.5cm
