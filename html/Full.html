@@ -49,24 +49,26 @@
         --cv-font-headline: "{{ design.typography.font_family.headline }}", var(--cv-font-body);
         --cv-font-connections: "{{ design.typography.font_family.connections }}", var(--cv-font-body);
         --cv-font-section: "{{ design.typography.font_family.section_titles }}", var(--cv-font-body);
-        --cv-body-size: {{ design.typography.font_size.body }};
+        --cv-body-size: calc({{ design.typography.font_size.body }} * 1.04);
         --cv-name-size: {{ design.typography.font_size.name }};
         --cv-headline-size: {{ design.typography.font_size.headline }};
-        --cv-connections-size: {{ design.typography.font_size.connections }};
+        --cv-connections-size: calc({{ design.typography.font_size.connections }} * 1.08);
         --cv-section-title-size: {{ design.typography.font_size.section_titles }};
         --cv-date-align: {{ design.typography.date_and_location_column_alignment }};
         --cv-photo-width: {{ design.header.photo_width }};
-        --cv-date-column-width: {{ design.entries.date_and_location_width }};
+        --cv-date-column-width: calc({{ design.entries.date_and_location_width }} * 1.08);
+        --cv-date-column-min-width: 8.75rem;
+        --cv-date-column-max-width: 12rem;
         --cv-column-gap: {{ design.entries.space_between_columns }};
         --cv-entry-gap: {{ design.sections.space_between_regular_entries }};
-        --cv-entry-primary-font-size: {{ design.typography.font_size.body }};
-        --cv-entry-line-height: 1.35;
+        --cv-entry-primary-font-size: var(--cv-body-size);
+        --cv-entry-line-height: 1.4;
         --cv-timeline-dot: {% if design.colors.timeline_dot %}{{ design.colors.timeline_dot.as_rgb() }}{% else %}{{ design.colors.section_titles.as_rgb() }}{% endif %};
         --cv-timeline-line: {% if design.colors.timeline_line %}{{ design.colors.timeline_line.as_rgb() }}{% else %}{{ design.colors.section_titles.as_rgb() }}{% endif %};
-        --cv-timeline-dot-size: calc(var(--cv-body-size) * 1.05);
-        --cv-timeline-dot-outline-width: calc(var(--cv-timeline-dot-size) * 0.16);
+        --cv-timeline-dot-size: calc(1cap / 0.9);
+        --cv-timeline-dot-outline-width: calc(var(--cv-timeline-dot-size) * 0.18);
         --cv-timeline-dot-border: calc(var(--cv-timeline-dot-outline-width) / 2);
-        --cv-timeline-line-width: calc(var(--cv-body-size) * 0.09);
+        --cv-timeline-line-width: calc(var(--cv-body-size) * 0.095);
         --cv-card-border-radius: 8px;
         --cv-card-border-width: 1px;
         --cv-card-gap: var(--cv-entry-gap);
@@ -165,7 +167,7 @@
         font-family: var(--cv-font-connections);
         font-size: var(--cv-connections-size);
         font-weight: var(--cv-connections-weight);
-        line-height: var(--cv-entry-line-height);
+        line-height: calc(var(--cv-entry-line-height) * 1.15);
         word-break: break-word;
       }
 
@@ -173,7 +175,7 @@
         display: flex;
         align-items: center;
         gap: 0.3rem;
-        margin-bottom: 0.2rem;
+        margin-bottom: 0.42rem;
       }
 
       .cv-contact .icon {
@@ -195,11 +197,11 @@
       .cv-item-meta {
         color: var(--cv-muted);
         font-family: var(--cv-font-body);
-        font-size: calc(var(--cv-body-size) * 0.85);
-        font-variant-caps: all-small-caps;
+        font-size: calc(var(--cv-body-size) * 0.96);
+        font-variant-caps: normal;
         text-transform: none;
-        letter-spacing: 0.05em;
-        line-height: var(--cv-entry-line-height);
+        letter-spacing: 0.01em;
+        line-height: calc(var(--cv-entry-line-height) * 1.08);
       }
 
       .title.cv-entry-primary,
@@ -297,13 +299,24 @@
 
       .cv-timeline-entry {
         display: grid;
-        grid-template-columns: var(--cv-date-column-width) calc(var(--cv-timeline-dot-size) + var(--cv-column-gap)) 1fr;
-        gap: var(--cv-column-gap);
+        grid-template-columns: var(--cv-date-column-width-resolved, var(--cv-date-column-width)) calc(var(--cv-timeline-dot-size) + var(--cv-column-gap)) 1fr;
+        column-gap: 0;
+        row-gap: 0;
         margin-bottom: var(--cv-entry-gap);
       }
 
       .cv-timeline-date {
         text-align: var(--cv-date-align);
+        width: var(--cv-date-column-width-resolved, var(--cv-date-column-width));
+        min-width: var(--cv-date-column-min-width);
+        max-width: var(--cv-date-column-max-width);
+        padding-right: calc(var(--cv-column-gap) * 0.5);
+        box-sizing: border-box;
+        overflow-wrap: anywhere;
+      }
+
+      .cv-timeline-date > div {
+        white-space: normal;
       }
 
       .cv-timeline-track {
@@ -340,8 +353,12 @@
         background: var(--cv-timeline-dot);
         border: var(--cv-timeline-dot-border) solid white;
         box-shadow: 0 0 0 1px color-mix(in srgb, var(--cv-timeline-line) 65%, white 35%);
-        transform: translateY(calc((1lh - var(--cv-timeline-dot-size)) / 2));
+        transform: translateY(calc((1cap - var(--cv-timeline-dot-size)) / 2));
         z-index: 1;
+      }
+
+      .cv-timeline-track + div {
+        padding-left: calc(var(--cv-column-gap) * 0.5);
       }
 
       .cv-markdown p {
@@ -359,6 +376,15 @@
       .cv-markdown ul,
       .cv-markdown ol {
         margin: 0.35rem 0 0.5rem 1.2rem;
+        padding-left: 1rem;
+      }
+
+      .cv-markdown ul {
+        list-style: disc outside;
+      }
+
+      .cv-markdown ol {
+        list-style: decimal outside;
       }
 
       .cv-markdown li {
@@ -398,8 +424,8 @@
 
       .cv-highlights {
         list-style: disc outside !important;
-        margin: 0.2rem 0 0.2rem 1.2rem;
-        padding-left: 0.2rem;
+        margin: 0.2rem 0 0.2rem 1rem;
+        padding-left: 0.1rem;
       }
 
       .cv-highlights li {
@@ -749,7 +775,7 @@
             {% endif %}
           {% endif %}
 
-          <section id="{{ section_id }}" class="mb-6">
+          <section id="{{ section_id }}" class="mb-6"{% if view_mode == 'timeline' %} data-cv-view-mode="timeline"{% endif %}>
             <h2 class="title is-5 pb-2 mb-4 cv-section-title">{{ section_title }}</h2>
 
             {% if section_content is string %}
@@ -1074,5 +1100,52 @@
         {% endfor %}
       </main>
     </div>
+    <script>
+      (() => {
+        const measureContainer = document.createElement('div');
+        measureContainer.style.position = 'absolute';
+        measureContainer.style.visibility = 'hidden';
+        measureContainer.style.pointerEvents = 'none';
+        measureContainer.style.inset = '0 auto auto 0';
+        measureContainer.style.whiteSpace = 'nowrap';
+        document.body.appendChild(measureContainer);
+
+        const resolveLength = (section, cssVariableName) => {
+          const probe = document.createElement('div');
+          probe.style.width = `var(${cssVariableName})`;
+          section.appendChild(probe);
+          const value = probe.getBoundingClientRect().width;
+          probe.remove();
+          return value;
+        };
+
+        for (const section of document.querySelectorAll('[data-cv-view-mode="timeline"]')) {
+          const minWidth = resolveLength(section, '--cv-date-column-min-width');
+          const maxWidth = resolveLength(section, '--cv-date-column-max-width');
+          const gutterWidth = resolveLength(section, '--cv-column-gap') * 0.4;
+
+          let widest = minWidth;
+          for (const dateColumn of section.querySelectorAll('.cv-timeline-date')) {
+            const lines = dateColumn.children.length ? [...dateColumn.children] : [dateColumn];
+            for (const line of lines) {
+              const clone = line.cloneNode(true);
+              clone.style.width = 'max-content';
+              clone.style.maxWidth = 'none';
+              clone.style.minWidth = '0';
+              clone.style.whiteSpace = 'nowrap';
+              clone.style.display = 'block';
+              measureContainer.appendChild(clone);
+              widest = Math.max(widest, clone.getBoundingClientRect().width);
+              clone.remove();
+            }
+          }
+
+          const resolved = Math.min(Math.max(widest + gutterWidth, minWidth), maxWidth);
+          section.style.setProperty('--cv-date-column-width-resolved', `${resolved}px`);
+        }
+
+        measureContainer.remove();
+      })();
+    </script>
   </body>
 </html>

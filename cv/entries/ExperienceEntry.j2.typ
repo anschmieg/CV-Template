@@ -16,9 +16,17 @@
 {% else %}
     {% set block_options = cv_typst_text_options(block.style) %}
     {% if block_options %}
+    {% if is_header_line %}
     #text({{ block_options }})[{{ block.text|indent(6) }}]
     {% else %}
+    #pad(left: 0.18cm)[#text({{ block_options }})[{{ block.text|indent(6) }}]]
+    {% endif %}
+    {% else %}
+    {% if is_header_line %}
     {{ block.text|indent(4) }}
+    {% else %}
+    #pad(left: 0.18cm)[{{ block.text|indent(6) }}]
+    {% endif %}
     {% endif %}
 {% endif %}
 {% if not loop.last %}
