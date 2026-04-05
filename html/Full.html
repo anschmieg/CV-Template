@@ -58,7 +58,7 @@
         --cv-photo-width: {{ design.header.photo_width }};
         --cv-date-column-width: calc({{ design.entries.date_and_location_width }} * 1.08);
         --cv-date-column-min-width: 8.75rem;
-        --cv-date-column-max-width: 12rem;
+        --cv-date-column-max-width: 25vw;
         --cv-column-gap: {{ design.entries.space_between_columns }};
         --cv-entry-gap: {{ design.sections.space_between_regular_entries }};
         --cv-entry-primary-font-size: var(--cv-body-size);
@@ -1122,7 +1122,7 @@
         for (const section of document.querySelectorAll('[data-cv-view-mode="timeline"]')) {
           const minWidth = resolveLength(section, '--cv-date-column-min-width');
           const maxWidth = resolveLength(section, '--cv-date-column-max-width');
-          const gutterWidth = resolveLength(section, '--cv-column-gap') * 0.4;
+          const gutterWidth = resolveLength(section, '--cv-column-gap') * 0.5;
 
           let widest = minWidth;
           for (const dateColumn of section.querySelectorAll('.cv-timeline-date')) {
