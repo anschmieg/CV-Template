@@ -57,8 +57,9 @@
 {% if main_blocks|length > 1 %}
   main-column-second-row: [
 {% for block in main_blocks[1:] %}
-{% if block.type == "line" %}
 {% set is_header_line = loop.index0 < (header_count - 1) %}
+{% if block.type == "line" %}
+{% if is_header_line %}
     {% for segment in block.segments %}
     {% set text_options = cv_typst_text_options(segment.style, default_color=(design.colors.body.as_rgb() if is_header_line else none), default_weight=(500 if is_header_line else 400)) %}
     #text({{ text_options }})[
@@ -66,11 +67,29 @@
     ]
     {% endfor %}
 {% else %}
+    #pad(left: 0.18cm)[
+    {% for segment in block.segments %}
+    {% set text_options = cv_typst_text_options(segment.style, default_color=(design.colors.body.as_rgb() if is_header_line else none), default_weight=(500 if is_header_line else 400)) %}
+    #text({{ text_options }})[
+      {{ segment.text|indent(6) }}
+    ]
+    {% endfor %}
+    ]
+{% endif %}
+{% else %}
     {% set block_options = cv_typst_text_options(block.style) %}
     {% if block_options %}
+    {% if is_header_line %}
     #text({{ block_options }})[{{ block.text|indent(6) }}]
     {% else %}
+    #pad(left: 0.18cm)[#text({{ block_options }})[{{ block.text|indent(6) }}]]
+    {% endif %}
+    {% else %}
+    {% if is_header_line %}
     {{ block.text|indent(4) }}
+    {% else %}
+    #pad(left: 0.18cm)[{{ block.text|indent(6) }}]
+    {% endif %}
     {% endif %}
 {% endif %}
 {% if not loop.last %}

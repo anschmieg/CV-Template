@@ -72,8 +72,8 @@ design:
 
   templates:
     footer: "NAME -- Seite PAGE_NUMBER von TOTAL_PAGES"
-    single_date: "MONTH_NAME YEAR"
-    date_range: "START_DATE bis END_DATE"
+    single_date: "MONTH_IN_TWO_DIGITS/YEAR"
+    date_range: "START_DATE – END_DATE"
     education_entry:
       main_column: |
         {weight:400}AREA, DEGREE

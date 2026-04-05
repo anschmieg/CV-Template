@@ -49,12 +49,12 @@
         --cv-font-headline: "{{ design.typography.font_family.headline }}", var(--cv-font-body);
         --cv-font-connections: "{{ design.typography.font_family.connections }}", var(--cv-font-body);
         --cv-font-section: "{{ design.typography.font_family.section_titles }}", var(--cv-font-body);
-        --cv-body-size: calc({{ design.typography.font_size.body }} * 1.04);
+        --cv-body-size: calc({{ design.typography.font_size.body }} * 1.08);
         --cv-name-size: {{ design.typography.font_size.name }};
-        --cv-headline-size: {{ design.typography.font_size.headline }};
-        --cv-connections-size: calc({{ design.typography.font_size.connections }} * 1.08);
-        --cv-section-title-size: {{ design.typography.font_size.section_titles }};
-        --cv-date-align: {{ design.typography.date_and_location_column_alignment }};
+        --cv-headline-size: calc({{ design.typography.font_size.headline }} * 1.06);
+        --cv-connections-size: calc({{ design.typography.font_size.connections }} * 1.14);
+        --cv-section-title-size: calc({{ design.typography.font_size.section_titles }} * 1.05);
+        --cv-date-align: right;
         --cv-photo-width: {{ design.header.photo_width }};
         --cv-date-column-width: calc({{ design.entries.date_and_location_width }} * 1.08);
         --cv-date-column-min-width: 8.75rem;
@@ -1119,29 +1119,32 @@
           return value;
         };
 
-        for (const section of document.querySelectorAll('[data-cv-view-mode="timeline"]')) {
-          const minWidth = resolveLength(section, '--cv-date-column-min-width');
-          const maxWidth = resolveLength(section, '--cv-date-column-max-width');
-          const gutterWidth = resolveLength(section, '--cv-column-gap') * 0.5;
+        const timelineSections = [...document.querySelectorAll('[data-cv-view-mode="timeline"]')];
+        if (timelineSections.length) {
+          const minWidth = Math.max(...timelineSections.map((section) => resolveLength(section, '--cv-date-column-min-width')));
+          const maxWidth = Math.max(...timelineSections.map((section) => resolveLength(section, '--cv-date-column-max-width')));
+          const gutterWidth = Math.max(...timelineSections.map((section) => resolveLength(section, '--cv-column-gap') * 0.5));
 
           let widest = minWidth;
-          for (const dateColumn of section.querySelectorAll('.cv-timeline-date')) {
-            const lines = dateColumn.children.length ? [...dateColumn.children] : [dateColumn];
-            for (const line of lines) {
-              const clone = line.cloneNode(true);
-              clone.style.width = 'max-content';
-              clone.style.maxWidth = 'none';
-              clone.style.minWidth = '0';
-              clone.style.whiteSpace = 'nowrap';
-              clone.style.display = 'block';
-              measureContainer.appendChild(clone);
-              widest = Math.max(widest, clone.getBoundingClientRect().width);
-              clone.remove();
+          for (const section of timelineSections) {
+            for (const dateColumn of section.querySelectorAll('.cv-timeline-date')) {
+              const lines = dateColumn.children.length ? [...dateColumn.children] : [dateColumn];
+              for (const line of lines) {
+                const clone = line.cloneNode(true);
+                clone.style.width = 'max-content';
+                clone.style.maxWidth = 'none';
+                clone.style.minWidth = '0';
+                clone.style.whiteSpace = 'nowrap';
+                clone.style.display = 'block';
+                measureContainer.appendChild(clone);
+                widest = Math.max(widest, clone.getBoundingClientRect().width);
+                clone.remove();
+              }
             }
           }
 
           const resolved = Math.min(Math.max(widest + gutterWidth, minWidth), maxWidth);
-          section.style.setProperty('--cv-date-column-width-resolved', `${resolved}px`);
+          document.documentElement.style.setProperty('--cv-date-column-width-resolved', `${resolved}px`);
         }
 
         measureContainer.remove();
