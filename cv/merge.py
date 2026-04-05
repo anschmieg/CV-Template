@@ -12,6 +12,7 @@ import yaml
 DATA_SUFFIXES = ("_data.yaml", "_data.yml")
 DESIGN_SUFFIXES = ("_design.yaml", "_design.yml")
 DEFAULT_OUTPUT_SUFFIX = ".rendercv.yaml"
+SAMPLE_DATA_PREFIXES = ("example_", "sample_", "demo_")
 
 
 @dataclass
@@ -35,6 +36,14 @@ def discover_default_input(cwd: Path) -> Path:
         raise ValueError(
             f"No '*_data.yaml' or '*_data.yml' file found in {cwd}. Pass a file path explicitly."
         )
+
+    non_sample_candidates = [
+        path
+        for path in unique_candidates
+        if not path.name.lower().startswith(SAMPLE_DATA_PREFIXES)
+    ]
+    if len(non_sample_candidates) == 1:
+        return non_sample_candidates[0]
 
     if len(unique_candidates) > 1:
         formatted = ", ".join(path.name for path in unique_candidates)

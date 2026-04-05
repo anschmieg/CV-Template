@@ -55,6 +55,7 @@
         --cv-connections-size: {{ design.typography.font_size.connections }};
         --cv-section-title-size: {{ design.typography.font_size.section_titles }};
         --cv-date-align: {{ design.typography.date_and_location_column_alignment }};
+        --cv-photo-width: {{ design.header.photo_width }};
         --cv-date-column-width: {{ design.entries.date_and_location_width }};
         --cv-column-gap: {{ design.entries.space_between_columns }};
         --cv-entry-gap: {{ design.sections.space_between_regular_entries }};
@@ -127,7 +128,15 @@
       }
 
       .cv-photo {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
         box-shadow: var(--bulma-shadow-sm);
+      }
+
+      .cv-photo-figure {
+        width: min(var(--cv-photo-width), 100%) !important;
+        height: min(var(--cv-photo-width), 100%) !important;
       }
 
       .title.cv-name {
@@ -648,7 +657,7 @@
           {% else %}
             {% set photo_src = (photo_src|string).split('/')|last %}
           {% endif %}
-          <figure class="image is-128x128 mx-auto mb-5">
+          <figure class="image is-128x128 mx-auto mb-5 cv-photo-figure">
             <img class="is-rounded cv-photo" src="{{ photo_src }}" alt="{{ cv.name }}" />
           </figure>
         {% endif %}

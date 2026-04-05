@@ -33,11 +33,19 @@ uv run cv render example_data.yaml
 
 If `example_design.yaml` exists next to it, the wrapper calls RenderCV with the native `--design` overlay.
 
+Before rendering, the wrapper also runs in a default “convenient font mode”:
+
+- HTML keeps using Google Fonts directly
+- PDF/PNG caches the configured Google font families into a local `fonts/` folder next to the input YAML if they are not present yet
+- if a Google font download fails, rendering still continues and Typst falls back to other available fonts
+
 If there is exactly one `*_data.yaml` in the current directory, you can omit the filename:
 
 ```bash
 uv run cv render
 ```
+
+If multiple data files exist but only one is not a sample file like `example_data.yaml`, `sample_data.yaml`, or `demo_data.yaml`, the wrapper picks that non-sample file automatically.
 
 Any extra arguments after `render` are forwarded to native RenderCV, for example:
 
@@ -87,6 +95,10 @@ For compatibility, `uv run anschmiegcv ...` still works too.
   - explicit RenderCV-native element colors such as `body`, `headline`, `section_titles`, `timeline_dot`, and `timeline_line`
   - optional palette generation via `accent` and optional `base`, which fills any missing RenderCV-native color tokens while still letting explicit per-element colors override the generated values
 - Entry templates now drive both PDF and HTML consistently.
+- The wrapper defaults to a convenient font workflow:
+  - web output loads the configured `design.typography.font_family.*` values from Google Fonts
+  - PDF/PNG output uses the same family names, but caches the corresponding `.ttf` files into a local `fonts/` directory for Typst instead of relying on system Font Book resolution
+  - the cache lives next to the input YAML and is ignored by Git
 - HTML timeline geometry is derived from the same design values mathematically, using exact `calc()` relationships rather than visual nudges.
 - Markdown in template lines is respected in both outputs, for example:
 

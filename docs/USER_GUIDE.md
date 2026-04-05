@@ -25,6 +25,8 @@ uv run cv render
 
 If there is exactly one `*_data.yaml` file in the current directory, the wrapper auto-detects it and also auto-detects the matching `*_design.yaml`.
 
+If the directory contains sample inputs like `example_data.yaml`, `sample_data.yaml`, or `demo_data.yaml` plus one real non-sample data file, bare `cv render` prefers the non-sample file automatically.
+
 You can also pass a file explicitly:
 
 ```bash
@@ -50,6 +52,12 @@ Without `uv`:
 ./render
 python render
 ```
+
+By default, `cv render` also uses a convenient font mode:
+
+- HTML loads the configured Google font families directly from Google Fonts
+- PDF/PNG caches matching Google `.ttf` files into a local `fonts/` directory beside the YAML inputs when they are missing
+- if a font download fails, rendering still proceeds and Typst falls back to other available fonts
 
 ## Merge helper
 
@@ -79,6 +87,23 @@ Use native RenderCV fields wherever possible:
 - `design.templates`
 
 The theme is designed so PDF and HTML both derive from those same RenderCV-native values.
+
+### Font families
+
+The wrapper reads the unique font families from:
+
+- `design.typography.font_family.body`
+- `design.typography.font_family.name`
+- `design.typography.font_family.headline`
+- `design.typography.font_family.connections`
+- `design.typography.font_family.section_titles`
+
+In the default convenient mode:
+
+- HTML uses those families through Google Fonts
+- PDF/PNG uses locally cached Google `.ttf` files under `fonts/google/<family-slug>/`
+
+The `fonts/` directory is runtime cache and is ignored by Git.
 
 ### Color modes
 
