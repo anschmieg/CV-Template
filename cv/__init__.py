@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 from typing import Literal
-import colorsys
 
 import pydantic
 from rendercv.schema.models.base import BaseModelWithoutExtraKeys
@@ -36,15 +35,6 @@ def _mix(left: Color, right: Color, ratio: float) -> Color:
     )
 
 
-def _adjust_lightness(color: Color, *, saturation_scale: float = 1.0, lightness_shift: float = 0.0) -> Color:
-    red, green, blue = _rgb_tuple(color)
-    hue, lightness, saturation = colorsys.rgb_to_hls(red / 255, green / 255, blue / 255)
-    adjusted_lightness = max(0.0, min(1.0, lightness + lightness_shift))
-    adjusted_saturation = max(0.0, min(1.0, saturation * saturation_scale))
-    out_red, out_green, out_blue = colorsys.hls_to_rgb(hue, adjusted_lightness, adjusted_saturation)
-    return _from_rgb((out_red * 255, out_green * 255, out_blue * 255))
-
-
 class Colors(ClassicColors):
     """Color extensions unique to the cv theme."""
 
@@ -74,11 +64,11 @@ def _generated_palette(colors: Colors) -> dict[str, Color]:
     base = colors.base or colors.body
     white = Color("rgb(255, 255, 255)")
 
-    section_titles = _adjust_lightness(accent, saturation_scale=1.05, lightness_shift=-0.12)
-    name = _adjust_lightness(accent, saturation_scale=1.0, lightness_shift=-0.04)
-    headline = _mix(section_titles, name, 0.45)
-    connections = _mix(base, accent, 0.22)
-    links = _mix(section_titles, accent, 0.35)
+    name = accent
+    headline = accent
+    section_titles = accent
+    connections = accent
+    links = accent
     footer = _mix(base, white, 0.18)
     top_note = _mix(base, white, 0.12)
 

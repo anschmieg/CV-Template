@@ -39,7 +39,7 @@
 {% set primary_block = main_blocks[0] %}
 {% if primary_block.type == "line" %}
     {% for segment in primary_block.segments %}
-    {% set text_options = cv_typst_text_options(segment.style, default_color=(design.colors.body.as_rgb() if header_count > 1 else design.colors.headline.as_rgb()), default_weight=600) %}
+    {% set text_options = cv_typst_text_options(segment.style, default_color=design.colors.body.as_rgb(), default_weight=600) %}
     #text({{ text_options }})[
       {{ segment.text|indent(6) }}
     ]

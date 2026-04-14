@@ -615,7 +615,7 @@
         {% set primary_block = main_blocks[0] %}
         {% if primary_block.type == 'line' %}
           <{{ title_tag }} class="{{ title_class }}">
-            {{ render_colored_inline_segments(primary_block, design.colors.body.as_rgb() if header_count > 1 else design.colors.headline.as_rgb(), '600') }}
+            {{ render_colored_inline_segments(primary_block, design.colors.body.as_rgb(), '600') }}
           </{{ title_tag }}>
         {% else %}
           {% set block_style = cv_html_style(primary_block.style) %}
