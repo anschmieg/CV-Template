@@ -31,10 +31,10 @@ design:
     alignment: justified
     date_and_location_column_alignment: left
     bold:
-      name: true
+      name: false
       headline: false
       connections: false
-      section_titles: true
+      section_titles: false
     small_caps:
       name: false
       headline: false
@@ -47,7 +47,7 @@ design:
 
   header:
     alignment: center
-    photo_width: 3cm
+    photo_width: 4cm
     photo_space_left: 0cm
     photo_space_right: 0cm
     space_below_name: 0.5cm

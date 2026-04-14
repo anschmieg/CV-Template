@@ -63,12 +63,13 @@ def _generated_palette(colors: Colors) -> dict[str, Color]:
 
     base = colors.base or colors.body
     white = Color("rgb(255, 255, 255)")
+    accent_text = _mix(accent, base, 0.28)
 
     name = accent
-    headline = accent
+    headline = accent_text
     section_titles = accent
-    connections = accent
-    links = accent
+    connections = accent_text
+    links = accent_text
     footer = _mix(base, white, 0.18)
     top_note = _mix(base, white, 0.12)
 
