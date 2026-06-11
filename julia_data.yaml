@@ -1,7 +1,7 @@
 cv:
   name: Julia Müller
   photo: julia_profile_picture.jpg
-  location: Coburg, Deutschland
+  location: Coburg, DE
   email: julia.s.mueller@outlook.de
   phone: "+49 1578 6076433"
 
@@ -9,7 +9,7 @@ cv:
     Berufserfahrung:
       - company: Colegio Alemán Alexander von Humboldt
         position: Praktikantin
-        location: Lomas Verdes, Mexiko
+        location: Lomas Verdes, MX
         start_date: 2023-02
         end_date: 2023-07
         highlights:
@@ -19,7 +19,7 @@ cv:
           - Präsentationen bei internen Weiterbildungen
       - company: Goethe-Institut
         position: "*SCHULWÄRTS!* Stipendiatin"
-        location: Mexiko-Stadt, Mexiko
+        location: Mexiko-Stadt, MX
         start_date: 2022-09
         end_date: 2022-12
         highlights:
@@ -29,7 +29,7 @@ cv:
           - Eigenständige Initiierung und Leitung der Teilnahme an einem internationalen Wettbewerb zur nachhaltigen Entwicklung (1. Platz)
       - company: Friedensreich-Hundertwasser-Schule
         position: Differenzierungslehrerin
-        location: Würzburg, Deutschland
+        location: Würzburg, DE
         start_date: 2021-09
         end_date: 2022-08
         highlights:
@@ -43,7 +43,7 @@ cv:
         degree: Staatsexamen
         start_date: 2020-09
         end_date: 2026-07
-        location: Würzburg, Deutschland
+        location: Würzburg, DE
         highlights:
           - "Schwerpunkt: Pädagogik bei Lernbeeinträchtigungen"
           - "Qualifizierungsstudium: Sprachheilpädagogik"
@@ -52,17 +52,17 @@ cv:
         area: Grundschullehramt
         start_date: 2019-09
         end_date: 2020-08
-        location: Würzburg, Deutschland
+        location: Würzburg, DE
       - institution: Gymnasium Ernestinum Coburg
         area: Abitur
         start_date: 2011-09
         end_date: 2019-07
-        location: Coburg, Deutschland
+        location: Coburg, DE
 
     Ehrenamt:
       - company: Stiftung DeutschKlasse (Sprachschule)
         position: Lehrerin
-        location: Utrecht, Niederlande
+        location: Utrecht, NL
         start_date: 2025-08
         end_date: 2026-07
         highlights:

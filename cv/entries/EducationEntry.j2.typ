@@ -19,13 +19,13 @@
     {% if is_header_line %}
     #text({{ block_options }})[{{ block.text|indent(6) }}]
     {% else %}
-    #pad(left: 0.18cm)[#text({{ block_options }})[{{ block.text|indent(6) }}]]
+    #pad(left: 0cm)[#text({{ block_options }})[{{ block.text|indent(6) }}]]
     {% endif %}
     {% else %}
     {% if is_header_line %}
     {{ block.text|indent(4) }}
     {% else %}
-    #pad(left: 0.18cm)[{{ block.text|indent(6) }}]
+    #pad(left: 0cm)[{{ block.text|indent(6) }}]
     {% endif %}
     {% endif %}
 {% endif %}
@@ -67,7 +67,7 @@
     ]
     {% endfor %}
 {% else %}
-    #pad(left: 0.18cm)[
+    #pad(left: 0cm)[
     {% for segment in block.segments %}
     {% set text_options = cv_typst_text_options(segment.style, default_color=(design.colors.headline.as_rgb() if is_header_line else none), default_weight=(500 if is_header_line else 400)) %}
     #text({{ text_options }})[
@@ -82,13 +82,13 @@
     {% if is_header_line %}
     #text({{ block_options }})[{{ block.text|indent(6) }}]
     {% else %}
-    #pad(left: 0.18cm)[#text({{ block_options }})[{{ block.text|indent(6) }}]]
+    #pad(left: 0cm)[#text({{ block_options }})[{{ block.text|indent(6) }}]]
     {% endif %}
     {% else %}
     {% if is_header_line %}
     {{ block.text|indent(4) }}
     {% else %}
-    #pad(left: 0.18cm)[{{ block.text|indent(6) }}]
+    #pad(left: 0cm)[{{ block.text|indent(6) }}]
     {% endif %}
     {% endif %}
 {% endif %}
