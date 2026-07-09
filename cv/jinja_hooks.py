@@ -6,8 +6,6 @@ from collections.abc import Callable
 from typing import Literal
 
 from rendercv.renderer.templater import templater
-import contextlib
-import jinja2
 
 from .template_helpers import (
     body_is_in_main_column,
@@ -221,51 +219,6 @@ def install() -> None:
 
     get_jinja2_environment_with_cv_helpers._cv_helpers_installed = True  # type: ignore[attr-defined]
     templater.get_jinja2_environment = get_jinja2_environment_with_cv_helpers
-
-    if not getattr(templater.render_single_template, "_cv_theme_alias_installed", False):
-        original_render_single_template = templater.render_single_template
-
-        def render_single_template_with_theme_alias(
-            file_type,
-            relative_template_path,
-            rendercv_model,
-            **kwargs,
-        ):
-            if file_type != "typst":
-                return original_render_single_template(
-                    file_type, relative_template_path, rendercv_model, **kwargs
-                )
-
-            jinja2_environment = templater.get_jinja2_environment(
-                rendercv_model._input_file_path
-            )
-            template = None
-            theme_candidates = [rendercv_model.design.theme]
-            if rendercv_model.design.theme == "anschmiegcv":
-                theme_candidates.append("cv")
-
-            for theme_name in theme_candidates:
-                with contextlib.suppress(jinja2.TemplateNotFound):
-                    template = jinja2_environment.get_template(
-                        f"{theme_name}/{relative_template_path}"
-                    )
-                    break
-
-            if template is None:
-                template = jinja2_environment.get_template(
-                    f"{file_type}/{relative_template_path}"
-                )
-
-            return template.render(
-                cv=rendercv_model.cv,
-                design=rendercv_model.design,
-                locale=rendercv_model.locale,
-                settings=rendercv_model.settings,
-                **kwargs,
-            )
-
-        render_single_template_with_theme_alias._cv_theme_alias_installed = True  # type: ignore[attr-defined]
-        templater.render_single_template = render_single_template_with_theme_alias
 
     if not getattr(templater.render_full_template, "_cv_last_entry_installed", False):
         original_render_full_template = templater.render_full_template

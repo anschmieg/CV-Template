@@ -9,14 +9,110 @@ For a practical walkthrough of the wrapper and theme customizations, see `/Users
 
 ## Layout
 
-- `cv/`: the Python package that implements the `anschmiegcv` RenderCV theme
-- `cv/`: also contains the tiny helper modules for `merge` and `render`
+- `anschmiegcv/`: the RenderCV theme package and Typst templates
+- `cv/`: the tiny helper CLI and modules for `merge`, `render`, split-file discovery, and font caching
 - `example_data.yaml`: sample CV data, plus `settings` and optional `locale`
 - `example_design.yaml`: sample `design` overlay
 
 ## Usage
 
 Install the project in editable mode, or run it from this repo with `uv`.
+
+## Starting a new CV repo
+
+For a real personal CV, keep the CV content in its own private repository and
+bring this theme in next to the YAML input. RenderCV expects a local custom
+theme folder named exactly `anschmiegcv` beside the source YAML, so the target
+layout should look like this:
+
+```text
+my-cv/
+  my_data.yaml
+  my_design.yaml
+  profile_picture.jpg
+  anschmiegcv/
+  rendercv_output/
+```
+
+### Recommended: pinned theme submodule
+
+A Git submodule gives you a reproducible theme version. It does not auto-sync on
+every upstream change, which is usually a good thing for a CV: you decide when
+to update the theme and can review the rendered output before committing.
+
+```bash
+mkdir my-cv
+cd my-cv
+git init
+
+git submodule add https://github.com/anschmieg/CV-Template.git .theme/CV-Template
+ln -s .theme/CV-Template/anschmiegcv anschmiegcv
+cp .theme/CV-Template/example_data.yaml my_data.yaml
+cp .theme/CV-Template/example_design.yaml my_design.yaml
+cp .theme/CV-Template/profile_picture.jpg profile_picture.jpg
+
+cat > .gitignore <<'EOF'
+rendercv_output/
+fonts/
+*.rendercv.yaml
+EOF
+
+git add .gitignore .gitmodules .theme/CV-Template anschmiegcv my_data.yaml my_design.yaml profile_picture.jpg
+git commit -m "chore: initialize CV"
+```
+
+Render with the helper from the theme repo:
+
+```bash
+uv run --project .theme/CV-Template cv my_data.yaml
+```
+
+Update the theme deliberately:
+
+```bash
+git submodule update --remote .theme/CV-Template
+uv run --project .theme/CV-Template cv my_data.yaml
+git add .theme/CV-Template
+git commit -m "chore: update CV theme"
+```
+
+When cloning this CV repo elsewhere, include submodules:
+
+```bash
+git clone --recurse-submodules <your-cv-repo-url>
+```
+
+Or, after a normal clone:
+
+```bash
+git submodule update --init --recursive
+```
+
+### Local auto-sync while developing the theme
+
+If you are actively editing this theme and want a CV repo to reflect local theme
+changes immediately, use a symlink to your local checkout instead of a submodule:
+
+```bash
+mkdir my-cv
+cd my-cv
+git init
+
+ln -s /Users/adrian/Projects/CV-Template/anschmiegcv anschmiegcv
+cp /Users/adrian/Projects/CV-Template/example_data.yaml my_data.yaml
+cp /Users/adrian/Projects/CV-Template/example_design.yaml my_design.yaml
+cp /Users/adrian/Projects/CV-Template/profile_picture.jpg profile_picture.jpg
+```
+
+Then render with:
+
+```bash
+uv run --project /Users/adrian/Projects/CV-Template cv my_data.yaml
+```
+
+This is convenient on one machine, but it is less portable than a submodule.
+Use it for iteration; use the submodule form when the CV repo should stand on
+its own.
 
 ### Recommended naming
 
@@ -28,7 +124,7 @@ This avoids colliding with RenderCV’s common merged-file naming like `Name_CV.
 ### Render split inputs automatically
 
 ```bash
-uv run cv render example_data.yaml
+uv run cv example_data.yaml
 ```
 
 If `example_design.yaml` exists next to it, the wrapper calls RenderCV with the native `--design` overlay.
@@ -42,21 +138,27 @@ Before rendering, the wrapper also runs in a default “convenient font mode”:
 If there is exactly one `*_data.yaml` in the current directory, you can omit the filename:
 
 ```bash
-uv run cv render
+uv run cv
 ```
 
 If multiple data files exist but only one is not a sample file like `example_data.yaml`, `sample_data.yaml`, or `demo_data.yaml`, the wrapper picks that non-sample file automatically.
 
-Any extra arguments after `render` are forwarded to native RenderCV, for example:
+Any extra arguments are forwarded to native RenderCV, for example:
 
 ```bash
-uv run cv render example_data.yaml --pdf-path output/custom.pdf
+uv run cv example_data.yaml --pdf-path output/custom.pdf
 ```
 
-You can also point `render` at either companion file:
+You can also point the command at either companion file:
 
 ```bash
-uv run cv render example_design.yaml
+uv run cv example_design.yaml
+```
+
+The explicit subcommand remains available:
+
+```bash
+uv run cv render example_data.yaml
 ```
 
 ### Render without `uv`
@@ -87,10 +189,10 @@ For compatibility, `uv run anschmiegcv ...` still works too.
 
 ## Theme notes
 
-- The Python package names are `cv` and `cv_tools`, but the RenderCV theme name is `anschmiegcv`.
+- `cv` is the preferred helper command, while `anschmiegcv` is the RenderCV theme name and package.
 - PDF and HTML now share the same fallback semantics: when a template span does not specify a class like `.color-headline` or `.w600`, custom entry rendering falls back to RenderCV-native design tokens from `design.colors`, `design.typography`, `design.entries`, and `design.sections` rather than separate hardcoded theme values.
 - Section title directives like `{.cards}` and `{.timeline}` are handled by the theme templates.
-- Theme-specific colors `timeline_dot` and `timeline_line` are supported through `cv/__init__.py`.
+- Theme-specific colors `timeline_dot` and `timeline_line` are supported through `anschmiegcv`.
 - `design.colors` supports two modes:
   - explicit RenderCV-native element colors such as `body`, `headline`, `section_titles`, `timeline_dot`, and `timeline_line`
   - optional palette generation via `accent` and optional `base`, which fills any missing RenderCV-native color tokens while still letting explicit per-element colors override the generated values

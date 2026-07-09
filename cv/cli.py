@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 import argparse
+import sys
+from collections.abc import Callable
 from pathlib import Path
 
 from .merge import discover_default_input, merge_to_file, render_cv
@@ -33,16 +35,29 @@ def _build_parser() -> argparse.ArgumentParser:
     return parser
 
 
-def main() -> int:
+def _normalize_args(args: list[str]) -> list[str]:
+    commands = {"merge", "render"}
+    if not args:
+        return ["render"]
+
+    first = args[0]
+    if first in commands or first in {"-h", "--help"}:
+        return args
+
+    return ["render", *args]
+
+
+def main(argv: list[str] | None = None, *, print_fn: Callable[[object], None] = print) -> int:
     parser = _build_parser()
-    args, unknown = parser.parse_known_args()
+    raw_args = sys.argv[1:] if argv is None else argv
+    args, unknown = parser.parse_known_args(_normalize_args(list(raw_args)))
 
     output_path = Path(args.output) if getattr(args, "output", None) else None
 
     if args.command == "merge":
         input_path = Path(args.input_file)
         merged_path = merge_to_file(input_path, output_path=output_path)
-        print(merged_path)
+        print_fn(merged_path)
         return 0
 
     if args.command == "render":

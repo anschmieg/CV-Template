@@ -23,7 +23,7 @@ dependencies = [
 [package.metadata]
 requires-dist = [
     { name = "pyyaml", specifier = ">=6.0.2" },
-    { name = "rendercv", specifier = ">=2.8" },
+    { name = "rendercv", specifier = ">=2.8,<3" },
 ]
 
 [[package]]

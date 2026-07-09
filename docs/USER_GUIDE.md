@@ -3,7 +3,8 @@
 This repository is a thin layer on top of RenderCV:
 
 - the RenderCV theme name is `anschmiegcv`
-- the Python package / CLI names are `cv` and `cv_tools`
+- the theme package is `anschmiegcv`
+- the concise helper CLI is `cv`
 - the wrapper only helps with split files and forwards rendering to native RenderCV
 
 ## File structure
@@ -20,24 +21,30 @@ You can still render a single merged YAML file, but the split layout is the pref
 From the repo root:
 
 ```bash
-uv run cv render
+uv run cv
 ```
 
 If there is exactly one `*_data.yaml` file in the current directory, the wrapper auto-detects it and also auto-detects the matching `*_design.yaml`.
 
-If the directory contains sample inputs like `example_data.yaml`, `sample_data.yaml`, or `demo_data.yaml` plus one real non-sample data file, bare `cv render` prefers the non-sample file automatically.
+If the directory contains sample inputs like `example_data.yaml`, `sample_data.yaml`, or `demo_data.yaml` plus one real non-sample data file, bare `cv` prefers the non-sample file automatically.
 
 You can also pass a file explicitly:
 
 ```bash
-uv run cv render example_data.yaml
-uv run cv render example_design.yaml
+uv run cv example_data.yaml
+uv run cv example_design.yaml
 ```
 
 The wrapper forwards extra arguments to RenderCV:
 
 ```bash
-uv run cv render example_data.yaml --pdf-path output/custom.pdf
+uv run cv example_data.yaml --pdf-path output/custom.pdf
+```
+
+The explicit `render` subcommand remains available when you prefer it:
+
+```bash
+uv run cv render example_data.yaml
 ```
 
 Compatibility alias:
@@ -53,7 +60,7 @@ Without `uv`:
 python render
 ```
 
-By default, `cv render` also uses a convenient font mode:
+By default, `cv` also uses a convenient font mode:
 
 - HTML loads the configured Google font families directly from Google Fonts
 - PDF/PNG caches matching Google `.ttf` files into a local `fonts/` directory beside the YAML inputs when they are missing
@@ -201,5 +208,5 @@ These are interpreted by the `anschmiegcv` theme templates for both HTML and PDF
 1. Copy `example_data.yaml` and `example_design.yaml`
 2. Edit your CV content in the data file
 3. Adjust colors, spacing, and templates in the design file
-4. Run `uv run cv render`
+4. Run `uv run cv`
 5. Check outputs in `rendercv_output/`
