@@ -57,9 +57,10 @@
         --cv-name-size: calc({{ design.typography.font_size.name }} * 0.98 * var(--cv-html-type-scale));
         --cv-headline-size: calc({{ design.typography.font_size.headline }} * 1.08 * var(--cv-html-type-scale));
         --cv-connections-size: calc({{ design.typography.font_size.connections }} * 1.1 * var(--cv-html-type-scale));
-        --cv-section-title-size: calc({{ design.typography.font_size.section_titles }} * 1.02 * var(--cv-html-type-scale));
+        --cv-section-title-size: calc({{ design.typography.font_size.section_titles }} * 1.24 * var(--cv-html-type-scale));
         --cv-layout-width: {{ design.html.content_width }};
         --cv-sidebar-width: {{ design.html.sidebar_width }};
+        --cv-sidebar-fluid-width: clamp(25%, var(--cv-sidebar-width), 35%);
         --cv-date-align: right;
         --cv-photo-width: {{ design.header.photo_width }};
         --cv-date-column-width: calc({{ design.entries.date_and_location_width }} * 1.03);
@@ -89,17 +90,18 @@
         --cv-card-shadow: 0 0.45rem 1.15rem color-mix(in srgb, var(--cv-body) 7%, transparent);
         --cv-entry-hover-surface: color-mix(in srgb, var(--cv-surface) 72%, var(--cv-border-subtle) 28%);
         --cv-entry-hover-outline: color-mix(in srgb, var(--cv-card-border-hover) 36%, transparent);
-        --cv-transition: {% if design.html.motion %}220ms cubic-bezier(0.22, 1, 0.36, 1){% else %}0ms linear{% endif %};
+        --cv-transition: {% if design.html.motion %}270ms cubic-bezier(0.22, 1, 0.36, 1){% else %}0ms linear{% endif %};
         --cv-entry-emphasis-weight: 600;
         --cv-name-weight: {% if design.typography.bold.name %}700{% else %}400{% endif %};
         --cv-headline-weight: {% if design.typography.bold.headline %}700{% else %}400{% endif %};
         --cv-connections-weight: {% if design.typography.bold.connections %}700{% else %}400{% endif %};
-        --cv-section-title-weight: {% if design.typography.bold.section_titles %}700{% else %}400{% endif %};
+        --cv-section-title-weight: {% if design.typography.bold.section_titles %}720{% else %}500{% endif %};
       }
 
       html,
       body {
         overflow-x: hidden;
+        scroll-behavior: smooth;
         background: var(--cv-background);
         color: var(--cv-body);
         font-family: var(--cv-font-body);
@@ -110,12 +112,14 @@
 
       .cv-layout,
       .cv-layout.columns {
+        height: 100vh;
+        height: 100dvh;
         min-height: 100vh;
         width: 100%;
         max-width: none;
         margin: 0 !important;
         display: grid !important;
-        grid-template-columns: minmax(16rem, var(--cv-sidebar-width)) minmax(0, 1fr);
+        grid-template-columns: minmax(16rem, var(--cv-sidebar-fluid-width)) minmax(0, 1fr);
         gap: 0;
         background: color-mix(in srgb, white 94%, var(--cv-background) 6%);
       }
@@ -177,7 +181,12 @@
       .cv-main {
         padding: {% if design.html.density == 'compact' %}2rem 2rem{% elif design.html.density == 'spacious' %}3.25rem 3rem{% else %}2.55rem 2.45rem{% endif %} !important;
         width: 100%;
-        max-width: calc(var(--cv-layout-width) - var(--cv-sidebar-width));
+        max-width: none;
+        height: 100vh;
+        height: 100dvh;
+        overflow-y: auto;
+        scroll-behavior: smooth;
+        scrollbar-gutter: stable;
         min-width: 0;
       }
 
@@ -186,14 +195,188 @@
         height: 100%;
         object-fit: cover;
         box-shadow:
-          0 0 0 0.18rem color-mix(in srgb, white 58%, var(--cv-section) 42%),
+          0 0 0 0.075rem color-mix(in srgb, var(--cv-section) 36%, white 64%),
           0 0.6rem 1.4rem color-mix(in srgb, var(--cv-body) 10%, transparent);
+        transition:
+          box-shadow var(--cv-transition),
+          transform var(--cv-transition);
       }
 
       .cv-photo-figure {
         width: min(var(--cv-photo-width), 100%) !important;
         height: min(var(--cv-photo-width), 100%) !important;
         margin-bottom: 1.65rem !important;
+      }
+
+      .cv-photo-button {
+        appearance: none;
+        background: transparent;
+        border: 0;
+        border-radius: 999px;
+        cursor: pointer;
+        display: block;
+        height: 100%;
+        padding: 0;
+        position: relative;
+        --cv-photo-shadow-x: 0;
+        --cv-photo-shadow-y: 1.05rem;
+        transition:
+          box-shadow var(--cv-transition),
+          transform var(--cv-transition);
+        width: 100%;
+      }
+
+      .cv-photo-button::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        border-radius: inherit;
+        background:
+          linear-gradient(
+            135deg,
+            color-mix(in srgb, white 22%, transparent) 0%,
+            transparent 42%,
+            color-mix(in srgb, var(--cv-section) 11%, transparent) 100%
+          );
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity var(--cv-transition);
+      }
+
+      .cv-photo-button:hover,
+      .cv-photo-button:focus-visible {
+        transform: translateY(-0.08rem);
+      }
+
+      .cv-photo-button:hover .cv-photo,
+      .cv-photo-button:focus-visible .cv-photo {
+        box-shadow:
+          0 0 0 0.075rem color-mix(in srgb, var(--cv-section) 52%, white 48%),
+          var(--cv-photo-shadow-x) var(--cv-photo-shadow-y) 2.25rem color-mix(in srgb, var(--cv-body) 21%, transparent),
+          calc(var(--cv-photo-shadow-x) * 0.52) calc(var(--cv-photo-shadow-y) * 0.54) 0.95rem color-mix(in srgb, var(--cv-section) 14%, transparent);
+        transform: scale(1.035);
+      }
+
+      .cv-photo-button:hover::after,
+      .cv-photo-button:focus-visible::after {
+        opacity: 1;
+      }
+
+      .cv-photo-button:focus-visible {
+        outline: 2px solid color-mix(in srgb, var(--cv-section) 55%, white 45%);
+        outline-offset: 0.3rem;
+      }
+
+      .cv-photo-dialog {
+        background: transparent;
+        border: 0;
+        color: var(--cv-body);
+        max-height: min(88vh, 44rem);
+        max-width: min(88vw, 34rem);
+        overflow: visible;
+        padding: 0;
+      }
+
+      .cv-photo-dialog::backdrop {
+        background:
+          radial-gradient(circle at 50% 42%, color-mix(in srgb, var(--cv-section) 6%, transparent), transparent 46%),
+          color-mix(in srgb, var(--cv-body) 10%, transparent);
+        backdrop-filter: blur(0.18rem) saturate(0.96);
+      }
+
+      .cv-photo-dialog[open] .cv-photo-expanded {
+        opacity: 0;
+        transform:
+          translate(var(--cv-photo-open-dx, 0), var(--cv-photo-open-dy, 0))
+          scale(var(--cv-photo-open-scale, 0.32));
+      }
+
+      .cv-photo-dialog.is-visible[open] .cv-photo-expanded {
+        animation: cv-photo-expand 360ms cubic-bezier(0.22, 1, 0.36, 1) both;
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+
+      @keyframes cv-photo-expand {
+        from {
+          opacity: 0;
+          transform:
+            translate(var(--cv-photo-open-dx, 0), var(--cv-photo-open-dy, 0))
+            scale(var(--cv-photo-open-scale, 0.32));
+        }
+
+        68% {
+          opacity: 1;
+        }
+
+        to {
+          opacity: 1;
+          transform: translateY(0) scale(1);
+        }
+      }
+
+      .cv-photo-expanded {
+        background: transparent;
+        border: 1px solid color-mix(in srgb, var(--cv-section) 22%, white 78%);
+        border-radius: 9px;
+        --cv-lightbox-shadow-x: 0;
+        --cv-lightbox-shadow-y: 1.25rem;
+        box-shadow:
+          0 0 0 1px color-mix(in srgb, white 34%, transparent),
+          var(--cv-lightbox-shadow-x) var(--cv-lightbox-shadow-y) 3.35rem color-mix(in srgb, var(--cv-body) 26%, transparent),
+          calc(var(--cv-lightbox-shadow-x) * 0.42) calc(var(--cv-lightbox-shadow-y) * 0.48) 1.25rem color-mix(in srgb, var(--cv-section) 15%, transparent);
+        opacity: 1;
+        padding: 0;
+        position: relative;
+        transform:
+          translate(var(--cv-photo-open-dx, 0), var(--cv-photo-open-dy, 0))
+          scale(var(--cv-photo-open-scale, 0.32));
+        transition:
+          box-shadow var(--cv-transition),
+          opacity var(--cv-transition),
+          transform var(--cv-transition);
+      }
+
+      .cv-photo-expanded img {
+        border-radius: 7px;
+        display: block;
+        max-height: min(78vh, 38rem);
+        max-width: 100%;
+        object-fit: contain;
+      }
+
+      .cv-photo-dialog-close {
+        align-items: center;
+        background: color-mix(in srgb, white 86%, transparent);
+        border: 1px solid color-mix(in srgb, var(--cv-section) 26%, white 74%);
+        border-radius: 999px;
+        color: var(--cv-title-accent);
+        cursor: pointer;
+        display: inline-flex;
+        height: 2rem;
+        justify-content: center;
+        position: absolute;
+        right: -0.72rem;
+        top: -0.72rem;
+        transition:
+          background-color var(--cv-transition),
+          border-color var(--cv-transition),
+          color var(--cv-transition),
+          transform var(--cv-transition);
+        width: 2rem;
+      }
+
+      .cv-photo-dialog-close:hover,
+      .cv-photo-dialog-close:focus-visible {
+        background: color-mix(in srgb, white 82%, var(--cv-section) 18%);
+        border-color: color-mix(in srgb, var(--cv-section) 36%, white 64%);
+        color: var(--cv-link-hover);
+        transform: scale(1.05);
+      }
+
+      .cv-photo-dialog-close:focus-visible {
+        outline: none;
+        box-shadow: 0 0 0 0.16rem color-mix(in srgb, var(--cv-section) 18%, transparent);
       }
 
       .title.cv-name {
@@ -297,16 +480,16 @@
 
       .cv-section-nav a:hover,
       .cv-section-nav a.is-active {
-        background: color-mix(in srgb, var(--cv-section) 7%, white 93%);
-        border-color: color-mix(in srgb, var(--cv-section) 10%, transparent);
+        background: color-mix(in srgb, var(--cv-section) 4.5%, white 95.5%);
+        border-color: color-mix(in srgb, var(--cv-section) 7%, transparent);
         color: var(--cv-link-hover);
-        transform: translateX(1px);
+        transform: translateX(0.06em);
       }
 
       .cv-section-nav a:hover::before,
       .cv-section-nav a.is-active::before {
-        background: var(--cv-section);
-        transform: translateY(-0.08em) scale(1.18);
+        background: color-mix(in srgb, var(--cv-section) 72%, transparent);
+        transform: translateY(-0.08em) scale(1.08);
       }
 
       .title.cv-section-title {
@@ -331,6 +514,52 @@
         text-transform: none;
         letter-spacing: 0.01em;
         line-height: var(--cv-entry-line-height);
+      }
+
+      .cv-card-meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.12rem 0;
+        line-height: 1.35;
+      }
+
+      .cv-card-header {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        align-items: start;
+        gap: 0.75rem;
+        margin-bottom: 0.34rem;
+      }
+
+      .cv-card-header .cv-entry-primary {
+        margin-bottom: 0 !important;
+      }
+
+      .cv-card-date {
+        color: color-mix(in srgb, var(--cv-muted) 68%, var(--cv-body) 32%);
+        flex: 0 0 auto;
+        font-size: calc(var(--cv-entry-primary-font-size) * 0.9);
+        font-weight: 470;
+        line-height: calc(var(--cv-entry-line-height) * 0.95);
+        padding-top: 0.08em;
+        white-space: nowrap;
+      }
+
+      .cv-card-meta-item {
+        display: inline-flex;
+        align-items: baseline;
+      }
+
+      .cv-card-meta-icon {
+        color: color-mix(in srgb, var(--cv-section) 48%, var(--cv-muted) 52%);
+        font-size: 0.78em;
+        margin-right: 0.38em;
+      }
+
+      .cv-card-meta-item + .cv-card-meta-item::before {
+        content: "·";
+        margin: 0 0.46em;
+        color: color-mix(in srgb, var(--cv-muted) 76%, transparent);
       }
 
       .title.cv-entry-primary,
@@ -389,11 +618,22 @@
 
       .cv-entry-organization {
         color: var(--cv-title-accent);
+        display: inline-flex;
+        align-items: baseline;
+        gap: 0.42em;
         font-size: calc(var(--cv-entry-primary-font-size) * 0.98);
         font-weight: 500;
+        font-style: normal;
         line-height: calc(var(--cv-entry-line-height) * 0.98);
         margin-bottom: 0.48rem !important;
         transition: color var(--cv-transition);
+      }
+
+      .cv-entry-organization-icon {
+        color: color-mix(in srgb, var(--cv-title-accent) 72%, var(--cv-muted) 28%);
+        flex: 0 0 auto;
+        font-size: 0.78em;
+        font-style: normal;
       }
 
       .cv-org-inline {
@@ -478,13 +718,15 @@
 
       .cv-card:hover {
         background-color: color-mix(in srgb, color-mix(in srgb, white 97.1%, var(--cv-section) 2.9%) 98.6%, var(--cv-body) 1.4%) !important;
-        border-color: var(--cv-card-border-hover);
-        box-shadow: var(--cv-shadow-soft);
-        transform: translateY(-0.06rem);
+        border-color: color-mix(in srgb, var(--cv-card-border-hover) 76%, var(--cv-section) 24%) !important;
+        box-shadow:
+          var(--cv-shadow-soft),
+          0 0 0 1px color-mix(in srgb, var(--cv-section) 8%, transparent);
+        transform: translateY(-0.12rem);
       }
 
       .cv-card:hover::before {
-        opacity: 0.28;
+        opacity: 0.38;
         transform: scaleY(1);
       }
 
@@ -529,9 +771,9 @@
 
       .cv-timeline-entry:hover::before,
       .cv-timeline-entry:focus-within::before {
-        background: var(--cv-entry-hover-surface);
-        border-color: var(--cv-entry-hover-outline);
-        box-shadow: 0 0.55rem 1.3rem color-mix(in srgb, var(--cv-body) 4.5%, transparent);
+        background: color-mix(in srgb, var(--cv-entry-hover-surface) 82%, transparent);
+        border-color: color-mix(in srgb, var(--cv-entry-hover-outline) 62%, transparent);
+        box-shadow: 0 0.38rem 0.95rem color-mix(in srgb, var(--cv-body) 2.8%, transparent);
       }
 
       .cv-timeline-entry:hover .cv-entry-organization,
@@ -587,7 +829,7 @@
         height: var(--cv-timeline-dot-size);
         margin-top: calc((var(--cv-entry-first-line-box) - var(--cv-timeline-dot-size)) / 2);
         border-radius: 50%;
-        background: var(--cv-timeline-dot);
+        background: white;
         border: var(--cv-timeline-dot-border) solid white;
         box-shadow: 0 0 0 1px color-mix(in srgb, var(--cv-timeline-line) 46%, white 54%);
         z-index: 1;
@@ -597,12 +839,29 @@
           background-color var(--cv-transition);
       }
 
+      .cv-timeline-dot::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        border-radius: inherit;
+        background: var(--cv-timeline-dot);
+        transform: scale(1);
+        transition:
+          transform var(--cv-transition),
+          background-color var(--cv-transition);
+      }
+
       .cv-timeline-entry:hover .cv-timeline-dot,
       .cv-timeline-entry:focus-within .cv-timeline-dot {
-        transform: scale(1.18);
+        transform: scale(1.08);
         box-shadow:
           0 0 0 1px color-mix(in srgb, var(--cv-timeline-line) 54%, white 46%),
-          0 0 0 0.34rem color-mix(in srgb, var(--cv-timeline-dot) 11%, transparent);
+          0 0 0 0.18rem color-mix(in srgb, var(--cv-timeline-dot) 8%, transparent);
+      }
+
+      .cv-timeline-entry:hover .cv-timeline-dot::before,
+      .cv-timeline-entry:focus-within .cv-timeline-dot::before {
+        transform: scale(1.42);
       }
 
       .cv-timeline-content {
@@ -692,16 +951,18 @@
 
       .cv-highlights {
         list-style: disc outside !important;
-        margin: 0.35rem 0 0.15rem 1.05rem;
-        padding-left: 0.18rem;
+        margin: 0.42rem 0 0.15rem 1.28rem;
+        padding-left: 0.28rem;
       }
 
       .cv-highlights li {
         list-style: disc outside !important;
+        padding-left: 0.12rem;
       }
 
       .cv-highlights li::marker {
         color: color-mix(in srgb, var(--cv-section) 72%, var(--cv-body) 28%);
+        font-size: 0.72em;
       }
 
       .cv-publication-links {
@@ -729,6 +990,10 @@
           transition: none;
         }
 
+        .cv-photo-dialog.is-visible[open] .cv-photo-expanded {
+          animation: none;
+        }
+
         .cv-timeline-entry::before {
           transition: none;
         }
@@ -737,6 +1002,12 @@
         .cv-timeline-entry:hover .cv-timeline-dot,
         .cv-timeline-entry:focus-within .cv-timeline-dot,
         .cv-contact p:hover,
+        .cv-photo-button:hover,
+        .cv-photo-button:focus-visible,
+        .cv-photo-button:hover .cv-photo,
+        .cv-photo-button:focus-visible .cv-photo,
+        .cv-photo-dialog-close:hover,
+        .cv-photo-dialog-close:focus-visible,
         .cv-section-nav a:hover,
         .cv-section-nav a.is-active {
           transform: none;
@@ -779,7 +1050,9 @@
         .cv-layout,
         .cv-layout.columns {
           grid-template-columns: 1fr;
+          height: auto;
           max-width: 100vw;
+          min-height: 100vh;
           width: 100%;
           box-shadow: none;
         }
@@ -797,6 +1070,8 @@
           padding: clamp(1.25rem, 3vw, 2.25rem) 1rem 1.55rem !important;
           width: 100%;
           max-width: min(100%, 58rem);
+          height: auto;
+          overflow-y: visible;
           margin: 0 auto;
         }
 
@@ -973,6 +1248,40 @@
       {% endif %}
     {%- endmacro %}
 
+    {% macro render_card_date_badge(entry) -%}
+      {% if entry.date is defined and entry.date %}
+        <span class="cv-card-date">{{ render_markdown_inline(entry.date) }}</span>
+      {% elif entry.start_date is defined and entry.start_date %}
+        {% set date_text = entry.start_date %}
+        {% if entry.end_date is defined and entry.end_date %}
+          {% set date_text = date_text ~ ' - ' ~ entry.end_date %}
+        {% endif %}
+        <span class="cv-card-date">{{ render_markdown_inline(date_text) }}</span>
+      {% endif %}
+    {%- endmacro %}
+
+    {% macro render_card_meta(entry, organization_name='', venue_name='') -%}
+      {% set meta = namespace(items=[]) %}
+      {% if organization_name %}
+        {% set meta.items = meta.items + [{'text': organization_name, 'icon': 'fa-building'}] %}
+      {% elif venue_name %}
+        {% set meta.items = meta.items + [{'text': venue_name, 'icon': 'fa-building'}] %}
+      {% endif %}
+      {% if entry.location is defined and entry.location %}
+        {% set meta.items = meta.items + [{'text': entry.location, 'icon': ''}] %}
+      {% endif %}
+      {% if meta.items %}
+        <p class="cv-item-meta cv-card-meta mb-2">
+          {% for item in meta.items %}
+            <span class="cv-card-meta-item">
+              {% if item.icon %}<span class="cv-card-meta-icon"><i class="fa-solid {{ item.icon }}"></i></span>{% endif %}
+              {{ render_markdown_inline(item.text) }}
+            </span>
+          {% endfor %}
+        </p>
+      {% endif %}
+    {%- endmacro %}
+
     {% macro render_entry_main_column(entry, section_name='', title_tag='h3', title_class='title is-6 mb-1 cv-entry-primary') -%}
       {% set main_blocks = cv_parse_entry_blocks(entry, design, locale, settings, 'main_column', section_name) %}
       {% set header_count = cv_count_header_lines(cv_entry_main_template(entry, design)) %}
@@ -1009,10 +1318,13 @@
 
     {% macro render_timeline_entry_main(entry, section_name='') -%}
       {% set organization_name = '' %}
+      {% set organization_icon = 'fa-building' %}
       {% if entry.company is defined and entry.company %}
         {% set organization_name = entry.company %}
+        {% set organization_icon = 'fa-building' %}
       {% elif entry.institution is defined and entry.institution %}
         {% set organization_name = entry.institution %}
+        {% set organization_icon = 'fa-building-columns' %}
       {% endif %}
 
       {% set degree_line = '' %}
@@ -1040,7 +1352,10 @@
           <h3 class="title is-6 cv-entry-primary cv-entry-role">{{ render_markdown_inline(role_line) }}</h3>
         {% endif %}
         {% if organization_name and organization_name != role_line %}
-          <p class="cv-entry-organization">{{ render_markdown_inline(organization_name) }}</p>
+          <p class="cv-entry-organization">
+            <span class="cv-entry-organization-icon" aria-hidden="true"><i class="fa-solid {{ organization_icon }}"></i></span>
+            <span>{{ render_markdown_inline(organization_name) }}</span>
+          </p>
         {% endif %}
         {% if entry.details is defined and entry.details %}
           {{ render_markdown_block(entry.details, 'mb-2') }}
@@ -1105,7 +1420,9 @@
             {% set photo_src = (photo_src|string).split('/')|last %}
           {% endif %}
           <figure class="image is-128x128 mx-auto mb-5 cv-photo-figure">
-            <img class="is-rounded cv-photo" src="{{ photo_src }}" alt="{{ cv.name }}" />
+            <button class="cv-photo-button" type="button" data-cv-photo-open aria-label="Show larger portrait of {{ cv.name }}">
+              <img class="is-rounded cv-photo" src="{{ photo_src }}" alt="{{ cv.name }}" />
+            </button>
           </figure>
         {% endif %}
 
@@ -1306,25 +1623,16 @@
                       {% elif entry.conference is defined and entry.conference %}
                         {% set publication_venue = entry.conference %}
                       {% endif %}
-                      <h3 class="title is-6 mb-1 cv-entry-primary">
-                        {{ render_markdown_inline(publication_title) }}
-                      </h3>
+                      <div class="cv-card-header">
+                        <h3 class="title is-6 mb-1 cv-entry-primary">
+                          {{ render_markdown_inline(publication_title) }}
+                        </h3>
+                        {{ render_card_date_badge(entry) }}
+                      </div>
                       {% if publication_authors %}
                         <p class="mb-2 cv-entry-secondary cv-entry-secondary-custom">{{ render_markdown_inline(publication_authors) }}</p>
                       {% endif %}
-                      {% if publication_venue %}
-                        <p class="mb-2">{{ render_markdown_inline(publication_venue) }}</p>
-                      {% endif %}
-                      {% if entry.date or entry.location %}
-                        <p class="cv-item-meta mb-2">
-                          {% if entry.date %}
-                            {{ entry.date }}
-                          {% endif %}
-                          {% if entry.location %}
-                            {% if entry.date %} · {% endif %}{{ entry.location }}
-                          {% endif %}
-                        </p>
-                      {% endif %}
+                      {{ render_card_meta(entry, '', publication_venue) }}
                       {% if entry.citation is defined and entry.citation %}
                         {{ render_markdown_block(entry.citation, 'mb-2') }}
                       {% endif %}
@@ -1363,12 +1671,12 @@
                       {% set entry_secondary = '' %}
                       {% set entry_title_style = 'default' %}
                       {% set entry_subtitle_style = 'default' %}
+                      {% set card_org = namespace(name='') %}
                       {% if has_org %}
-                        {% set organization_name = '' %}
                         {% if entry.company %}
-                          {% set organization_name = entry.company %}
+                          {% set card_org.name = entry.company %}
                         {% elif entry.institution %}
-                          {% set organization_name = entry.institution %}
+                          {% set card_org.name = entry.institution %}
                         {% endif %}
                         {% if entry.position %}
                           {% set entry_title = entry.position %}
@@ -1377,10 +1685,10 @@
                         {% elif degree_line %}
                           {% set entry_title = degree_line %}
                         {% else %}
-                          {% set entry_title = organization_name %}
+                          {% set entry_title = card_org.name %}
                         {% endif %}
-                        {% if organization_name and entry_title != organization_name %}
-                          {% set entry_subtitle = organization_name %}
+                        {% if card_org.name and entry_title != card_org.name %}
+                          {% set entry_subtitle = card_org.name %}
                         {% endif %}
                         {% if entry.degree and (entry_subtitle != entry.degree) %}
                           {% set entry_secondary = entry.degree %}
@@ -1439,16 +1747,24 @@
                           {% set entry_subtitle = entry.label %}
                         {% endif %}
                       {% endif %}
-                      <h3 class="title is-6 mb-1 cv-entry-primary">
-                        {% if entry_title_style == 'bold' %}
-                          <strong>{{ render_markdown_inline(entry_title) }}</strong>
-                        {% elif entry_title_style == 'italic' %}
-                          <em>{{ render_markdown_inline(entry_title) }}</em>
-                        {% else %}
-                          {{ render_markdown_inline(entry_title) }}
-                        {% endif %}
-                      </h3>
-                      {% if entry_subtitle %}
+                      <div class="cv-card-header">
+                        <h3 class="title is-6 mb-1 cv-entry-primary">
+                          {% if entry_title_style == 'bold' %}
+                            <strong>{{ render_markdown_inline(entry_title) }}</strong>
+                          {% elif entry_title_style == 'italic' %}
+                            <em>{{ render_markdown_inline(entry_title) }}</em>
+                          {% else %}
+                            {{ render_markdown_inline(entry_title) }}
+                          {% endif %}
+                        </h3>
+                        {{ render_card_date_badge(entry) }}
+                      </div>
+                      {% set card_meta_label = card_org.name %}
+                      {% if not card_meta_label and entry_subtitle and (entry.date or entry.start_date or entry.location) %}
+                        {% set card_meta_label = entry_subtitle %}
+                      {% endif %}
+                      {{ render_card_meta(entry, card_meta_label) }}
+                      {% if entry_subtitle and entry_subtitle != card_meta_label %}
                         <p class="mb-2 cv-entry-secondary{% if entry_subtitle_style != 'default' %} cv-entry-secondary-custom{% endif %}">
                           {% if entry_subtitle_style == 'bold' %}
                             <strong>{{ render_markdown_inline(entry_subtitle) }}</strong>
@@ -1466,18 +1782,6 @@
                       {% endif %}
                       {% if entry_secondary %}
                         <p class="mb-2"><strong>{{ render_markdown_inline(entry_secondary) }}</strong></p>
-                      {% endif %}
-                      {% if entry.date or entry.start_date or entry.location %}
-                        <p class="cv-item-meta mb-2">
-                          {% if entry.date %}
-                            {{ entry.date }}
-                          {% elif entry.start_date %}
-                            {{ entry.start_date }}{% if entry.end_date %} - {{ entry.end_date }}{% endif %}
-                          {% endif %}
-                          {% if entry.location %}
-                            {% if entry.date or entry.start_date %} · {% endif %}{{ entry.location }}
-                          {% endif %}
-                        </p>
                       {% endif %}
                       {% if entry.details %}
                         {{ render_markdown_block(entry.details, 'mb-2') }}
@@ -1534,6 +1838,18 @@
         {% endfor %}
       </main>
     </div>
+
+    {% if cv.photo %}
+      <dialog class="cv-photo-dialog" aria-label="Portrait of {{ cv.name }}">
+        <div class="cv-photo-expanded">
+          <button class="cv-photo-dialog-close" type="button" data-cv-photo-close aria-label="Close portrait">
+            <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+          </button>
+          <img src="{{ photo_src }}" alt="{{ cv.name }}" />
+        </div>
+      </dialog>
+    {% endif %}
+
     <script>
       (() => {
         const measureContainer = document.createElement('div');
@@ -1586,6 +1902,99 @@
         const navTargets = navLinks
           .map((link) => document.getElementById(decodeURIComponent(link.getAttribute('href').slice(1))))
           .filter(Boolean);
+        const mainScroll = document.querySelector('.cv-main');
+        const motionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+        const photoOpen = document.querySelector('[data-cv-photo-open]');
+        const photoDialog = document.querySelector('.cv-photo-dialog');
+        const photoExpanded = document.querySelector('.cv-photo-expanded');
+        const photoClose = document.querySelector('[data-cv-photo-close]');
+
+        const getScrollRoot = () => {
+          if (!mainScroll) {
+            return null;
+          }
+          return mainScroll.scrollHeight > mainScroll.clientHeight + 1 ? mainScroll : null;
+        };
+
+        if (photoOpen && photoDialog && typeof photoDialog.showModal === 'function') {
+          const updatePhotoShadow = (event) => {
+            const rect = photoOpen.getBoundingClientRect();
+            const x = (event.clientX - rect.left) / rect.width - 0.5;
+            const y = (event.clientY - rect.top) / rect.height - 0.5;
+            photoOpen.style.setProperty('--cv-photo-shadow-x', `${(-x * 0.88).toFixed(3)}rem`);
+            photoOpen.style.setProperty('--cv-photo-shadow-y', `${(1.05 - y * 0.72).toFixed(3)}rem`);
+          };
+
+          photoOpen.addEventListener('pointermove', updatePhotoShadow);
+          photoOpen.addEventListener('pointerleave', () => {
+            photoOpen.style.removeProperty('--cv-photo-shadow-x');
+            photoOpen.style.removeProperty('--cv-photo-shadow-y');
+          });
+
+          photoExpanded?.addEventListener('pointermove', (event) => {
+            const rect = photoExpanded.getBoundingClientRect();
+            const x = (event.clientX - rect.left) / rect.width - 0.5;
+            const y = (event.clientY - rect.top) / rect.height - 0.5;
+            photoExpanded.style.setProperty('--cv-lightbox-shadow-x', `${(-x * 1.05).toFixed(3)}rem`);
+            photoExpanded.style.setProperty('--cv-lightbox-shadow-y', `${(1.25 - y * 0.86).toFixed(3)}rem`);
+          });
+
+          photoExpanded?.addEventListener('pointerleave', () => {
+            photoExpanded.style.removeProperty('--cv-lightbox-shadow-x');
+            photoExpanded.style.removeProperty('--cv-lightbox-shadow-y');
+          });
+
+          photoOpen.addEventListener('click', () => {
+            const photoRect = photoOpen.getBoundingClientRect();
+            const viewportCenterX = window.innerWidth / 2;
+            const viewportCenterY = window.innerHeight / 2;
+            const photoCenterX = photoRect.left + photoRect.width / 2;
+            const photoCenterY = photoRect.top + photoRect.height / 2;
+            const estimatedDialogWidth = Math.min(window.innerWidth * 0.88, 544);
+            const openScale = Math.min(Math.max(photoRect.width / estimatedDialogWidth, 0.18), 0.42);
+
+            photoDialog.classList.remove('is-visible');
+            photoDialog.style.setProperty('--cv-photo-open-dx', `${(photoCenterX - viewportCenterX).toFixed(1)}px`);
+            photoDialog.style.setProperty('--cv-photo-open-dy', `${(photoCenterY - viewportCenterY).toFixed(1)}px`);
+            photoDialog.style.setProperty('--cv-photo-open-scale', openScale.toFixed(3));
+            photoDialog.showModal();
+            photoExpanded?.getBoundingClientRect();
+            requestAnimationFrame(() => {
+              requestAnimationFrame(() => photoDialog.classList.add('is-visible'));
+            });
+          });
+
+          photoClose?.addEventListener('click', () => {
+            photoDialog.close();
+          });
+
+          photoDialog.addEventListener('click', (event) => {
+            if (event.target === photoDialog) {
+              photoDialog.close();
+            }
+          });
+
+          photoDialog.addEventListener('close', () => {
+            photoDialog.classList.remove('is-visible');
+          });
+        }
+
+        if (navLinks.length && navTargets.length) {
+          for (const link of navLinks) {
+            link.addEventListener('click', (event) => {
+              const target = document.getElementById(decodeURIComponent(link.getAttribute('href').slice(1)));
+              if (!target) {
+                return;
+              }
+              event.preventDefault();
+              target.scrollIntoView({
+                behavior: motionQuery.matches ? 'auto' : 'smooth',
+                block: 'start',
+              });
+              history.pushState(null, '', link.getAttribute('href'));
+            });
+          }
+        }
 
         if (navLinks.length && navTargets.length && 'IntersectionObserver' in window) {
           const setActiveLink = (id) => {
@@ -1603,7 +2012,7 @@
                 setActiveLink(visible.target.id);
               }
             },
-            { rootMargin: '-18% 0px -62% 0px', threshold: [0, 0.18, 0.36, 0.6] },
+            { root: getScrollRoot(), rootMargin: '-18% 0px -62% 0px', threshold: [0, 0.18, 0.36, 0.6] },
           );
 
           for (const target of navTargets) {
