@@ -45,6 +45,14 @@ design:
     underline: false
     show_external_link_icon: true
 
+  html:
+    layout: split
+    content_width: 84rem
+    sidebar_width: 20rem
+    density: comfortable
+    type_scale: 1.0
+    motion: true
+
   header:
     alignment: center
     photo_width: 4cm

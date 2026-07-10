@@ -154,7 +154,6 @@ def ensure_google_fonts_cached(data_path: Path, design_path: Path | None = None)
 
     for family in families:
         cache_dir = _family_cache_dir(fonts_root, family)
-        manifest_file = _manifest_path(cache_dir)
 
         try:
             css = _download_css(family)
@@ -179,4 +178,3 @@ def ensure_google_fonts_cached(data_path: Path, design_path: Path | None = None)
                 f"[cv] Warning: could not download Google font '{family}'; PDF will fall back to other available fonts. ({exc})",
                 file=sys.stderr,
             )
-

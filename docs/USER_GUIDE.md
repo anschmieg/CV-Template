@@ -150,6 +150,23 @@ In palette mode:
 - `base` drives body and neutral text
 - explicit tokens still override generated ones
 
+### HTML-only layout controls
+
+For browser output, `anschmiegcv` adds a small `design.html` block:
+
+```yaml
+design:
+  html:
+    layout: split
+    content_width: 84rem
+    sidebar_width: 20rem
+    density: comfortable
+    type_scale: 1.0
+    motion: true
+```
+
+These controls affect only HTML proportions and interaction polish. PDF output continues to follow RenderCV page, typography, section, and entry settings.
+
 ### Entry templates
 
 The theme supports custom `main_column` and `date_and_location_column` templates for entry types like education and experience.

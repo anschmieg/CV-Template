@@ -41,6 +41,15 @@ design:
     underline: false
     show_external_link_icon: true
 
+  # HTML-only layout tuning. PDF output continues to use RenderCV page settings.
+  html:
+    layout: split # Options: split, centered
+    content_width: 84rem
+    sidebar_width: 20rem
+    density: comfortable # Options: compact, comfortable, spacious
+    type_scale: 1.0
+    motion: true
+
   # Header layout
   header:
     alignment: left # Options: left, center, right

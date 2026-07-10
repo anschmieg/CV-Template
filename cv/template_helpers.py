@@ -11,6 +11,7 @@ _DIRECTIVE_BLOCK_PATTERN = re.compile(r"\{([^{}]+)\}")
 _LEADING_DIRECTIVE_PATTERN = re.compile(r"^\s*\{([^{}]+)\}\s*")
 _SPAN_CLASS_PATTERN = re.compile(r"\[([^\]]*?)\]\{([^{}]+)\}")
 _LIST_LINE_PATTERN = re.compile(r"^\s*(?:[-+*]\s+|\d+\.\s+)")
+_UNRESOLVED_FIELD_MARKER_PATTERN = re.compile(r"^\s*!!!\s+[a-zA-Z_][a-zA-Z0-9_]*\s*$")
 _BODY_PLACEHOLDERS = {
     "SUMMARY",
     "HIGHLIGHTS",
@@ -288,6 +289,9 @@ def parse_styled_blocks(value: Any, design: Any) -> list[dict[str, Any]]:
     for raw_line in text.splitlines():
         stripped = raw_line.strip()
         if not stripped:
+            flush_list()
+            continue
+        if _UNRESOLVED_FIELD_MARKER_PATTERN.match(stripped):
             flush_list()
             continue
 

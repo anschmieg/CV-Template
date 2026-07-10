@@ -27,6 +27,46 @@ class PackageBoundaryTests(unittest.TestCase):
 
         self.assertEqual(theme.theme, "anschmiegcv")
 
+    def test_accent_seed_generates_missing_palette_tokens(self) -> None:
+        theme = anschmiegcv.AnschmiegcvTheme(
+            theme="anschmiegcv",
+            colors={"accent": "#007887", "base": "#243033"},
+        )
+
+        self.assertNotEqual(theme.colors.name.as_rgb(), "rgb(0, 120, 135)")
+        self.assertNotEqual(theme.colors.headline.as_rgb(), theme.colors.name.as_rgb())
+        self.assertEqual(theme.colors.body.as_rgb(), "rgb(36, 48, 51)")
+
+    def test_explicit_color_tokens_override_accent_palette(self) -> None:
+        theme = anschmiegcv.AnschmiegcvTheme(
+            theme="anschmiegcv",
+            colors={
+                "accent": "#007887",
+                "base": "#243033",
+                "section_titles": "#102030",
+            },
+        )
+
+        self.assertEqual(theme.colors.section_titles.as_rgb(), "rgb(16, 32, 48)")
+
+    def test_html_options_are_theme_owned(self) -> None:
+        theme = anschmiegcv.AnschmiegcvTheme(
+            theme="anschmiegcv",
+            html={
+                "layout": "centered",
+                "content_width": "68rem",
+                "sidebar_width": "18rem",
+                "density": "compact",
+                "type_scale": 1.04,
+                "motion": False,
+            },
+        )
+
+        self.assertEqual(theme.html.layout, "centered")
+        self.assertEqual(theme.html.content_width, "68rem")
+        self.assertEqual(theme.html.density, "compact")
+        self.assertFalse(theme.html.motion)
+
 
 if __name__ == "__main__":
     unittest.main()

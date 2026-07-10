@@ -221,8 +221,6 @@ def install() -> None:
     templater.get_jinja2_environment = get_jinja2_environment_with_cv_helpers
 
     if not getattr(templater.render_full_template, "_cv_last_entry_installed", False):
-        original_render_full_template = templater.render_full_template
-
         def render_full_template_with_last_entry(rendercv_model, file_type):
             extension = {
                 "typst": "typ",

@@ -35,6 +35,37 @@ def _mix(left: Color, right: Color, ratio: float) -> Color:
     )
 
 
+class HtmlOptions(BaseModelWithoutExtraKeys):
+    """Web-only presentation controls for the HTML template."""
+
+    layout: Literal["split", "centered"] = pydantic.Field(
+        default="split",
+        description="HTML layout style. PDF output continues to use RenderCV page settings.",
+    )
+    content_width: str = pydantic.Field(
+        default="84rem",
+        description="Maximum width of the full HTML layout.",
+    )
+    sidebar_width: str = pydantic.Field(
+        default="20rem",
+        description="Width of the left sidebar in the split HTML layout.",
+    )
+    density: Literal["compact", "comfortable", "spacious"] = pydantic.Field(
+        default="comfortable",
+        description="HTML spacing density.",
+    )
+    type_scale: float = pydantic.Field(
+        default=1.0,
+        ge=0.9,
+        le=1.18,
+        description="Small multiplier for HTML typography only.",
+    )
+    motion: bool = pydantic.Field(
+        default=True,
+        description="Enable subtle hover/focus transitions in HTML.",
+    )
+
+
 class Colors(ClassicColors):
     """Color extensions unique to the anschmiegcv theme."""
 
@@ -63,19 +94,21 @@ def _generated_palette(colors: Colors) -> dict[str, Color]:
 
     base = colors.base or colors.body
     white = Color("rgb(255, 255, 255)")
-    accent_text = _mix(accent, base, 0.28)
+    accent_display = _mix(accent, base, 0.34)
+    accent_text = _mix(accent, base, 0.58)
+    accent_link = _mix(accent, base, 0.46)
 
     return {
         "body": base,
-        "name": accent,
+        "name": accent_display,
         "headline": accent_text,
-        "section_titles": accent,
-        "links": accent_text,
+        "section_titles": accent_display,
+        "links": accent_link,
         "connections": accent_text,
-        "footer": _mix(base, white, 0.18),
-        "top_note": _mix(base, white, 0.12),
-        "timeline_dot": accent,
-        "timeline_line": accent,
+        "footer": _mix(base, white, 0.32),
+        "top_note": _mix(base, white, 0.24),
+        "timeline_dot": accent_display,
+        "timeline_line": accent_display,
     }
 
 
@@ -84,6 +117,7 @@ class AnschmiegcvTheme(ClassicTheme, BaseModelWithoutExtraKeys):
 
     theme: Literal["anschmiegcv"] = "anschmiegcv"
     colors: Colors = pydantic.Field(default_factory=Colors)
+    html: HtmlOptions = pydantic.Field(default_factory=HtmlOptions)
 
     @pydantic.model_validator(mode="after")
     def apply_generated_palette(self) -> "AnschmiegcvTheme":
@@ -102,10 +136,12 @@ class AnschmiegcvTheme(ClassicTheme, BaseModelWithoutExtraKeys):
 CvTheme = AnschmiegcvTheme
 
 Colors.model_rebuild(_types_namespace={"Color": Color})
+HtmlOptions.model_rebuild()
 AnschmiegcvTheme.model_rebuild(
     _types_namespace={
         "Color": Color,
         "Colors": Colors,
+        "HtmlOptions": HtmlOptions,
         "Literal": Literal,
     }
 )

@@ -272,6 +272,23 @@ In palette mode:
 - any explicitly provided RenderCV-native token still wins over the generated palette
 - PDF and HTML both consume the resolved `design.colors.*` values, so they stay in sync
 
+### HTML layout controls
+
+The HTML template also supports a small theme-owned `design.html` block for web-only proportions and motion. These settings do not change PDF page geometry:
+
+```yaml
+design:
+  html:
+    layout: split # split or centered
+    content_width: 84rem
+    sidebar_width: 20rem
+    density: comfortable # compact, comfortable, spacious
+    type_scale: 1.0
+    motion: true
+```
+
+Use RenderCV-native typography, spacing, and color tokens first. Reach for `design.html` only when the browser layout needs different proportions than the PDF.
+
 ## Screenshots
 
 ![Screenshot - Desktop 1](pics/screenshots/desktop-1.png)
