@@ -9,6 +9,9 @@ from rendercv.renderer.templater import templater
 
 from .template_helpers import (
     body_is_in_main_column,
+    card_content_score,
+    card_grid_span,
+    card_layout_request,
     count_header_lines,
     entry_date_template,
     entry_main_template,
@@ -19,6 +22,7 @@ from .template_helpers import (
     parse_styled_blocks,
     render_entry_field,
     remaining_blocks,
+    resolve_card_layout,
     section_shows_time_span,
     typst_text_options,
 )
@@ -203,6 +207,10 @@ def install() -> None:
     def get_jinja2_environment_with_cv_helpers(input_file_path=None):
         env = original(input_file_path)
         env.globals["cv_parse_styled_blocks"] = parse_styled_blocks
+        env.globals["cv_card_content_score"] = card_content_score
+        env.globals["cv_card_grid_span"] = card_grid_span
+        env.globals["cv_card_layout_request"] = card_layout_request
+        env.globals["cv_resolve_card_layout"] = resolve_card_layout
         env.globals["cv_count_header_lines"] = count_header_lines
         env.globals["cv_entry_main_template"] = entry_main_template
         env.globals["cv_entry_date_template"] = entry_date_template
@@ -251,6 +259,10 @@ def install() -> None:
                 code = f"{header}\n"
 
             for rendercv_section in rendercv_model.cv.rendercv_sections:
+                section_card_layout = resolve_card_layout(
+                    rendercv_section.entries,
+                    card_layout_request(rendercv_section.title),
+                )
                 section_beginning = templater.render_single_template(
                     file_type,
                     f"SectionBeginning.j2.{extension}",
@@ -258,6 +270,7 @@ def install() -> None:
                     section_title=rendercv_section.title,
                     snake_case_section_title=rendercv_section.snake_case_title,
                     entry_type=rendercv_section.entry_type,
+                    section_entries=rendercv_section.entries,
                 )
                 section_ending = templater.render_single_template(
                     file_type,
@@ -274,6 +287,7 @@ def install() -> None:
                         rendercv_model,
                         entry=entry,
                         is_last_entry=index == entry_count - 1,
+                        section_card_layout=section_card_layout,
                     )
                     entry_codes.append(entry_code)
                 entries_code = "\n\n".join(entry_codes)

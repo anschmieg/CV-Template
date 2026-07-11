@@ -21,27 +21,8 @@
 {% elif entry.position is defined and entry.position %}
 {% set organization_line = entry.position %}
 {% endif %}
-{% set card_score = namespace(value=0.0) %}
-{% if card_ns.title %}
-{% set card_score.value = card_score.value + (card_ns.title|length / 34) + 0.6 %}
-{% endif %}
-{% for line in card_ns.body %}
-{% if line.strip() %}
-{% set card_score.value = card_score.value + (line|length / 42) + 0.32 %}
-{% endif %}
-{% endfor %}
-{% if organization_line %}
-{% set card_score.value = card_score.value + (organization_line|length / 42) + 0.45 %}
-{% endif %}
-{% for line in entry.date_and_location_column.splitlines() %}
-{% if line.strip() %}
-{% set card_score.value = card_score.value + 0.28 %}
-{% endif %}
-{% endfor %}
-{% set card_colspan = 1 %}
-{% if card_score.value >= 9.8 %}
-{% set card_colspan = 2 %}
-{% endif %}
+{% set card_score = cv_card_content_score(entry) %}
+{% set card_span = cv_card_grid_span(card_score, section_card_layout) %}
 {% set card_meta = namespace(has_date=false) %}
 {% for line in entry.date_and_location_column.splitlines() %}
 {% if line.strip() %}
@@ -51,28 +32,35 @@
 #if anschmiegcv_section_view_mode == "cards" [
   #let anschmiegcv_card = [
 {% if card_ns.title or organization_line or card_meta.has_date %}
-    #align(center)[
+    #grid(
+      columns: (1fr, auto),
+      column-gutter: 6pt,
 {% if card_ns.title %}
-      {{ card_ns.title|indent(6) }}
+      [{{ card_ns.title|indent(6) }}],
+{% else %}
+      [],
 {% endif %}
-{% if organization_line %}
-      #linebreak()
-      #text(fill: {{ design.colors.footer.as_rgb() }}, weight: 600)[#connection-with-icon("building")[{{ organization_line|indent(6) }}]]
-{% endif %}
+      align(right)[
 {% for line in entry.date_and_location_column.splitlines() %}
 {% if line.strip() %}
-      #linebreak()
-      #text(fill: {{ design.colors.footer.as_rgb() }}, size: 0.85em)[{{ line|indent(6) }}]
+        #text(fill: {{ design.colors.footer.as_rgb() }}, size: 0.85em)[{{ line|indent(8) }}]
+{% if not loop.last %}#linebreak(){% endif %}
 {% endif %}
 {% endfor %}
-    ]
+      ],
+    )
+{% if organization_line %}
+    #v(0.28em)
+    #text(fill: {{ design.colors.connections.as_rgb() }}, weight: 500)[#connection-with-icon("building")[{{ organization_line|indent(4) }}]]
+{% endif %}
+    #v(0.42em)
 {% endif %}
 {% for line in card_ns.body %}
     {{ line|indent(4) }}
 
 {% endfor %}
   ]
-  #anschmiegcv_cards_push(anschmiegcv_card, colspan: {{ card_colspan }})
+  #anschmiegcv_cards_push(anschmiegcv_card, colspan: {{ card_span[0] }}, rowspan: {{ card_span[1] }})
 ] else [
   #regular-entry(
     [

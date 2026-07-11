@@ -90,17 +90,19 @@
   anschmiegcv_cards_state.update(_ => ())
 }
 
-#let anschmiegcv_cards_push(card, colspan: 1) = context {
-  anschmiegcv_cards_state.update(items => items + ((card, colspan),))
+#let anschmiegcv_cards_push(card, colspan: 1, rowspan: 1) = context {
+  anschmiegcv_cards_state.update(items => items + ((card, colspan, rowspan),))
 }
 
 #let anschmiegcv_cards_columns(layout) = {
   if layout == "four" {
     (1fr, 1fr, 1fr, 1fr)
-  } else if layout == "three_equal" {
+  } else if layout == "dynamic" {
+    (1fr, 1fr, 1fr, 1fr)
+  } else if layout == "three" {
     (1fr, 1fr, 1fr)
-  } else if layout == "three_weighted" {
-    (1fr, 1fr, 2fr)
+  } else if layout == "three-weighted" {
+    (1fr, 1fr, 1fr, 1fr)
   } else if layout == "two" {
     (1fr, 1fr)
   } else {
@@ -113,20 +115,27 @@
   if items.len() == 0 {
     none
   } else {
-    let item_count = items.len()
-    let cells = range(0, item_count).map(index => {
-      let (card, colspan) = items.at(index)
-      let span = if layout == "two" and calc.rem(item_count, 2) == 1 and index == item_count - 1 {
+    let arranged-items = if layout == "dynamic" {
+      items.filter(item => item.at(1) > 1) + items.filter(item => item.at(1) == 1)
+    } else {
+      items
+    }
+    let item-count = arranged-items.len()
+    let cells = range(0, item-count).map(index => {
+      let (card, colspan, rowspan) = arranged-items.at(index)
+      let span = if layout == "two" and calc.rem(item-count, 2) == 1 and index == item-count - 1 {
         2
-      } else if layout == "three_weighted" and colspan > 1 {
+      } else if (layout == "dynamic" or layout == "three-weighted") and colspan > 1 {
         2
       } else {
         1
       }
       grid.cell(
         colspan: span,
+        rowspan: if layout == "dynamic" { rowspan } else { 1 },
         inset: 8pt,
-        stroke: 0.7pt + {{ design.colors.connections.as_rgb() }},
+        fill: {{ design.colors.section_titles.as_rgb() }}.lighten(96%),
+        stroke: 0.45pt + {{ design.colors.connections.as_rgb() }}.lighten(68%),
       )[
         #card
       ]
@@ -160,44 +169,43 @@
   let space-between-columns = {{ design.entries.space_between_columns }}
   let entries-side-space = {{ design.entries.side_space }}
   let timeline-indent = entries-side-space + 0.12cm
-  let date-column-dx = -(date-column-width + space-between-columns)
   let entry-gap = {{ design.sections.space_between_regular_entries }}
 
-  // Render inside RenderCV's moderncv content area. The date column lives in the
-  // existing left gutter; the main column does not allocate another date width.
+  // Keep metadata in normal page flow so it can never escape the printable area.
   block(
     breakable: true,
     above: 0pt,
     below: 0pt,
     [
-      #place(
-        top + left,
-        dx: date-column-dx,
-        box(width: date-column-width, align({{ design.typography.date_and_location_column_alignment }})[
+      #grid(
+        columns: (date-column-width, 1fr),
+        column-gutter: space-between-columns,
+        align({{ design.typography.date_and_location_column_alignment }})[
           #date-and-location-column
-        ]),
-      )
-      #box(
-        inset: (left: timeline-indent),
-        stroke: (left: line-width + line-color),
-        [
-          #place(
-            top + left,
-            dx: -timeline-indent - dot-size / 2,
-            dy: (headline-cap-height - dot-size) / 2,
-            circle(radius: dot-size / 2, fill: dot-color, stroke: dot-outline-width + white),
-          )
-          #main-column
-          #if main-column-second-row != none {
-            linebreak()
-            main-column-second-row
-          }
-          #if continue-line {
-            v(entry-gap)
-          }
         ],
+        box(
+          width: 100%,
+          inset: (left: timeline-indent),
+          stroke: (left: line-width + line-color),
+          [
+            #place(
+              top + left,
+              dx: -timeline-indent - dot-size / 2,
+              dy: (headline-cap-height - dot-size) / 2,
+              circle(radius: dot-size / 2, fill: dot-color, stroke: dot-outline-width + white),
+            )
+            #main-column
+            #if main-column-second-row != none {
+              linebreak()
+              main-column-second-row
+            }
+            #if continue-line {
+              v(entry-gap)
+            }
+          ],
+        ),
       )
-      ]
+    ]
   )
 }
 

@@ -3,7 +3,7 @@ from __future__ import annotations
 import copy
 import html
 import re
-from collections.abc import Iterable
+from collections.abc import Iterable, Mapping, Sequence
 from typing import Any
 
 
@@ -51,11 +51,121 @@ _CLASS_STYLE_ALIASES = {
     "thin": {"weight": "100"},
 }
 
+_CARD_PRIMARY_FIELDS = (
+    "title",
+    "name",
+    "label",
+    "company",
+    "institution",
+    "position",
+    "area",
+    "degree",
+    "journal",
+    "publisher",
+    "venue",
+    "booktitle",
+    "conference",
+)
+_CARD_BODY_FIELDS = ("summary", "details", "citation")
+_CARD_META_FIELDS = ("date", "start_date", "end_date", "location", "url", "doi")
+
 
 def _normalize_text(value: Any) -> str:
     if value is None:
         return ""
     return str(value).replace("\r\n", "\n").strip("\n")
+
+
+def _entry_value(entry: Any, field_name: str) -> Any:
+    if isinstance(entry, Mapping):
+        return entry.get(field_name)
+    return getattr(entry, field_name, None)
+
+
+def card_content_score(entry: Any) -> float:
+    """Estimate a card's visual footprint from its semantic RenderCV fields."""
+    score = 0.0
+    for field_name in _CARD_PRIMARY_FIELDS:
+        value = _entry_value(entry, field_name)
+        if value:
+            score += len(str(value)) / 44 + 0.35
+
+    for field_name in _CARD_BODY_FIELDS:
+        value = _entry_value(entry, field_name)
+        if value:
+            score += len(str(value)) / 52 + 0.8
+
+    highlights = _entry_value(entry, "highlights")
+    if highlights:
+        items = highlights if isinstance(highlights, Sequence) and not isinstance(highlights, str) else (highlights,)
+        for highlight in items:
+            if highlight:
+                score += len(str(highlight)) / 58 + 0.85
+
+    authors = _entry_value(entry, "authors")
+    if authors:
+        items = authors if isinstance(authors, Sequence) and not isinstance(authors, str) else (authors,)
+        for author in items:
+            if author:
+                score += len(str(author)) / 64 + 0.55
+
+    for field_name in _CARD_META_FIELDS:
+        if _entry_value(entry, field_name):
+            score += 0.22
+
+    return round(score, 4)
+
+
+def resolve_card_layout(entries: Sequence[Any], requested_layout: str = "auto") -> str:
+    """Resolve a stable card grid while preserving explicit layout choices."""
+    if requested_layout != "auto":
+        return requested_layout
+
+    item_count = len(entries)
+    if item_count <= 1:
+        return "one"
+    if item_count == 2:
+        return "two"
+
+    scores = [card_content_score(entry) for entry in entries]
+    largest = max(scores, default=0.0)
+    smallest = min(scores, default=0.0)
+    average = sum(scores) / item_count
+
+    if item_count == 3:
+        return "three" if largest <= 3.8 else "two"
+    if item_count == 4 and largest <= 3.8:
+        return "four"
+    if item_count >= 4 and (item_count >= 5 or largest - smallest >= 3.5):
+        return "dynamic"
+    return "three" if average <= 4.6 else "two"
+
+
+def card_layout_request(section_title: str) -> str:
+    """Read an optional explicit card layout suffix from a section title."""
+    if ".cards-4" in section_title:
+        return "four"
+    if ".cards-3w" in section_title:
+        return "three-weighted"
+    if ".cards-3" in section_title:
+        return "three"
+    if ".cards-2" in section_title:
+        return "two"
+    if ".cards-1" in section_title:
+        return "one"
+    return "auto"
+
+
+def card_grid_span(score: float, layout: str) -> tuple[int, int]:
+    """Return column and row spans for content-aware card grids."""
+    if layout == "dynamic":
+        if score >= 7.5:
+            return (2, 2)
+        if score >= 5.0:
+            return (2, 1)
+    if layout == "three-weighted" and score >= 9.2:
+        return (2, 1)
+    return (1, 1)
 
 
 def _normalize_span_markup(value: str) -> str:

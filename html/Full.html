@@ -678,10 +678,12 @@
 
       .cv-cards-grid {
         --cv-card-grid-template: repeat(2, minmax(0, 1fr));
+        --cv-card-row-min: 7.5rem;
         display: grid;
         gap: var(--cv-card-gap);
         grid-template-columns: var(--cv-card-grid-template);
-        align-items: start;
+        grid-auto-flow: dense;
+        align-items: stretch;
       }
 
       .cv-cards-layout-one {
@@ -704,15 +706,29 @@
         --cv-card-grid-template: repeat(4, minmax(0, 1fr));
       }
 
-      .cv-cards-layout-three-weighted .cv-card {
-        grid-column: span var(--card-span, 1);
+      .cv-cards-layout-dynamic {
+        --cv-card-grid-template: repeat(4, minmax(0, 1fr));
+        grid-auto-rows: minmax(var(--cv-card-row-min), auto);
+      }
+
+      .cv-cards-layout-three-weighted .cv-card,
+      .cv-cards-layout-dynamic .cv-card {
+        grid-column: span var(--cv-card-column-span, 1);
+      }
+
+      .cv-cards-layout-dynamic .cv-card {
+        grid-row: span var(--cv-card-row-span, 1);
+      }
+
+      .cv-cards-layout-two .cv-card:last-child:nth-child(odd) {
+        grid-column: 1 / -1;
       }
 
       .cv-cards-grid .cv-card {
         display: flex;
         flex-direction: column;
         width: 100%;
-        height: auto;
+        height: 100%;
         margin: 0;
       }
 
@@ -1019,7 +1035,8 @@
           padding: 2rem 1.5rem !important;
         }
 
-        .cv-cards-layout-four {
+        .cv-cards-layout-four,
+        .cv-cards-layout-dynamic {
           --cv-card-grid-template: repeat(3, minmax(0, 1fr));
         }
 
@@ -1030,7 +1047,7 @@
 
       @media (max-width: 1024px) {
         .cv-cards-layout-four,
-        .cv-cards-layout-three,
+        .cv-cards-layout-dynamic,
         .cv-cards-layout-three-weighted {
           --cv-card-grid-template: repeat(2, minmax(0, 1fr));
         }
@@ -1174,12 +1191,16 @@
           min-width: 0;
         }
 
+      }
+
+      @media (max-width: 640px) {
         .cv-cards-grid {
           --cv-card-grid-template: minmax(0, 1fr);
         }
 
         .cv-cards-grid .cv-card {
           grid-column: span 1 !important;
+          grid-row: span 1 !important;
         }
       }
 
@@ -1482,7 +1503,7 @@
           {% endif %}
 
           {% set view_mode = 'auto' %}
-          {% set card_layout = 'two' %}
+          {% set card_layout = 'auto' %}
           {% if '.cards' in section_title_raw %}
             {% set view_mode = 'cards' %}
             {% if '.cards-4' in section_title_raw %}
@@ -1525,6 +1546,9 @@
               {% set view_mode = 'list' %}
             {% endif %}
           {% endif %}
+          {% if view_mode == 'cards' and has_entries %}
+            {% set card_layout = cv_resolve_card_layout(section_content, card_layout) %}
+          {% endif %}
 
           <section id="{{ section_id }}" class="mb-6"{% if view_mode == 'timeline' %} data-cv-view-mode="timeline"{% endif %}>
             <h2 class="title is-5 pb-2 mb-4 cv-section-title">{{ section_title }}</h2>
@@ -1561,45 +1585,9 @@
             {% elif view_mode == 'cards' and has_entries %}
               <div class="cv-cards-grid cv-cards-layout-{{ card_layout }}">
                 {% for entry in section_content %}
-                  {% set card_score = namespace(value=0.0) %}
-                  {% for field_name in ['title', 'name', 'label', 'company', 'institution', 'position', 'area', 'degree', 'journal', 'publisher', 'venue', 'booktitle', 'conference'] %}
-                    {% if entry[field_name] is defined and entry[field_name] %}
-                      {% set card_score.value = card_score.value + ((entry[field_name]|string|length) / 44) + 0.35 %}
-                    {% endif %}
-                  {% endfor %}
-                  {% for field_name in ['summary', 'details', 'citation'] %}
-                    {% if entry[field_name] is defined and entry[field_name] %}
-                      {% set card_score.value = card_score.value + ((entry[field_name]|string|length) / 52) + 0.8 %}
-                    {% endif %}
-                  {% endfor %}
-                  {% if entry.highlights is defined and entry.highlights %}
-                    {% for highlight in entry.highlights %}
-                      {% if highlight %}
-                        {% set card_score.value = card_score.value + ((highlight|string|length) / 58) + 0.85 %}
-                      {% endif %}
-                    {% endfor %}
-                  {% endif %}
-                  {% if entry.authors is defined and entry.authors %}
-                    {% if entry.authors is sequence and entry.authors is not string %}
-                      {% for author in entry.authors %}
-                        {% if author %}
-                          {% set card_score.value = card_score.value + ((author|string|length) / 64) + 0.55 %}
-                        {% endif %}
-                      {% endfor %}
-                    {% else %}
-                      {% set card_score.value = card_score.value + ((entry.authors|string|length) / 64) + 0.55 %}
-                    {% endif %}
-                  {% endif %}
-                  {% for field_name in ['date', 'start_date', 'end_date', 'location', 'url', 'doi'] %}
-                    {% if entry[field_name] is defined and entry[field_name] %}
-                      {% set card_score.value = card_score.value + 0.22 %}
-                    {% endif %}
-                  {% endfor %}
-                  {% set card_colspan = 1 %}
-                  {% if card_layout == 'three-weighted' and card_score.value >= 9.2 %}
-                    {% set card_colspan = 2 %}
-                  {% endif %}
-                  <article class="box cv-card" style="--card-span: {{ card_colspan }}; padding: var(--cv-card-padding);">
+                  {% set card_score = cv_card_content_score(entry) %}
+                  {% set card_span = cv_card_grid_span(card_score, card_layout) %}
+                  <article class="box cv-card" style="--cv-card-column-span: {{ card_span[0] }}; --cv-card-row-span: {{ card_span[1] }}; padding: var(--cv-card-padding);">
                     {% if is_publication_section %}
                       {% set publication_title = entry.title if entry.title is defined and entry.title else (entry.name if entry.name is defined and entry.name else '') %}
                       {% if entry.authors is defined and entry.authors %}
