@@ -191,7 +191,7 @@ For compatibility, `uv run anschmiegcv ...` still works too.
 
 - `cv` is the preferred helper command, while `anschmiegcv` is the RenderCV theme name and package.
 - PDF and HTML now share the same fallback semantics: when a template span does not specify a class like `.color-headline` or `.w600`, custom entry rendering falls back to RenderCV-native design tokens from `design.colors`, `design.typography`, `design.entries`, and `design.sections` rather than separate hardcoded theme values.
-- Section title directives like `{.cards}` and `{.timeline}` are handled by the theme templates.
+- Section title directives like `{.cards}` and `{.timeline}` are handled by the theme templates. Add `.pdf-list` alongside `.cards` when a section should remain card-based on the web but use RenderCV's regular list layout in PDF output.
 - Theme-specific colors `timeline_dot` and `timeline_line` are supported through `anschmiegcv`.
 - `design.colors` supports two modes:
   - explicit RenderCV-native element colors such as `body`, `headline`, `section_titles`, `timeline_dot`, and `timeline_line`

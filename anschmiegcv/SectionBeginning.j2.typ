@@ -26,6 +26,9 @@
 {% elif ".timeline" in raw_title %}
 {% set view_mode = "timeline" %}
 {% endif %}
+{% if ".pdf-list" in raw_title %}
+{% set view_mode = "list" %}
+{% endif %}
 {% if view_mode == "auto" and entry_type in ["NormalEntry", "OneLineEntry"] %}
 {% set view_mode = "cards" %}
 {% endif %}

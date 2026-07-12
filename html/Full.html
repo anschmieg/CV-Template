@@ -57,7 +57,10 @@
         --cv-name-size: calc({{ design.typography.font_size.name }} * 0.98 * var(--cv-html-type-scale));
         --cv-headline-size: calc({{ design.typography.font_size.headline }} * 1.08 * var(--cv-html-type-scale));
         --cv-connections-size: calc({{ design.typography.font_size.connections }} * 1.1 * var(--cv-html-type-scale));
-        --cv-section-title-size: calc({{ design.typography.font_size.section_titles }} * 1.24 * var(--cv-html-type-scale));
+        --cv-section-title-size: calc({{ design.typography.font_size.section_titles }} * 1.13 * var(--cv-html-type-scale));
+        --cv-section-title-line: {{ design.section_titles.line_thickness }};
+        --cv-section-title-space-above: {{ design.section_titles.space_above }};
+        --cv-section-title-space-below: {{ design.section_titles.space_below }};
         --cv-layout-width: {{ design.html.content_width }};
         --cv-sidebar-width: {{ design.html.sidebar_width }};
         --cv-sidebar-fluid-width: clamp(25%, var(--cv-sidebar-width), 35%);
@@ -77,17 +80,17 @@
         --cv-timeline-dot-outline-width: calc(var(--cv-timeline-dot-size) * 0.18);
         --cv-timeline-dot-border: calc(var(--cv-timeline-dot-outline-width) / 2);
         --cv-timeline-line-width: 1px;
-        --cv-card-border-radius: 7px;
+        --cv-card-border-radius: 2px;
         --cv-card-border-width: 1px;
         --cv-card-gap: calc(var(--cv-entry-gap) * 0.96);
         --cv-card-padding: {% if design.html.density == 'compact' %}0.9rem{% elif design.html.density == 'spacious' %}1.32rem{% else %}1.12rem{% endif %};
         --cv-background: color-mix(in srgb, var(--cv-body) 2%, white 98%);
-        --cv-surface: color-mix(in srgb, color-mix(in srgb, white 97.9%, var(--cv-section) 2.1%) 98.6%, var(--cv-body) 1.4%);
+        --cv-surface: color-mix(in srgb, white 94%, var(--cv-section) 6%);
         --cv-sidebar-surface: color-mix(in srgb, white 98.3%, var(--cv-section) 1.7%);
-        --cv-border-subtle: color-mix(in srgb, color-mix(in srgb, white 93%, var(--cv-section) 7%) 90%, var(--cv-body) 10%);
+        --cv-border-subtle: color-mix(in srgb, white 68%, var(--cv-connections) 32%);
         --cv-card-border-hover: color-mix(in srgb, color-mix(in srgb, white 74%, var(--cv-section) 26%) 93%, var(--cv-body) 7%);
         --cv-shadow-soft: 0 0.7rem 1.55rem color-mix(in srgb, var(--cv-body) 8%, transparent);
-        --cv-card-shadow: 0 0.45rem 1.15rem color-mix(in srgb, var(--cv-body) 7%, transparent);
+        --cv-card-shadow: none;
         --cv-entry-hover-surface: color-mix(in srgb, var(--cv-surface) 72%, var(--cv-border-subtle) 28%);
         --cv-entry-hover-outline: color-mix(in srgb, var(--cv-card-border-hover) 36%, transparent);
         --cv-transition: {% if design.html.motion %}270ms cubic-bezier(0.22, 1, 0.36, 1){% else %}0ms linear{% endif %};
@@ -95,7 +98,7 @@
         --cv-name-weight: {% if design.typography.bold.name %}700{% else %}400{% endif %};
         --cv-headline-weight: {% if design.typography.bold.headline %}700{% else %}400{% endif %};
         --cv-connections-weight: {% if design.typography.bold.connections %}700{% else %}400{% endif %};
-        --cv-section-title-weight: {% if design.typography.bold.section_titles %}720{% else %}500{% endif %};
+        --cv-section-title-weight: {% if design.typography.bold.section_titles %}700{% else %}500{% endif %};
       }
 
       html,
@@ -108,6 +111,10 @@
         font-size: var(--cv-body-size);
         line-height: var(--cv-entry-line-height);
         margin: 0;
+      }
+
+      .cv-print-pages {
+        display: none;
       }
 
       .cv-layout,
@@ -499,12 +506,39 @@
         font-weight: var(--cv-section-title-weight);
         font-variant-caps: {% if design.typography.small_caps.section_titles %}all-small-caps{% else %}normal{% endif %};
         line-height: 1.2;
-        border-bottom: 1px solid color-mix(in srgb, var(--cv-border-subtle) 78%, transparent);
-        letter-spacing: 0.075em;
-        text-transform: uppercase;
-        padding-bottom: 0.42rem !important;
+        border-bottom: {% if design.section_titles.type in ['with_full_line', 'centered_with_full_line'] %}var(--cv-section-title-line) solid color-mix(in srgb, var(--cv-section) 64%, transparent){% else %}0{% endif %};
+        letter-spacing: {% if design.typography.small_caps.section_titles %}0.04em{% else %}0{% endif %};
+        margin-top: var(--cv-section-title-space-above) !important;
+        margin-bottom: var(--cv-section-title-space-below) !important;
+        padding-bottom: {% if design.section_titles.type in ['with_full_line', 'centered_with_full_line'] %}0.32em{% else %}0{% endif %} !important;
+        text-align: {% if design.section_titles.type.startswith('centered_') %}center{% else %}left{% endif %};
+        text-transform: none;
         overflow-wrap: anywhere;
       }
+
+      {% if design.section_titles.type in ['with_partial_line', 'centered_with_partial_line', 'centered_with_centered_partial_line', 'moderncv'] %}
+      .title.cv-section-title {
+        align-items: center;
+        display: flex;
+        gap: 0.7em;
+      }
+
+      .title.cv-section-title::after {
+        background: color-mix(in srgb, var(--cv-section) 64%, transparent);
+        content: "";
+        flex: 1;
+        height: var(--cv-section-title-line);
+      }
+      {% endif %}
+
+      {% if design.section_titles.type in ['centered_with_partial_line', 'centered_with_centered_partial_line'] %}
+      .title.cv-section-title::before {
+        background: color-mix(in srgb, var(--cv-section) 64%, transparent);
+        content: "";
+        flex: 1;
+        height: var(--cv-section-title-line);
+      }
+      {% endif %}
 
       .cv-item-meta {
         color: var(--cv-muted);
@@ -650,7 +684,7 @@
 
       .cv-card {
         background-color: var(--cv-surface) !important;
-        border: var(--cv-card-border-width) solid color-mix(in srgb, var(--cv-border-subtle) 82%, var(--cv-body) 18%) !important;
+        border: var(--cv-card-border-width) solid color-mix(in srgb, var(--cv-border-subtle) 86%, var(--cv-section) 14%) !important;
         border-radius: var(--cv-card-border-radius);
         box-shadow: var(--cv-card-shadow);
         font-size: var(--cv-body-size);
@@ -1030,6 +1064,34 @@
         }
       }
 
+      @media (min-width: 1101px) {
+        .cv-sidebar {
+          text-align: {{ design.header.alignment }};
+        }
+
+        .cv-photo-figure {
+          {% if design.header.alignment == 'left' %}
+          margin-left: 0 !important;
+          margin-right: auto !important;
+          {% elif design.header.alignment == 'right' %}
+          margin-left: auto !important;
+          margin-right: 0 !important;
+          {% else %}
+          margin-left: auto !important;
+          margin-right: auto !important;
+          {% endif %}
+        }
+
+        .cv-name,
+        .cv-headline {
+          text-align: {{ design.header.alignment }} !important;
+        }
+
+        .cv-contact p {
+          justify-content: {% if design.header.alignment == 'left' %}flex-start{% elif design.header.alignment == 'right' %}flex-end{% else %}center{% endif %};
+        }
+      }
+
       @media (max-width: 1215px) {
         .cv-main {
           padding: 2rem 1.5rem !important;
@@ -1226,10 +1288,75 @@
         .cv-contact {
           font-size: 0.94rem;
         }
+
+        .cv-section-nav {
+          flex-wrap: nowrap;
+          justify-content: flex-start;
+          overflow-x: auto;
+          overscroll-behavior-x: contain;
+          padding-inline: 0.2rem;
+          scrollbar-width: none;
+        }
+
+        .cv-section-nav::-webkit-scrollbar {
+          display: none;
+        }
+
+        .cv-section-nav a {
+          align-items: center;
+          display: inline-flex;
+          min-height: 2.5rem;
+          white-space: nowrap;
+        }
+      }
+
+      @media print {
+        @page {
+          size: {{ design.page.size }};
+          margin: 0;
+        }
+
+        html,
+        body {
+          background: white !important;
+          height: auto !important;
+          margin: 0 !important;
+          overflow: visible !important;
+          padding: 0 !important;
+          print-color-adjust: exact;
+          -webkit-print-color-adjust: exact;
+        }
+
+        body.cv-print-ready > :not(.cv-print-pages) {
+          display: none !important;
+        }
+
+        body.cv-print-ready > .cv-print-pages {
+          display: block !important;
+          font-size: 0 !important;
+          line-height: 0 !important;
+        }
+
+        .cv-print-page {
+          break-inside: avoid;
+          display: block;
+          {% if design.page.size|lower == 'letter' %}
+          height: 11in !important;
+          width: 8.5in !important;
+          {% else %}
+          height: 297mm !important;
+          width: 210mm !important;
+          {% endif %}
+          margin: 0;
+          max-height: none !important;
+          max-width: none !important;
+          object-fit: fill;
+        }
       }
     </style>
   </head>
   <body>
+    <div class="cv-print-pages" aria-hidden="true"></div>
     {% macro render_markdown_block(value, class_name='') -%}
       {% if value is defined and value %}
         <div class="cv-markdown {{ class_name }}">
@@ -1843,6 +1970,56 @@
 
     <script>
       (() => {
+        const printPages = document.querySelector('.cv-print-pages');
+        if (printPages && /\.html$/i.test(window.location.pathname)) {
+          const pdfUrl = new URL(window.location.href);
+          pdfUrl.pathname = window.location.pathname.replace(/\.html$/i, '.pdf');
+          pdfUrl.search = '';
+          pdfUrl.hash = '';
+
+          const loadPrintPage = (pageNumber, version) =>
+            new Promise((resolve, reject) => {
+              const image = new Image();
+              image.alt = '';
+              image.className = 'cv-print-page';
+              image.decoding = 'sync';
+              image.loading = 'eager';
+              image.addEventListener('load', () => resolve(image), { once: true });
+              image.addEventListener('error', reject, { once: true });
+
+              const imageUrl = new URL(window.location.href);
+              imageUrl.pathname = window.location.pathname.replace(/\.html$/i, `_${pageNumber}.png`);
+              imageUrl.search = '';
+              imageUrl.hash = '';
+              imageUrl.searchParams.set('cv-print-version', version);
+              image.src = imageUrl.href;
+            });
+
+          fetch(pdfUrl.href, { cache: 'no-store' })
+            .then(async (response) => {
+              if (!response.ok) {
+                throw new Error(`Unable to load print PDF: ${response.status}`);
+              }
+              const pdfText = new TextDecoder('latin1').decode(await response.arrayBuffer());
+              const pageTree = pdfText.match(/\/Type\s*\/Pages\s*\/Count\s+(\d+)/);
+              const pageCount = pageTree ? Number.parseInt(pageTree[1], 10) : 0;
+              if (!Number.isInteger(pageCount) || pageCount < 1 || pageCount > 64) {
+                throw new Error('Unable to determine PDF page count');
+              }
+
+              const version = response.headers.get('last-modified') || String(pdfText.length);
+              const pages = await Promise.all(
+                Array.from({ length: pageCount }, (_, index) => loadPrintPage(index + 1, version)),
+              );
+              printPages.replaceChildren(...pages);
+              document.body.classList.add('cv-print-ready');
+            })
+            .catch(() => {
+              printPages.replaceChildren();
+              document.body.classList.remove('cv-print-ready');
+            });
+        }
+
         const measureContainer = document.createElement('div');
         measureContainer.style.position = 'absolute';
         measureContainer.style.visibility = 'hidden';

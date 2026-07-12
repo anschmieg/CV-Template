@@ -85,8 +85,8 @@
 #let anschmiegcv_section_view_mode = "auto"
 #let anschmiegcv_card_layout = "one"
 #let anschmiegcv_cards_state = state("anschmiegcv.cards.state", ())
-#let anschmiegcv-card-inset = {{ design.typography.font_size.body }} * 0.82
-#let anschmiegcv-card-gutter = {{ design.typography.font_size.body }} * 0.68
+#let anschmiegcv-card-inset = {{ design.typography.font_size.body }}
+#let anschmiegcv-card-gutter = {{ design.typography.font_size.body }} * 0.8
 
 #let anschmiegcv_cards_clear() = context {
   anschmiegcv_cards_state.update(_ => ())
@@ -136,8 +136,8 @@
         colspan: span,
         rowspan: if layout == "dynamic" { rowspan } else { 1 },
         inset: anschmiegcv-card-inset,
-        fill: {{ design.colors.section_titles.as_rgb() }}.lighten(96%),
-        stroke: ({{ design.section_titles.line_thickness }} + 0.28pt) + {{ design.colors.connections.as_rgb() }}.lighten(68%),
+        fill: {{ design.colors.section_titles.as_rgb() }}.lighten(94%),
+        stroke: ({{ design.typography.font_size.body }} * 0.04) + {{ design.colors.connections.as_rgb() }}.lighten(68%),
       )[
         #set par(justify: false)
         #set text(hyphenate: false)
@@ -164,7 +164,8 @@
 ) = context {
   let body-font-size = {{ design.typography.font_size.body }}
   let body-cap-height = measure(text(size: body-font-size)[H]).height
-  let headline-cap-height = measure(text(size: {{ design.typography.font_size.headline }})[H]).height
+  let metadata-font-size = body-font-size * 0.9
+  let metadata-cap-height = measure(text(size: metadata-font-size)[H]).height
   let dot-size = body-cap-height / 0.90  // Dot size based on body cap-height
   let line-width = body-font-size * 0.055
   let dot-outline-width = dot-size * 0.16
@@ -185,7 +186,9 @@
         columns: (date-column-width, 1fr),
         column-gutter: space-between-columns,
         align({{ design.typography.date_and_location_column_alignment }})[
-          #date-and-location-column
+          #pad(top: (body-cap-height - metadata-cap-height) / 2)[
+            #date-and-location-column
+          ]
         ],
         box(
           width: 100%,
@@ -195,7 +198,7 @@
             #place(
               top + left,
               dx: -timeline-indent - dot-size / 2,
-              dy: (headline-cap-height - dot-size) / 2,
+              dy: (body-cap-height - dot-size) / 2,
               circle(radius: dot-size / 2, fill: dot-color, stroke: dot-outline-width + white),
             )
             #block[

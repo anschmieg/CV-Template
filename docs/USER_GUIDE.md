@@ -211,8 +211,9 @@ Section titles can include lightweight directives:
 - `{.timeline}` for timeline sections
 - `{.cards}` for card layouts
 - `{.cards-1}`, `{.cards-2}`, `{.cards-3}`, `{.cards-3w}`, `{.cards-4}` for specific card grids
+- `{.cards .pdf-list}` for web cards with a more compact regular-entry layout in PDF output
 
-These are interpreted by the `anschmiegcv` theme templates for both HTML and PDF.
+These are interpreted by the `anschmiegcv` theme templates. Shared directives apply to both outputs; format-specific modifiers such as `.pdf-list` only alter the named output.
 
 ## Notes on alignment and consistency
 

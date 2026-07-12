@@ -10,7 +10,7 @@
 {% for block in date_blocks %}
 {% if block.type == "line" %}
     {% for segment in block.segments %}
-    {% set text_options = cv_typst_text_options(segment.style, default_color=design.colors.footer.as_rgb(), default_size="0.85em") %}
+    {% set text_options = cv_typst_text_options(segment.style, default_color=design.colors.footer.as_rgb(), default_weight=450, default_size="0.9em") %}
     #text({{ text_options }})[{{ segment.text|indent(6) }}]
     {% endfor %}
 {% else %}
