@@ -9,7 +9,7 @@ from typing import Any
 
 _DIRECTIVE_BLOCK_PATTERN = re.compile(r"\{([^{}]+)\}")
 _LEADING_DIRECTIVE_PATTERN = re.compile(r"^\s*\{([^{}]+)\}\s*")
-_SPAN_CLASS_PATTERN = re.compile(r"\[([^\]]*?)\]\{([^{}]+)\}")
+_SPAN_CLASS_PATTERN = re.compile(r"\[((?:[^\[\]]|\[[^\[\]]*\])*)\]\{([^{}]+)\}")
 _LIST_LINE_PATTERN = re.compile(r"^\s*(?:[-+*]\s+|\d+\.\s+)")
 _UNRESOLVED_FIELD_MARKER_PATTERN = re.compile(r"^\s*!!!\s+[a-zA-Z_][a-zA-Z0-9_]*\s*$")
 _BODY_PLACEHOLDERS = {
@@ -21,6 +21,15 @@ _BODY_PLACEHOLDERS = {
     "DOI",
     "JOURNAL",
 }
+_TIMELINE_ENTRY_TYPES = {"education_entry", "experience_entry"}
+
+
+def entry_supports_timeline(entry: Any) -> bool:
+    """Return whether an entry uses a RenderCV timeline-compatible type."""
+    if isinstance(entry, str):
+        return False
+
+    return getattr(entry, "entry_type_in_snake_case", "") in _TIMELINE_ENTRY_TYPES
 _WEIGHT_ALIASES = {
     "thin": "100",
     "extra_light": "200",

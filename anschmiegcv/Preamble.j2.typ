@@ -85,6 +85,8 @@
 #let anschmiegcv_section_view_mode = "auto"
 #let anschmiegcv_card_layout = "one"
 #let anschmiegcv_cards_state = state("anschmiegcv.cards.state", ())
+#let anschmiegcv-card-inset = {{ design.typography.font_size.body }} * 0.82
+#let anschmiegcv-card-gutter = {{ design.typography.font_size.body }} * 0.68
 
 #let anschmiegcv_cards_clear() = context {
   anschmiegcv_cards_state.update(_ => ())
@@ -133,17 +135,19 @@
       grid.cell(
         colspan: span,
         rowspan: if layout == "dynamic" { rowspan } else { 1 },
-        inset: 8pt,
+        inset: anschmiegcv-card-inset,
         fill: {{ design.colors.section_titles.as_rgb() }}.lighten(96%),
-        stroke: 0.45pt + {{ design.colors.connections.as_rgb() }}.lighten(68%),
+        stroke: ({{ design.section_titles.line_thickness }} + 0.28pt) + {{ design.colors.connections.as_rgb() }}.lighten(68%),
       )[
+        #set par(justify: false)
+        #set text(hyphenate: false)
         #card
       ]
     })
     grid(
       columns: anschmiegcv_cards_columns(layout),
-      column-gutter: 0.24cm,
-      row-gutter: 0.24cm,
+      column-gutter: anschmiegcv-card-gutter,
+      row-gutter: anschmiegcv-card-gutter,
       ..cells,
     )
   }
@@ -162,18 +166,18 @@
   let body-cap-height = measure(text(size: body-font-size)[H]).height
   let headline-cap-height = measure(text(size: {{ design.typography.font_size.headline }})[H]).height
   let dot-size = body-cap-height / 0.90  // Dot size based on body cap-height
-  let line-width = body-font-size * 0.095
+  let line-width = body-font-size * 0.055
   let dot-outline-width = dot-size * 0.16
   let dot-outer-size = dot-size + dot-outline-width
   let date-column-width = {{ design.entries.date_and_location_width }}
   let space-between-columns = {{ design.entries.space_between_columns }}
   let entries-side-space = {{ design.entries.side_space }}
-  let timeline-indent = entries-side-space + 0.12cm
+  let timeline-indent = entries-side-space + dot-size / 2 + line-width
   let entry-gap = {{ design.sections.space_between_regular_entries }}
 
   // Keep metadata in normal page flow so it can never escape the printable area.
   block(
-    breakable: true,
+    breakable: {{ design.entries.allow_page_break|lower }},
     above: 0pt,
     below: 0pt,
     [
@@ -194,7 +198,11 @@
               dy: (headline-cap-height - dot-size) / 2,
               circle(radius: dot-size / 2, fill: dot-color, stroke: dot-outline-width + white),
             )
-            #main-column
+            #block[
+              #set par(justify: false)
+              #set text(hyphenate: false)
+              #main-column
+            ]
             #if main-column-second-row != none {
               linebreak()
               main-column-second-row

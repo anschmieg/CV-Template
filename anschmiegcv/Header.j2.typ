@@ -29,13 +29,41 @@
 {% endif %}
 #connections(
 {% if cv.location %}
+{% if design.header.connections.show_icons %}
   [#connection-with-icon("location-dot")[{{ cv.location }}]],
+{% else %}
+  [{{ cv.location }}],
+{% endif %}
 {% endif %}
 {% if cv.email %}
+{% if design.header.connections.hyperlink %}
+{% if design.header.connections.show_icons %}
   [#link("mailto:{{ cv.email }}", icon: false, if-underline: false, if-color: false)[#connection-with-icon("envelope")[#text("{{ cv.email }}")]]],
+{% else %}
+  [#link("mailto:{{ cv.email }}", icon: false, if-underline: false, if-color: false)[#text("{{ cv.email }}")]],
+{% endif %}
+{% else %}
+{% if design.header.connections.show_icons %}
+  [#connection-with-icon("envelope")[#text("{{ cv.email }}")]],
+{% else %}
+  [#text("{{ cv.email }}")],
+{% endif %}
+{% endif %}
 {% endif %}
 {% if cv.phone %}
+{% if design.header.connections.hyperlink %}
+{% if design.header.connections.show_icons %}
   [#link("tel:{{ cv.phone|replace('tel:', '') }}", icon: false, if-underline: false, if-color: false)[#connection-with-icon("phone")[{{ cv.phone|replace('tel:', '') }}]]],
+{% else %}
+  [#link("tel:{{ cv.phone|replace('tel:', '') }}", icon: false, if-underline: false, if-color: false)[{{ cv.phone|replace('tel:', '') }}]],
+{% endif %}
+{% else %}
+{% if design.header.connections.show_icons %}
+  [#connection-with-icon("phone")[{{ cv.phone|replace('tel:', '') }}]],
+{% else %}
+  [{{ cv.phone|replace('tel:', '') }}],
+{% endif %}
+{% endif %}
 {% endif %}
 {% if cv.social_networks %}
 {% for social in cv.social_networks %}
@@ -58,8 +86,27 @@
   {% elif network_lower == "orcid" %}
     {% set icon_name = "orcid" %}
   {% endif %}
-  {% set url_base = "https://" + network_lower + ".com/" %}
-  [#link("{{ url_base }}{{ social.username }}", icon: false, if-underline: false, if-color: false)[#connection-with-icon("{{ icon_name }}")[{{ social.username }}]]],
+  {% if network_lower == "linkedin" %}
+    {% set social_url = "https://linkedin.com/in/" + social.username %}
+  {% elif network_lower == "github" %}
+    {% set social_url = "https://github.com/" + social.username %}
+  {% else %}
+    {% set social_url = "https://" + network_lower + ".com/" + social.username %}
+{% endif %}
+  {% set social_label = social_url|clean_url if design.header.connections.display_urls_instead_of_usernames else social.username %}
+{% if design.header.connections.hyperlink %}
+{% if design.header.connections.show_icons %}
+  [#link("{{ social_url }}", icon: false, if-underline: false, if-color: false)[#connection-with-icon("{{ icon_name }}")[{{ social_label }}]]],
+{% else %}
+  [#link("{{ social_url }}", icon: false, if-underline: false, if-color: false)[{{ social_label }}]],
+{% endif %}
+{% else %}
+{% if design.header.connections.show_icons %}
+  [#connection-with-icon("{{ icon_name }}")[{{ social_label }}]],
+{% else %}
+  [{{ social_label }}],
+{% endif %}
+{% endif %}
 {% endfor %}
 {% endif %}
 )

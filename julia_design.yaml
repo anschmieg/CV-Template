@@ -91,6 +91,7 @@ design:
       degree_column: null
     experience_entry:
       main_column: |
-        **POSITION, COMPANY**
+        {weight:600}POSITION
+        {color:connections}{weight:500}COMPANY
         HIGHLIGHTS
       date_and_location_column: "DATE\nLOCATION"

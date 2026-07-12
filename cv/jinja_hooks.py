@@ -15,6 +15,7 @@ from .template_helpers import (
     count_header_lines,
     entry_date_template,
     entry_main_template,
+    entry_supports_timeline,
     html_style,
     html_block_markdown,
     html_inline_markdown,
@@ -213,6 +214,7 @@ def install() -> None:
         env.globals["cv_resolve_card_layout"] = resolve_card_layout
         env.globals["cv_count_header_lines"] = count_header_lines
         env.globals["cv_entry_main_template"] = entry_main_template
+        env.globals["cv_entry_supports_timeline"] = entry_supports_timeline
         env.globals["cv_entry_date_template"] = entry_date_template
         env.globals["cv_parse_entry_blocks"] = parse_entry_blocks
         env.globals["cv_render_entry_field"] = render_entry_field

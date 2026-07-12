@@ -1083,10 +1083,10 @@
           text-align: center;
         }
 
-        .cv-main {
+        .cv-layout > .cv-main {
           padding: clamp(1.25rem, 3vw, 2.25rem) 1rem 1.55rem !important;
-          width: 100%;
-          max-width: min(100%, 58rem);
+          width: 100% !important;
+          max-width: min(100vw, 58rem);
           height: auto;
           overflow-y: visible;
           margin: 0 auto;
@@ -1528,17 +1528,20 @@
             {% set first_entry = section_content[0] %}
             {% set has_text_items = first_entry is string %}
             {% set has_entries = not has_text_items %}
-            {% set looks_timeline = (first_entry.start_date is defined or first_entry.end_date is defined) and (first_entry.company is defined or first_entry.institution is defined or first_entry.position is defined or first_entry.degree is defined) %}
+            {% set supports_timeline = cv_entry_supports_timeline(first_entry) %}
             {% set is_publication_section = has_entries and (first_entry.doi is defined or first_entry.authors is defined or first_entry.journal is defined or first_entry.url is defined and first_entry.title is defined) %}
           {% else %}
             {% set has_text_items = false %}
             {% set has_entries = false %}
-            {% set looks_timeline = false %}
+            {% set supports_timeline = false %}
             {% set is_publication_section = false %}
           {% endif %}
 
+          {% if view_mode == 'timeline' and not supports_timeline %}
+            {% set view_mode = 'cards' if has_entries else 'list' %}
+          {% endif %}
           {% if view_mode == 'auto' %}
-            {% if looks_timeline %}
+            {% if supports_timeline %}
               {% set view_mode = 'timeline' %}
             {% elif has_entries %}
               {% set view_mode = 'cards' %}

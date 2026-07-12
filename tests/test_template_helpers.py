@@ -1,8 +1,10 @@
 from __future__ import annotations
 
 import unittest
+from types import SimpleNamespace
 
 from cv.template_helpers import (
+    entry_supports_timeline,
     card_content_score,
     card_grid_span,
     card_layout_request,
@@ -12,6 +14,13 @@ from cv.template_helpers import (
 
 
 class TemplateHelperTests(unittest.TestCase):
+    def test_only_rendercv_experience_and_education_entries_support_timeline(self) -> None:
+        self.assertTrue(entry_supports_timeline(SimpleNamespace(entry_type_in_snake_case="experience_entry")))
+        self.assertTrue(entry_supports_timeline(SimpleNamespace(entry_type_in_snake_case="education_entry")))
+        self.assertFalse(entry_supports_timeline(SimpleNamespace(entry_type_in_snake_case="normal_entry")))
+        self.assertFalse(entry_supports_timeline(SimpleNamespace(entry_type_in_snake_case="publication_entry")))
+        self.assertFalse(entry_supports_timeline("plain text"))
+
     def test_parse_styled_blocks_ignores_unresolved_field_markers(self) -> None:
         blocks = parse_styled_blocks(
             "**Certificate**\n!!! summary\n*voraussichtlicher Abschluss*",
@@ -19,6 +28,21 @@ class TemplateHelperTests(unittest.TestCase):
         )
 
         self.assertEqual([block["text"] for block in blocks], ["**Certificate**", "*voraussichtlicher Abschluss*"])
+
+    def test_styled_span_accepts_nested_rendered_emphasis(self) -> None:
+        blocks = parse_styled_blocks(
+            "[#emph[SCHULWÄRTS!] Stipendiatin, ]{.semibold}[Goethe-Institut]{.medium}",
+            design=None,
+        )
+
+        self.assertEqual(
+            [segment["text"] for segment in blocks[0]["segments"]],
+            ["#emph[SCHULWÄRTS!] Stipendiatin, ", "Goethe-Institut"],
+        )
+        self.assertEqual(
+            [segment["style"]["weight"] for segment in blocks[0]["segments"]],
+            ["600", "500"],
+        )
 
     def test_card_layout_keeps_three_short_entries_on_one_row(self) -> None:
         entries = [
