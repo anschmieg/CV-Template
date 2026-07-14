@@ -28,7 +28,7 @@ layout should look like this:
 ```text
 my-cv/
   my_data.yaml
-  my_design.yaml
+  design.yaml
   profile_picture.jpg
   anschmiegcv/
   rendercv_output/
@@ -48,7 +48,7 @@ git init
 git submodule add https://github.com/anschmieg/CV-Template.git .theme/CV-Template
 ln -s .theme/CV-Template/anschmiegcv anschmiegcv
 cp .theme/CV-Template/example_data.yaml my_data.yaml
-cp .theme/CV-Template/example_design.yaml my_design.yaml
+cp .theme/CV-Template/example_design.yaml design.yaml
 cp .theme/CV-Template/profile_picture.jpg profile_picture.jpg
 
 cat > .gitignore <<'EOF'
@@ -57,7 +57,7 @@ fonts/
 *.rendercv.yaml
 EOF
 
-git add .gitignore .gitmodules .theme/CV-Template anschmiegcv my_data.yaml my_design.yaml profile_picture.jpg
+git add .gitignore .gitmodules .theme/CV-Template anschmiegcv my_data.yaml design.yaml profile_picture.jpg
 git commit -m "chore: initialize CV"
 ```
 
@@ -100,7 +100,7 @@ git init
 
 ln -s /Users/adrian/Projects/CV-Template/anschmiegcv anschmiegcv
 cp /Users/adrian/Projects/CV-Template/example_data.yaml my_data.yaml
-cp /Users/adrian/Projects/CV-Template/example_design.yaml my_design.yaml
+cp /Users/adrian/Projects/CV-Template/example_design.yaml design.yaml
 cp /Users/adrian/Projects/CV-Template/profile_picture.jpg profile_picture.jpg
 ```
 
@@ -117,7 +117,8 @@ its own.
 ### Recommended naming
 
 - `*_data.yaml`: main RenderCV input containing `cv`, plus optional `settings` and `locale`
-- `*_design.yaml`: companion file containing only the top-level `design:` block
+- `design.yaml`: preferred shared companion containing only the top-level `design:` block; one file can serve every `*_data.yaml` in the directory
+- `*_design.yaml`: optional stem-specific companion for compatibility or per-input overrides
 
 This avoids colliding with RenderCV’s common merged-file naming like `Name_CV.yaml`.
 
@@ -127,7 +128,7 @@ This avoids colliding with RenderCV’s common merged-file naming like `Name_CV.
 uv run cv example_data.yaml
 ```
 
-If `example_design.yaml` exists next to it, the wrapper calls RenderCV with the native `--design` overlay.
+Companion lookup is deterministic: the wrapper first uses a matching `<stem>_design.yaml`, then `design.yaml`, then `shared_design.yaml` (with `.yml` variants accepted). This lets inputs such as `en_data.yaml` and `de_data.yaml` share one `design.yaml` while retaining stem-specific compatibility. The selected companion is passed to RenderCV through its native `--design` option.
 
 Before rendering, the wrapper also runs in a default “convenient font mode”:
 
@@ -197,6 +198,7 @@ For compatibility, `uv run anschmiegcv ...` still works too.
   - explicit RenderCV-native element colors such as `body`, `headline`, `section_titles`, `timeline_dot`, and `timeline_line`
   - optional palette generation via `accent` and optional `base`, which fills any missing RenderCV-native color tokens while still letting explicit per-element colors override the generated values
 - Entry templates now drive both PDF and HTML consistently.
+- Put `POSITION` and `COMPANY` on separate template lines when the organization should appear below the role in both PDF and HTML.
 - The wrapper defaults to a convenient font workflow:
   - web output loads the configured `design.typography.font_family.*` values from Google Fonts
   - PDF/PNG output uses the same family names, but caches the corresponding `.ttf` files into a local `fonts/` directory for Typst instead of relying on system Font Book resolution

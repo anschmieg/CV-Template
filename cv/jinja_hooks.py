@@ -21,6 +21,7 @@ from .template_helpers import (
     html_inline_markdown,
     parse_entry_blocks,
     parse_styled_blocks,
+    repair_unclosed_styled_spans,
     render_entry_field,
     remaining_blocks,
     resolve_card_layout,
@@ -186,6 +187,9 @@ def _install_selective_keyword_bolding() -> None:
                     show_time_span=show_time_span,
                     current_date=rendercv_model.settings._resolved_current_date,
                 )
+                for field_name, value in entry.model_dump().items():
+                    if isinstance(value, str):
+                        setattr(entry, field_name, repair_unclosed_styled_spans(value))
                 section.entries[i] = model_processor.process_fields(entry, string_processors)
 
         return rendercv_model

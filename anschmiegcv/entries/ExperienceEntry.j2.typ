@@ -5,6 +5,7 @@
 {% if header_count == 0 and main_blocks %}
 {% set header_count = 1 %}
 {% endif %}
+{% set has_body_blocks = main_blocks|length > header_count %}
 #timeline-entry(
   [
 {% for block in date_blocks %}
@@ -39,10 +40,14 @@
 {% set primary_block = main_blocks[0] %}
 {% if primary_block.type == "line" %}
     {% for segment in primary_block.segments %}
+    {% if segment.text|trim %}
     {% set text_options = cv_typst_text_options(segment.style, default_color=design.colors.body.as_rgb(), default_weight=600) %}
     #text({{ text_options }})[
       {{ segment.text|indent(6) }}
     ]
+    {% else %}
+    #h(0.35em)
+    {% endif %}
     {% endfor %}
 {% else %}
     {% set block_options = cv_typst_text_options(primary_block.style) %}
@@ -58,14 +63,37 @@
   main-column-second-row: [
 {% for block in main_blocks[1:] %}
 {% set is_header_line = loop.index0 < (header_count - 1) %}
+    #block[
 {% if block.type == "line" %}
 {% if is_header_line %}
+{% if loop.index0 == 0 %}
+    #pad(
+      top: {{ design.typography.line_spacing }} * 0.8,
+      bottom: {{ design.typography.line_spacing }} * {% if has_body_blocks %}1.3{% else %}0.8{% endif %},
+    )[
+      #grid(
+        columns: (0.9em, 1fr),
+        column-gutter: 0.05cm,
+        align: (center + horizon, left + horizon),
+        [#text(fill: {{ design.colors.connections.as_rgb() }})[#fa-icon("building", size: 0.8em)]],
+        [
     {% for segment in block.segments %}
-    {% set text_options = cv_typst_text_options(segment.style, default_color=(design.colors.headline.as_rgb() if is_header_line else none), default_weight=(500 if is_header_line else 400)) %}
+    {% set text_options = cv_typst_text_options(segment.style, default_color=design.colors.connections.as_rgb(), default_weight=500) %}
     #text({{ text_options }})[
       {{ segment.text|indent(6) }}
     ]
     {% endfor %}
+        ],
+      )
+    ]
+{% else %}
+    {% for segment in block.segments %}
+    {% set text_options = cv_typst_text_options(segment.style, default_color=design.colors.headline.as_rgb(), default_weight=500) %}
+    #text({{ text_options }})[
+      {{ segment.text|indent(6) }}
+    ]
+    {% endfor %}
+{% endif %}
 {% else %}
     #pad(left: 0cm)[
     {% for segment in block.segments %}
@@ -77,6 +105,7 @@
     ]
 {% endif %}
 {% else %}
+    #text(size: 0.92em)[
     {% set block_options = cv_typst_text_options(block.style) %}
     {% if block_options %}
     {% if is_header_line %}
@@ -91,9 +120,11 @@
     #pad(left: 0cm)[{{ block.text|indent(6) }}]
     {% endif %}
     {% endif %}
+    ]
 {% endif %}
-{% if not loop.last %}
-    #linebreak()
+    ]
+{% if not loop.last and not is_header_line %}
+    #v({{ design.typography.line_spacing }} * 0.15)
 {% endif %}
 {% endfor %}
   ],

@@ -86,13 +86,15 @@ design:
     footer: "NAME -- Page PAGE_NUMBER of TOTAL_PAGES"
     education_entry:
       main_column: |
-        [AREA, ]{.color-section_titles .bold}[DEGREE]{.color-body .semibold}
+        [AREA]{.color-section_titles .bold} [DEGREE]{.color-section_titles .semibold}
         [INSTITUTION]{.color-body .semibold}
+        SUMMARY
         HIGHLIGHTS
       date_and_location_column: "LOCATION\nDATE"
       degree_column: null
     experience_entry:
       main_column: |
-        [POSITION, ]{.color-section_titles .bold}[COMPANY]{.color-body .semibold}
+        [POSITION]{.color-section_titles .bold}
+        [COMPANY]{.color-body .semibold}
         HIGHLIGHTS
       date_and_location_column: "LOCATION\nDATE"

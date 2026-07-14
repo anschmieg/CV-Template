@@ -88,6 +88,47 @@
 #let anschmiegcv-card-inset = {{ design.typography.font_size.body }}
 #let anschmiegcv-card-gutter = {{ design.typography.font_size.body }} * 0.8
 
+{% if design.section_titles.type == "moderncv" %}
+// Keep ModernCV's rule/title composition, but do not let the timeline's full
+// metadata width dictate every section heading. The half-width rule preserves
+// hierarchy while giving non-timeline sections a much stronger left alignment.
+#show heading.where(level: 2): it => {
+  set align(left)
+  set text(size: 1em / 1.2)
+  set text(
+    font: "{{ design.typography.font_family.section_titles }}",
+    size: {{ design.typography.font_size.section_titles }},
+    weight: {% if design.typography.bold.section_titles %}700{% else %}400{% endif %},
+    fill: {{ design.colors.section_titles.as_rgb() }},
+  )
+  let section-title = {% if design.typography.small_caps.section_titles %}smallcaps(it.body){% else %}it.body{% endif %};
+  let heading-rule-width = (
+    {{ design.entries.date_and_location_width }} + {{ design.entries.side_space }}
+  ) * 0.5
+
+  v({{ design.section_titles.space_above }}, weak: true)
+  block(
+    breakable: false,
+    width: 100%,
+    grid(
+      columns: (heading-rule-width, 1fr),
+      column-gutter: {{ design.entries.space_between_columns }},
+      align: (right, left),
+      align(
+        horizon,
+        box(
+          width: 1fr,
+          height: {{ design.section_titles.line_thickness }},
+          fill: {{ design.colors.section_titles.as_rgb() }},
+        ),
+      ),
+      section-title,
+    ),
+  )
+  v({{ design.section_titles.space_below }} - 0.5em)
+}
+{% endif %}
+
 #let anschmiegcv_cards_clear() = context {
   anschmiegcv_cards_state.update(_ => ())
 }
@@ -112,7 +153,8 @@
   }
 }
 
-#let anschmiegcv_cards_render(layout: "one") = context {
+#let anschmiegcv_cards_render(layout: "one") = {
+  context {
   let items = anschmiegcv_cards_state.get()
   if items.len() == 0 {
     none
@@ -139,9 +181,24 @@
         fill: {{ design.colors.section_titles.as_rgb() }}.lighten(94%),
         stroke: ({{ design.typography.font_size.body }} * 0.04) + {{ design.colors.connections.as_rgb() }}.lighten(68%),
       )[
-        #set par(justify: false)
+        // Card content bypasses RenderCV's regular-entry helper, so restore the
+        // native paragraph and highlight-list metrics that helper normally owns.
+        #set par(
+          justify: false,
+          leading: {{ design.typography.line_spacing }},
+          spacing: {{ design.typography.line_spacing }},
+        )
         #set text(hyphenate: false)
-        #card
+        #set list(
+          marker: (
+            {% if design.entries.highlights.bullet == "●" %}text(13pt, [•], baseline: -0.6pt){% else %}"{{ design.entries.highlights.bullet }}"{% endif %},
+            {% if design.entries.highlights.nested_bullet == "●" %}text(13pt, [•], baseline: -0.6pt){% else %}"{{ design.entries.highlights.nested_bullet }}"{% endif %},
+          ),
+          indent: {{ design.entries.highlights.space_left }},
+          spacing: {{ design.entries.highlights.space_between_items }} + {{ design.typography.line_spacing }},
+          body-indent: {{ design.entries.highlights.space_between_bullet_and_text }},
+        )
+        #block(breakable: false)[#card]
       ]
     })
     grid(
@@ -150,6 +207,7 @@
       row-gutter: anschmiegcv-card-gutter,
       ..cells,
     )
+  }
   }
 }
 
@@ -161,11 +219,14 @@
   continue-line: true,
   dot-color: {% if design.colors.timeline_dot %}{{ design.colors.timeline_dot.as_rgb() }}{% else %}{{ design.colors.section_titles.as_rgb() }}{% endif %},
   line-color: {% if design.colors.timeline_line %}{{ design.colors.timeline_line.as_rgb() }}{% else %}{{ design.colors.section_titles.as_rgb() }}{% endif %},
-) = context {
+) = {
+  // RenderCV's moderncv content-area already reserves the date/title gutter.
+  // The timeline owns that same gutter, so opt out of the automatic second inset.
+  metadata("skip-content-area")
+  context {
   let body-font-size = {{ design.typography.font_size.body }}
   let body-cap-height = measure(text(size: body-font-size)[H]).height
   let metadata-font-size = body-font-size * 0.9
-  let metadata-cap-height = measure(text(size: metadata-font-size)[H]).height
   let dot-size = body-cap-height / 0.90  // Dot size based on body cap-height
   let line-width = body-font-size * 0.055
   let dot-outline-width = dot-size * 0.16
@@ -186,13 +247,18 @@
         columns: (date-column-width, 1fr),
         column-gutter: space-between-columns,
         align({{ design.typography.date_and_location_column_alignment }})[
-          #pad(top: (body-cap-height - metadata-cap-height) / 2)[
+          // The metadata's natural first baseline is metadata-font-size from
+          // its cell top; the heading baseline is the measured body cap height.
+          #pad(top: body-cap-height - metadata-font-size)[
             #date-and-location-column
           ]
         ],
         box(
           width: 100%,
-          inset: (left: timeline-indent),
+          inset: (
+            left: timeline-indent,
+            bottom: if continue-line { entry-gap } else { 0pt },
+          ),
           stroke: (left: line-width + line-color),
           [
             #place(
@@ -207,17 +273,14 @@
               #main-column
             ]
             #if main-column-second-row != none {
-              linebreak()
-              main-column-second-row
-            }
-            #if continue-line {
-              v(entry-gap)
+              block[#main-column-second-row]
             }
           ],
         ),
       )
     ]
   )
+  }
 }
 
 // Timeline education entry wrapper
@@ -232,7 +295,9 @@
   continue-line: true,
   dot-color: {% if design.colors.timeline_dot %}{{ design.colors.timeline_dot.as_rgb() }}{% else %}{{ design.colors.section_titles.as_rgb() }}{% endif %},
   line-color: {% if design.colors.timeline_line %}{{ design.colors.timeline_line.as_rgb() }}{% else %}{{ design.colors.section_titles.as_rgb() }}{% endif %},
-) = context {
+) = {
+  // Keep the marker visible to RenderCV's section-level content-area scan.
+  metadata("skip-content-area")
   // Use same timeline layout as regular entries
   timeline-entry(
     date-and-location-column,
@@ -263,6 +328,11 @@
       #box(
         inset: (left: regular-entry-indent),
         [
+          #set par(
+            justify: false,
+            leading: {{ design.typography.line_spacing }},
+            spacing: {{ design.typography.line_spacing }},
+          )
           #text(size: 0.9em, fill: {{ design.colors.footer.as_rgb() }})[
             #date-and-location-column
           ]

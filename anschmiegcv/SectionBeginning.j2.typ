@@ -52,7 +52,11 @@
 
 #reversed-numbered-entries(
   [
-{% elif view_mode == "cards" %}
+{% elif view_mode in ["cards", "list"] %}
 
+// Card and list sections do not need the timeline's date/location gutter.
+#metadata("skip-content-area")
+{% if view_mode == "cards" %}
 #anschmiegcv_cards_clear()
+{% endif %}
 {% endif %}

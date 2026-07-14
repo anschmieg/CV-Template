@@ -10,6 +10,10 @@ from typing import Any
 _DIRECTIVE_BLOCK_PATTERN = re.compile(r"\{([^{}]+)\}")
 _LEADING_DIRECTIVE_PATTERN = re.compile(r"^\s*\{([^{}]+)\}\s*")
 _SPAN_CLASS_PATTERN = re.compile(r"\[((?:[^\[\]]|\[[^\[\]]*\])*)\]\{([^{}]+)\}")
+_UNCLOSED_SPAN_CLASS_PATTERN = re.compile(r"\[([^\]\n]*)\]\{([^{}\n]+)(?=\n|$)")
+_ORPHANED_SPAN_CLASS_SUFFIX_PATTERN = re.compile(
+    r"(?<=\})[ \t]+(?:\.[A-Za-z][\w-]*[ \t]*)+\}?(?=\n|$)"
+)
 _LIST_LINE_PATTERN = re.compile(r"^\s*(?:[-+*]\s+|\d+\.\s+)")
 _UNRESOLVED_FIELD_MARKER_PATTERN = re.compile(r"^\s*!!!\s+[a-zA-Z_][a-zA-Z0-9_]*\s*$")
 _BODY_PLACEHOLDERS = {
@@ -83,6 +87,18 @@ def _normalize_text(value: Any) -> str:
     if value is None:
         return ""
     return str(value).replace("\r\n", "\n").strip("\n")
+
+
+def repair_unclosed_styled_spans(value: Any) -> str:
+    """Repair styled spans damaged when RenderCV removes an optional placeholder."""
+    text = _ORPHANED_SPAN_CLASS_SUFFIX_PATTERN.sub("", str(value or ""))
+
+    def repair(match: re.Match[str]) -> str:
+        content = match.group(1).rstrip()
+        content = content.rstrip(",;:/|- ").rstrip()
+        return f"[{content}]{{{match.group(2).rstrip()}}}"
+
+    return _UNCLOSED_SPAN_CLASS_PATTERN.sub(repair, text)
 
 
 def _entry_value(entry: Any, field_name: str) -> Any:

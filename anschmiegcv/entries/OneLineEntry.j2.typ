@@ -12,6 +12,12 @@
 {% endif %}
   ]
   #anschmiegcv_cards_push(anschmiegcv_card)
+] else if anschmiegcv_section_view_mode == "list" [
+  #block(
+    below: {{ design.typography.line_spacing }},
+  )[
+    {{entry.main_column}}
+  ]
 ] else [
   {{entry.main_column}}
 ]

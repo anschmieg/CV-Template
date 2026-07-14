@@ -9,11 +9,32 @@ from cv.template_helpers import (
     card_grid_span,
     card_layout_request,
     parse_styled_blocks,
+    repair_unclosed_styled_spans,
     resolve_card_layout,
 )
 
 
 class TemplateHelperTests(unittest.TestCase):
+    def test_repairs_spans_broken_by_a_missing_optional_degree(self) -> None:
+        rendered = (
+            "[Economic Policy, ]{.color-section_titles .semibold\n"
+            "[Utrecht University]{.color-body .semibold"
+        )
+
+        self.assertEqual(
+            repair_unclosed_styled_spans(rendered),
+            "[Economic Policy]{.color-section_titles .semibold}\n"
+            "[Utrecht University]{.color-body .semibold}",
+        )
+
+    def test_removes_orphaned_class_suffix_from_a_missing_optional_degree(self) -> None:
+        rendered = "[Economic Policy]{.color-section_titles .bold} .semibold}"
+
+        self.assertEqual(
+            repair_unclosed_styled_spans(rendered),
+            "[Economic Policy]{.color-section_titles .bold}",
+        )
+
     def test_only_rendercv_experience_and_education_entries_support_timeline(self) -> None:
         self.assertTrue(entry_supports_timeline(SimpleNamespace(entry_type_in_snake_case="experience_entry")))
         self.assertTrue(entry_supports_timeline(SimpleNamespace(entry_type_in_snake_case="education_entry")))

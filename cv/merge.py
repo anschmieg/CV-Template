@@ -11,6 +11,7 @@ import yaml
 
 DATA_SUFFIXES = ("_data.yaml", "_data.yml")
 DESIGN_SUFFIXES = ("_design.yaml", "_design.yml")
+SHARED_DESIGN_NAMES = ("design.yaml", "design.yml", "shared_design.yaml", "shared_design.yml")
 DEFAULT_OUTPUT_SUFFIX = ".rendercv.yaml"
 SAMPLE_DATA_PREFIXES = ("example_", "sample_", "demo_")
 
@@ -98,12 +99,21 @@ def _data_companions(path: Path) -> Path | None:
     if design_name is None:
         return None
 
-    return _find_existing(
-        [
-            path.with_name(design_name),
-            path.with_name(design_name[:-5] + ".yml"),
-        ]
+    stem_specific = _find_existing(
+        [path.with_name(design_name), path.with_name(design_name[:-5] + ".yml")]
     )
+    if stem_specific is not None:
+        return stem_specific
+
+    for shared_name_group in (
+        SHARED_DESIGN_NAMES[:2],
+        SHARED_DESIGN_NAMES[2:],
+    ):
+        shared = _find_existing([path.with_name(name) for name in shared_name_group])
+        if shared is not None:
+            return shared
+
+    return None
 
 
 def _resolve_data_path(path: Path) -> tuple[Path, Path | None]:

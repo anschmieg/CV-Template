@@ -24,7 +24,7 @@ def _build_parser() -> argparse.ArgumentParser:
 
     render_parser = subparsers.add_parser(
         "render",
-        help="Render a merged YAML directly, or auto-detect a *_data + *_design companion pair",
+        help="Render a merged YAML directly, or auto-detect a stem-specific or shared design companion",
     )
     render_parser.add_argument(
         "input_file",

@@ -7,6 +7,9 @@ from rendercv.schema.models.base import BaseModelWithoutExtraKeys
 from rendercv.schema.models.design.classic_theme import (
     ClassicTheme,
     Colors as ClassicColors,
+    EducationEntry,
+    ExperienceEntry,
+    Templates as ClassicTemplates,
 )
 from rendercv.schema.models.design.color import Color
 
@@ -28,9 +31,10 @@ def _mix(left: Color, right: Color, ratio: float) -> Color:
     left_rgb = _rgb_tuple(left)
     right_rgb = _rgb_tuple(right)
     return _from_rgb(
-        tuple(
-            left_channel * (1 - ratio) + right_channel * ratio
-            for left_channel, right_channel in zip(left_rgb, right_rgb, strict=True)
+        (
+            left_rgb[0] * (1 - ratio) + right_rgb[0] * ratio,
+            left_rgb[1] * (1 - ratio) + right_rgb[1] * ratio,
+            left_rgb[2] * (1 - ratio) + right_rgb[2] * ratio,
         )
     )
 
@@ -87,6 +91,31 @@ class Colors(ClassicColors):
     )
 
 
+class Templates(ClassicTemplates):
+    """RenderCV entry templates with anschmiegcv's two-line timeline defaults."""
+
+    education_entry: EducationEntry = pydantic.Field(
+        default_factory=lambda: EducationEntry(
+            main_column=(
+                "[AREA]{.color-section_titles .bold} "
+                "[DEGREE]{.color-section_titles .semibold}\n"
+                "[INSTITUTION]{.color-body .semibold}\n"
+                "SUMMARY\nHIGHLIGHTS"
+            ),
+            degree_column=None,
+        )
+    )
+    experience_entry: ExperienceEntry = pydantic.Field(
+        default_factory=lambda: ExperienceEntry(
+            main_column=(
+                "[POSITION]{.color-section_titles .bold}\n"
+                "[COMPANY]{.color-body .semibold}\n"
+                "SUMMARY\nHIGHLIGHTS"
+            )
+        )
+    )
+
+
 def _generated_palette(colors: Colors) -> dict[str, Color]:
     accent = colors.accent
     if accent is None:
@@ -117,6 +146,7 @@ class AnschmiegcvTheme(ClassicTheme, BaseModelWithoutExtraKeys):
 
     theme: Literal["anschmiegcv"] = "anschmiegcv"
     colors: Colors = pydantic.Field(default_factory=Colors)
+    templates: Templates = pydantic.Field(default_factory=Templates)
     html: HtmlOptions = pydantic.Field(default_factory=HtmlOptions)
 
     @pydantic.model_validator(mode="after")
@@ -136,12 +166,19 @@ class AnschmiegcvTheme(ClassicTheme, BaseModelWithoutExtraKeys):
 CvTheme = AnschmiegcvTheme
 
 Colors.model_rebuild(_types_namespace={"Color": Color})
+Templates.model_rebuild(
+    _types_namespace={
+        "EducationEntry": EducationEntry,
+        "ExperienceEntry": ExperienceEntry,
+    }
+)
 HtmlOptions.model_rebuild()
 AnschmiegcvTheme.model_rebuild(
     _types_namespace={
         "Color": Color,
         "Colors": Colors,
         "HtmlOptions": HtmlOptions,
+        "Templates": Templates,
         "Literal": Literal,
     }
 )
